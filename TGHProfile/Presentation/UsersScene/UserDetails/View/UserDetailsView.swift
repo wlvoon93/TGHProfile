@@ -108,6 +108,8 @@ final class UserDetailsViewModelWrapper: ObservableObject {
     
     init(viewModel: UserDetailsViewModel?) {
         self.viewModel = viewModel
+        note = viewModel?.note.value ?? ""
+        
         viewModel?.username.receive(on: DispatchQueue.main).sink { [weak self] value in
             guard let strongSelf = self else { return }
             strongSelf.username = value
@@ -136,11 +138,6 @@ final class UserDetailsViewModelWrapper: ObservableObject {
         viewModel?.profileImageData.receive(on: DispatchQueue.main).sink { [weak self] value in
             guard let strongSelf = self else { return }
             strongSelf.profileImageData = value
-        }.store(in: &subsciptions)
-        
-        viewModel?.note.receive(on: DispatchQueue.main).sink { [weak self] value in
-            guard let strongSelf = self else { return }
-            strongSelf.note = value
         }.store(in: &subsciptions)
         
         viewModel?.error.receive(on: DispatchQueue.main).sink { [weak self] value in
