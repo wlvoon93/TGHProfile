@@ -46,6 +46,7 @@ public class DefaultDataTransferService {
     private let networkService: NetworkService
     private let errorResolver: DataTransferErrorResolver
     private let errorLogger: DataTransferErrorLogger
+    private let queueManager: QueueManager = QueueManager.sharedInstance
     
     public init(with networkService: NetworkService,
                 errorResolver: DataTransferErrorResolver = DefaultDataTransferErrorResolver(),
@@ -61,19 +62,26 @@ extension DefaultDataTransferService: DataTransferService {
     public func request<T: Decodable, E: ResponseRequestable>(with endpoint: E,
                                                               completion: @escaping CompletionHandler<T>) -> NetworkCancellable? where E.Response == T {
         
-        return self.networkService.request(endpoint: endpoint) { result in
-            switch result {
-            case .success(let data):
-                
-                let result: Result<T, DataTransferError> = self.decode(data: data, decoder: endpoint.responseDecoder)
-                DispatchQueue.main.async { return completion(result) }
-            case .failure(let error):
-                self.errorLogger.log(error: error)
-                let error = self.resolve(networkError: error)
-                DispatchQueue.main.async { return completion(.failure(error)) }
-            }
+        let fetch = ApiRetrievalOperation(url: endpoint, httpManager: self.networkService)
+        let parse = ApiResultDecodeOperation<T>()
+        
+        let adapter = BlockOperation() { [unowned fetch, unowned parse, weak self] in
+            guard let self = self else { return }
+            parse.dataFetched = fetch.dataFetched
+            parse.error = fetch.error
+            parse.decoderInstance = self
+            parse.decoder = endpoint.responseDecoder
         }
         
+        adapter.addDependency(fetch)
+        parse.addDependency(adapter)
+        
+        parse.completionHandler = {data in
+            completion(data)
+        }
+        queueManager.addOperations([fetch, parse, adapter])
+        
+        return fetch.requestCancellable
     }
     
     public func requestAll<T: Decodable, E: ResponseRequestable>(with endpoint: E,
@@ -107,7 +115,7 @@ extension DefaultDataTransferService: DataTransferService {
     }
 
     // MARK: - Private
-    private func decode<T: Decodable>(data: Data?, decoder: ResponseDecoder) -> Result<T, DataTransferError> {
+    public func decode<T: Decodable>(data: Data?, decoder: ResponseDecoder) -> Result<T, DataTransferError> {
         do {
             print(String(describing: T.self))
             guard let data = data else { return .failure(.noResponse) }
