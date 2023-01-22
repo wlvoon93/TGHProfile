@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct UsersListViewModelActions {
     /// Note: if you would need to edit user inside Details screen and update this Users List screen with updated user then you would need this closure:
@@ -28,7 +29,7 @@ protocol UsersListViewModelInput {
 }
 
 protocol UsersListViewModelOutput {
-    var items: Observable<[UsersListItemViewModel]> { get } /// Also we can calculate view model items on demand:  https://github.com/kudoleh/iOS-Clean-Architecture-MVVM/pull/10/files
+    var items: Observable<[BaseItemViewModel]> { get } /// Also we can calculate view model items on demand:  https://github.com/kudoleh/iOS-Clean-Architecture-MVVM/pull/10/files
     var loading: Observable<UsersListViewModelLoading?> { get }
     var query: Observable<String> { get }
     var error: Observable<String> { get }
@@ -62,7 +63,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
     // MARK: - OUTPUT
 
-    let items: Observable<[UsersListItemViewModel]> = Observable([])
+    let items: Observable<[BaseItemViewModel]> = Observable([])
     let loading: Observable<UsersListViewModelLoading?> = Observable(.none)
     let query: Observable<String> = Observable("")
     let error: Observable<String> = Observable("")
@@ -90,7 +91,6 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
     private func appendPage(_ usersPage: UsersPage) {
         currentPage = Int(Double((usersPage.since/usersPage.per_page)).rounded(.down))
-//        totalPageCount = usersPage.totalPages
         
         let userIDs = usersPage.users.compactMap { $0.id }
         multipleNoteLoadTask = loadUsersNoteUseCase.execute(requestValue: .init(userIds: userIDs)) { result in
@@ -123,7 +123,23 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                 .filter { $0.since != usersPageWithNote.since }
                 + [usersPageWithNote]
 
-            self.items.value = self.pages.users.map(UsersListItemViewModel.init)
+            var userListItems: [BaseItemViewModel] = []
+            for (_, page) in self.pages.enumerated() {
+                for (userIndex, user) in page.users.enumerated() {
+                    let isFourthItem = (userListItems.count) % 4 == 3 && userIndex != 0
+                    let hasNote = user.note != nil && user.note?.note != "" && user.note?.note != nil
+                    if isFourthItem && hasNote {
+                        userListItems.append(UserListAvatarColourInvertedAndNoteItemViewModel.init(user: user))
+                    } else if isFourthItem {
+                        userListItems.append(UserListAvatarColourInvertedItemViewModel.init(user: user))
+                    } else if hasNote {
+                        userListItems.append(UserListNoteItemViewModel.init(user: user))
+                    } else {
+                        userListItems.append(UsersListItemViewModel.init(user: user))
+                    }
+                }
+            }
+            self.items.value = userListItems
         }
     }
 

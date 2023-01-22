@@ -7,23 +7,15 @@
 
 import Foundation
 
-struct UsersListItemViewModel: Equatable {
-    let username: String
-    let type: String
-    let profileImagePath: String?
+struct UsersListItemViewModel: Equatable, BaseItemViewModel {
+    let cellType: CellTypes
+    let user: User
 }
 
 extension UsersListItemViewModel {
 
     init(user: User) {
-        self.username = user.login ?? ""
-        self.profileImagePath = user.avatar_url
-        self.type = user.type ?? ""
+        self.user = user
+        self.cellType = .normal
     }
 }
-
-private let dateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .medium
-    return formatter
-}()

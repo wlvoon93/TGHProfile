@@ -7,10 +7,12 @@
 
 import UIKit
 
-final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell {
-
+final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell, BaseItemCell {
+    internal var viewModel: BaseItemViewModel?
+  
     static let reuseIdentifier = String(describing: UsersListItemCell.self)
     static let height = CGFloat(130)
+    var profileImage: UIImage?
     
     private lazy var profileImageView: UIImageView = {
         let icon = UIImageView()
@@ -34,8 +36,17 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell {
         view.numberOfLines = 0
         return view
     }()
+    
+    private lazy var noteImageView: UIImageView = {
+        let icon = UIImageView()
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        icon.contentMode = .scaleAspectFit
+        icon.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        icon.image = UIImage(named: "note")
+        
+        return icon
+    }()
 
-    private var viewModel: UsersListItemViewModel!
     private var profileImagesRepository: ProfileImagesRepository?
     private var imageLoadTask: Cancellable? { willSet { imageLoadTask?.cancel() } }
     
@@ -50,12 +61,12 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func fill(with viewModel: UsersListItemViewModel, profileImagesRepository: ProfileImagesRepository?) {
+    func fill(with viewModel: BaseItemViewModel, profileImagesRepository: ProfileImagesRepository?) {
         self.viewModel = viewModel
         self.profileImagesRepository = profileImagesRepository
 
-        userNameLabel.text = viewModel.username
-        userTypeLabel.text = viewModel.type
+        userNameLabel.text = viewModel.user.login
+        userTypeLabel.text = viewModel.user.type
         updateProfileImage(width: Int(profileImageView.imageSizeAfterAspectFit.scaledSize.width))
     }
     
@@ -64,6 +75,7 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell {
         contentView.addSubview(profileImageView)
         contentView.addSubview(userNameLabel)
         contentView.addSubview(userTypeLabel)
+        contentView.addSubview(noteImageView)
         
         NSLayoutConstraint.activate([
             profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
@@ -78,19 +90,34 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell {
             
             userTypeLabel.leadingAnchor.constraint(equalTo: userNameLabel.leadingAnchor),
             userTypeLabel.trailingAnchor.constraint(equalTo: userNameLabel.trailingAnchor),
-            userTypeLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 5)
+            userTypeLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 5),
+            
+            noteImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
+            noteImageView.topAnchor.constraint(equalTo: userNameLabel.topAnchor),
+            noteImageView.heightAnchor.constraint(equalToConstant: 25),
+            noteImageView.widthAnchor.constraint(equalToConstant: 25)
         ])
     }
 
     private func updateProfileImage(width: Int) {
-        profileImageView.image = nil
-        guard let profileImagePath = viewModel.profileImagePath else { return }
+        var cellVM = viewModel as! UserListAvatarColourInvertedAndNoteItemViewModel
+        if let savedImage = cellVM.profileImage {
+            self.profileImageView.image = savedImage
+            return
+        }
+        guard let profileImagePath = viewModel?.user.avatar_url else { return }
 
         imageLoadTask = profileImagesRepository?.fetchImage(with: profileImagePath, width: width) { [weak self] result in
             guard let self = self else { return }
-            guard self.viewModel.profileImagePath == profileImagePath else { return }
+            guard self.viewModel?.user.avatar_url == profileImagePath else { return }
             if case let .success(data) = result {
-                self.profileImageView.image = UIImage(data: data)
+                let beginImage = CIImage(image: UIImage(data: data)!)
+                if let filter = CIFilter(name: "CIColorInvert") {
+                    filter.setValue(beginImage, forKey: kCIInputImageKey)
+                    let newImage = UIImage(ciImage: filter.outputImage!)
+                    self.profileImageView.image = newImage
+                    cellVM.profileImage = newImage
+                }
             }
             self.imageLoadTask = nil
         }

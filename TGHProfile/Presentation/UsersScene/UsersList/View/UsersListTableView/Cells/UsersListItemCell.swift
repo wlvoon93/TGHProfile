@@ -7,10 +7,11 @@
 
 import UIKit
 
-final class UsersListItemCell: UITableViewCell {
+final class UsersListItemCell: UITableViewCell, BaseItemCell {
 
     static let reuseIdentifier = String(describing: UsersListItemCell.self)
     static let height = CGFloat(130)
+    var profileImage: UIImage?
     
     private lazy var profileImageView: UIImageView = {
         let icon = UIImageView()
@@ -35,7 +36,7 @@ final class UsersListItemCell: UITableViewCell {
         return view
     }()
 
-    private var viewModel: UsersListItemViewModel!
+    internal var viewModel: BaseItemViewModel?
     private var profileImagesRepository: ProfileImagesRepository?
     private var imageLoadTask: Cancellable? { willSet { imageLoadTask?.cancel() } }
     
@@ -50,12 +51,12 @@ final class UsersListItemCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func fill(with viewModel: UsersListItemViewModel, profileImagesRepository: ProfileImagesRepository?) {
+    func fill(with viewModel: BaseItemViewModel, profileImagesRepository: ProfileImagesRepository?) {
         self.viewModel = viewModel
         self.profileImagesRepository = profileImagesRepository
 
-        userNameLabel.text = viewModel.username
-        userTypeLabel.text = viewModel.type
+        userNameLabel.text = viewModel.user.login
+        userTypeLabel.text = viewModel.user.type
         updateProfileImage(width: Int(profileImageView.imageSizeAfterAspectFit.scaledSize.width))
     }
     
@@ -82,12 +83,11 @@ final class UsersListItemCell: UITableViewCell {
     }
 
     private func updateProfileImage(width: Int) {
-        profileImageView.image = nil
-        guard let profileImagePath = viewModel.profileImagePath else { return }
+        guard let profileImagePath = viewModel?.user.avatar_url else { return }
 
         imageLoadTask = profileImagesRepository?.fetchImage(with: profileImagePath, width: width) { [weak self] result in
             guard let self = self else { return }
-            guard self.viewModel.profileImagePath == profileImagePath else { return }
+            guard self.viewModel?.user.avatar_url == profileImagePath else { return }
             if case let .success(data) = result {
                 self.profileImageView.image = UIImage(data: data)
             }

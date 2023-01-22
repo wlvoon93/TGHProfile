@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 final class UsersListTableViewController: UITableViewController {
 
@@ -41,7 +42,10 @@ final class UsersListTableViewController: UITableViewController {
     private func setupViews() {
         tableView.estimatedRowHeight = UsersListItemCell.height
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.register(UsersListItemCell.self, forCellReuseIdentifier: "UsersCell")
+        tableView.register(UsersListItemCell.self, forCellReuseIdentifier: CellTypes.normal.rawValue)
+        tableView.register(UserListNoteItemCell.self, forCellReuseIdentifier: CellTypes.note.rawValue)
+        tableView.register(UserListAvatarColourInvertedAndNoteItemCell.self, forCellReuseIdentifier: CellTypes.noteAndFourthItem.rawValue)
+        tableView.register(UserListAvatarColourInvertedItemCell.self, forCellReuseIdentifier: CellTypes.fourthItem.rawValue)
     }
 }
 
@@ -54,8 +58,8 @@ extension UsersListTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "UsersCell",
-                                                       for: indexPath) as? UsersListItemCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: self.viewModel.items.value[indexPath.row].cellType.rawValue,
+                                                       for: indexPath) as? BaseItemCell else {
             assertionFailure("Cannot dequeue reusable cell \(UsersListItemCell.self) with reuseIdentifier: \(UsersListItemCell.reuseIdentifier)")
             return UITableViewCell()
         }
@@ -67,7 +71,7 @@ extension UsersListTableViewController {
             viewModel.didLoadNextPage()
         }
 
-        return cell
+        return cell as? UITableViewCell ?? UITableViewCell()
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
