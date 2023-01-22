@@ -65,7 +65,6 @@
 		AE5F75AD29503D970098D4E9 /* UsersListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F75AC29503D970098D4E9 /* UsersListTableViewController.swift */; };
 		AE5F75B029503DE40098D4E9 /* UsersListItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F75AF29503DE40098D4E9 /* UsersListItemCell.swift */; };
 		AE5F75B329503ED20098D4E9 /* UserDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F75B229503ED20098D4E9 /* UserDetailsViewModel.swift */; };
-		AE5F75C62950551C0098D4E9 /* UserDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F75C52950551C0098D4E9 /* UserDetailsViewController.swift */; };
 		AE5F75C929505BF50098D4E9 /* BackButtonEmptyTitleNavigationBarBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F75C829505BF50098D4E9 /* BackButtonEmptyTitleNavigationBarBehavior.swift */; };
 		AE5F75CB29505C0F0098D4E9 /* BlackStyleNavigationBarBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F75CA29505C0F0098D4E9 /* BlackStyleNavigationBarBehavior.swift */; };
 		AE5F75CC2950B2320098D4E9 /* UsersListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F759F294AAD5D0098D4E9 /* UsersListViewController.swift */; };
@@ -192,7 +191,6 @@
 		AE5F75AC29503D970098D4E9 /* UsersListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListTableViewController.swift; sourceTree = "<group>"; };
 		AE5F75AF29503DE40098D4E9 /* UsersListItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListItemCell.swift; sourceTree = "<group>"; };
 		AE5F75B229503ED20098D4E9 /* UserDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewModel.swift; sourceTree = "<group>"; };
-		AE5F75C52950551C0098D4E9 /* UserDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewController.swift; sourceTree = "<group>"; };
 		AE5F75C829505BF50098D4E9 /* BackButtonEmptyTitleNavigationBarBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButtonEmptyTitleNavigationBarBehavior.swift; sourceTree = "<group>"; };
 		AE5F75CA29505C0F0098D4E9 /* BlackStyleNavigationBarBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackStyleNavigationBarBehavior.swift; sourceTree = "<group>"; };
 		AE6419F1295DDE4800093266 /* UserDetailsQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsQuery.swift; sourceTree = "<group>"; };
@@ -684,7 +682,6 @@
 		AE5F75B429503EF90098D4E9 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				AE5F75C52950551C0098D4E9 /* UserDetailsViewController.swift */,
 				AE6B57BB295D73260069DC43 /* UserDetailsView.swift */,
 			);
 			path = View;
@@ -1012,7 +1009,6 @@
 				AE9187BF296A9A58004A102C /* UserNoteRepository.swift in Sources */,
 				1F903535230759AC00DEA4BD /* UserQueryEntity+Mapping.swift in Sources */,
 				1F1FC48C22E3693100BCBA8D /* NetworkConfig.swift in Sources */,
-				AE5F75C62950551C0098D4E9 /* UserDetailsViewController.swift in Sources */,
 				1FFFC834221B0041007D99D2 /* ProfileImagesRepository.swift in Sources */,
 				1FA5338D201E1FDE00747E55 /* AppDelegate.swift in Sources */,
 				AE5F7598294AA8340098D4E9 /* UsersSearchFlowCoordinator.swift in Sources */,

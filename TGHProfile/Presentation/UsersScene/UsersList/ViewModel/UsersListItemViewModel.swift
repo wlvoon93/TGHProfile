@@ -9,7 +9,7 @@ import Foundation
 
 struct UsersListItemViewModel: Equatable, BaseItemViewModel {
     let cellType: CellTypes
-    let user: User
+    var user: User
 }
 
 extension UsersListItemViewModel {

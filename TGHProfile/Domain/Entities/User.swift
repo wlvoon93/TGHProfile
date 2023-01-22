@@ -13,7 +13,7 @@ struct User: Equatable {
     let userId: Int?
     let profileImage: ProfileImage?
     let type: String?
-    let note: Note?
+    var note: Note?
     let following: Int?
     let followers: Int?
     let company: String?

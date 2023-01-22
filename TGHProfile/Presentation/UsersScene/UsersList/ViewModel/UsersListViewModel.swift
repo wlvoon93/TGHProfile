@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct UsersListViewModelActions {
-    let showUserDetails: (String, @escaping (_ didSelect: Note) -> Void) -> Void
+    let showUserDetails: (String, String, @escaping (_ didSelect: Note) -> Void) -> Void
 }
 
 enum TableMode {
@@ -317,18 +317,16 @@ extension DefaultUsersListViewModel {
     }
 
     func didSelectItem(at index: Int) {
-        actions?.showUserDetails(pages.users[index].login ?? "") { note in
-            if let pageSize = self.pages.first?.users.count {
-                let page = Int(Float(index / pageSize).rounded(.up))
-                self.pages[page] = UsersPage.init(since: self.pages[page].since, per_page: self.pages[page].per_page, users: self.pages[page].users.map {
-                    if $0.userId == note.userId {
-                        return User.init(login: $0.login, userId: $0.userId, profileImage: .init(imageUrl: $0.profileImage?.imageUrl, image: $0.profileImage?.image, invertedImage: $0.profileImage?.invertedImage), type: $0.type, note: note, following: $0.following, followers: $0.followers, company: $0.company, blog: $0.blog)
-                    }
-                    return $0
-                })
+        actions?.showUserDetails(self.items.value[index].user.login ?? "", self.items.value[index].user.note?.note ?? "") { note in
+            let isFourthItem = (self.items.value.count) % 4 == 3 && index != 0
+            if let noteString = note.note, noteString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+                self.items.value[index].user.note = note
+                self.items.value[index] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.items.value[index].user) : UserListNoteItemViewModel.init(user: self.items.value[index].user)
+            } else {
+                self.items.value[index].user.note = note
+                self.items.value[index] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.items.value[index].user) : UsersListItemViewModel.init(user: self.items.value[index].user)
             }
         }
-                                 
     }
 }
 

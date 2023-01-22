@@ -86,21 +86,22 @@ final class UsersSceneDIContainer {
     }
     
     // MARK: - User Details
-    func makeUsersDetailsViewController(username: String, didSaveNote: @escaping (Note) -> Void) -> UIViewController {
-        let view = UserDetailsView(viewModelWrapper: makeUserDetailsViewModelWrapper(username: username, didSaveNote: didSaveNote))
+    func makeUsersDetailsViewController(username: String, note: String, didSaveNote: @escaping (Note) -> Void) -> UIViewController {
+        let view = UserDetailsView(viewModelWrapper: makeUserDetailsViewModelWrapper(username: username, note: note, didSaveNote: didSaveNote))
         return UIHostingController(rootView: view)
     }
     
-    func makeUserDetailsViewModel(username: String, didSaveNote: @escaping (Note) -> Void) -> UserDetailsViewModel {
+    func makeUserDetailsViewModel(username: String, note: String, didSaveNote: @escaping (Note) -> Void) -> UserDetailsViewModel {
         return DefaultUserDetailsViewModel(username: username,
+                                           note: note,
                                            loadUserDetailsUseCase: makeLoadUserDetailsUseCase(),
                                            saveUserNoteUseCase: makeSaveUserNoteUseCase(),
                                            profileImagesRepository: makeProfileImagesRepository(),
                                            didSaveNote: didSaveNote)
     }
     
-    func makeUserDetailsViewModelWrapper(username: String, didSaveNote: @escaping (Note) -> Void) -> UserDetailsViewModelWrapper {
-        return UserDetailsViewModelWrapper(viewModel: makeUserDetailsViewModel(username: username, didSaveNote: didSaveNote))
+    func makeUserDetailsViewModelWrapper(username: String, note: String, didSaveNote: @escaping (Note) -> Void) -> UserDetailsViewModelWrapper {
+        return UserDetailsViewModelWrapper(viewModel: makeUserDetailsViewModel(username: username, note: note, didSaveNote: didSaveNote))
     }
 
     // MARK: - Flow Coordinators

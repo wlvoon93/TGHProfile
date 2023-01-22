@@ -13,6 +13,7 @@ struct UserDetailsView: View {
     @ObservedObject var viewModelWrapper: UserDetailsViewModelWrapper
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var noteString: String = ""
+    @State var text: String = ""
 
     var body: some View {
         List {
@@ -45,28 +46,39 @@ struct UserDetailsView: View {
                 
                 HStack() {
                     TextEditor(text: $noteString)
-                        .foregroundColor(.secondary)
-                        .padding(.horizontal)
-                        .navigationTitle("About you")
                         .frame(minHeight: 30, alignment: .leading)
-                        .onChange(of: viewModelWrapper.noteString) { newValue in
-                            noteString = newValue
-                        }
+                        .border(Color.black, width: 2)
+                        .multilineTextAlignment(.leading)
                 }.padding(.horizontal)
                 
                 Spacer().frame(height: 20)
-                Button("Save") {
-                    self.viewModelWrapper.viewModel?.didTapSave(noteString: noteString, completion: {
-                        DispatchQueue.main.async {
-                            self.presentationMode.wrappedValue.dismiss()
-                        }
-                    })
-                }.padding(.bottom, 10)
+                HStack() {
+                    Button("Save") {
+                        self.viewModelWrapper.viewModel?.didTapSave(noteString: noteString.description, completion: {
+                            DispatchQueue.main.async {
+                                self.presentationMode.wrappedValue.dismiss()
+                            }
+                        })
+                    }.padding(.bottom, 10)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .buttonStyle(MyStyle())
+                }.padding(.horizontal)
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear {
                 self.viewModelWrapper.viewModel?.viewWillAppear()
+                noteString = viewModelWrapper.note
             }
+            
+
         }
+    }
+}
+
+struct MyStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .contentShape(Rectangle())
     }
 }
 
@@ -79,7 +91,7 @@ final class UserDetailsViewModelWrapper: ObservableObject {
     @Published var following: Int = 0
     @Published var followers: Int = 0
     @Published var profileImageData: Data? = nil
-    @Published var noteString: String = ""
+    @Published var note: String = ""
     
     init(viewModel: UserDetailsViewModel?) {
         self.viewModel = viewModel
@@ -89,6 +101,9 @@ final class UserDetailsViewModelWrapper: ObservableObject {
         viewModel?.following.observe(on: self) { [weak self] value in self?.following = value }
         viewModel?.followers.observe(on: self) { [weak self] value in self?.followers = value }
         viewModel?.profileImageData.observe(on: self) { [weak self] value in self?.profileImageData = value }
+        viewModel?.note.observe(on: self) { [weak self] value in self?.note = value
+            
+        }
     }
 }
 

@@ -58,6 +58,7 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
     
     // MARK: - Init
     init(username: String,
+         note: String,
          loadUserDetailsUseCase: LoadUserDetailsUseCase,
          saveUserNoteUseCase: SaveUserNoteUseCase,
          profileImagesRepository: ProfileImagesRepository,
@@ -67,6 +68,7 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
         self.saveUserNoteUseCase = saveUserNoteUseCase
         self.profileImagesRepository = profileImagesRepository
         self.didSaveNote = didSaveNote
+        self.note.value = note
     }
     
     // MARK: - Private
@@ -87,6 +89,7 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
         userDetailsLoadTask = loadUserDetailsUseCase.execute(
             requestValue: .init(username: username.value), cached: { user in
                 self.updateUserDetails(user: user)
+                
             },
             completion: { result in
                 switch result {
@@ -125,17 +128,12 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
 // MARK: - INPUT. View event methods
 extension DefaultUserDetailsViewModel {
     func viewWillAppear() {
-//        updateMoviesQueries()
         loadUserDetails()
     }
     
     func didTapSave(noteString: String, completion: @escaping () -> Void) {
         updateUserNote(noteString: noteString, completion: completion)
     }
-    
-//    func viewDidLoad() {
-//        loadUserDetails()
-//    }
     
     func updateProfileImage(width: Int) {
         guard let profileImagePath = self.profileImageUrl.value else { return }

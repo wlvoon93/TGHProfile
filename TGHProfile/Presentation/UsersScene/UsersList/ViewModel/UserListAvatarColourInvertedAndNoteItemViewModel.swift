@@ -10,7 +10,7 @@ import UIKit
 
 struct UserListAvatarColourInvertedAndNoteItemViewModel: Equatable, BaseItemViewModel {
     let cellType: CellTypes
-    let user: User
+    var user: User
 }
 
 extension UserListAvatarColourInvertedAndNoteItemViewModel {

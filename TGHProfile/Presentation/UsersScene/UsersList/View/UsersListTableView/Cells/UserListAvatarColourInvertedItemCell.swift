@@ -50,6 +50,13 @@ final class UserListAvatarColourInvertedItemCell: UITableViewCell, BaseItemCell 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    public override func prepareForReuse() {
+        super.prepareForReuse()
+        profileImageView.image = nil
+        userNameLabel.text = nil
+        userTypeLabel.text = nil
+    }
 
     func fill(with viewModel: BaseItemViewModel, profileImagesRepository: ProfileImagesRepository?) {
         self.viewModel = viewModel

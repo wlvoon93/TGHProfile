@@ -24,6 +24,6 @@ enum CellTypes: String{
 }
 
 protocol BaseItemViewModel {
-    var user: User { get }
+    var user: User { get set }
     var cellType: CellTypes { get }
 }

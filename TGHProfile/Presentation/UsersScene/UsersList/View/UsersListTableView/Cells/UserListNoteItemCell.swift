@@ -71,6 +71,13 @@ final class UserListNoteItemCell: UITableViewCell, BaseItemCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    public override func prepareForReuse() {
+        super.prepareForReuse()
+        profileImageView.image = nil
+        userNameLabel.text = nil
+        userTypeLabel.text = nil
+    }
+    
     // MARK: - Private API -
     private func setupSubviews() {
         contentView.addSubview(profileImageView)
