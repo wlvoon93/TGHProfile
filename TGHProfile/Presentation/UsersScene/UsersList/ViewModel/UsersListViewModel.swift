@@ -172,8 +172,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
         query.value = userQuery.query
 
         usersLoadTask = searchUsersUseCase.execute(
-            requestValue: .init(query: userQuery, page: nextPage),
-            cached: appendPage,
+            requestValue: .init(query: userQuery.query),
             completion: { result in
                 switch result {
                 case .success(let page):

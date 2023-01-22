@@ -16,13 +16,10 @@ protocol ListAllUsersUseCase {
 final class DefaultListAllUsersUseCase: ListAllUsersUseCase {
 
     private let usersRepository: UsersRepository
-    private let usersQueriesRepository: UsersQueriesRepository
 
-    init(usersRepository: UsersRepository,
-         usersQueriesRepository: UsersQueriesRepository) {
+    init(usersRepository: UsersRepository) {
 
         self.usersRepository = usersRepository
-        self.usersQueriesRepository = usersQueriesRepository
     }
 
     func execute(requestValue: ListAllUsersUseCaseRequestValue,
@@ -32,6 +29,7 @@ final class DefaultListAllUsersUseCase: ListAllUsersUseCase {
         return usersRepository.fetchAllUsersList(page: requestValue.page,
                                                 cached: cached,
                                                 completion: { result in
+            
             completion(result)
         })
     }

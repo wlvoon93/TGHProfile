@@ -15,13 +15,10 @@ protocol LoadUserDetailsUseCase {
 final class DefaultLoadUserDetailsUseCase: LoadUserDetailsUseCase {
 
     private let usersRepository: UsersRepository
-    private let usersQueriesRepository: UsersQueriesRepository
 
-    init(usersRepository: UsersRepository,
-         usersQueriesRepository: UsersQueriesRepository) {
+    init(usersRepository: UsersRepository) {
 
         self.usersRepository = usersRepository
-        self.usersQueriesRepository = usersQueriesRepository
     }
 
     func execute(requestValue: LoadUserDetailsUseCaseRequestValue,

@@ -56,19 +56,16 @@ extension DefaultUsersRepository: UsersRepository {
         return task
     }
 
-    // modify this to work locally
-    public func searchUsersList(query: UserQuery,
-                                page: Int,
-                                cached: @escaping (UsersPage) -> Void,
+    // search user locally
+    public func searchUsersList(query: String,
                                 completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
 
-        let requestDTO = UsersSearchRequestDTO(query: query.query)
+        let requestDTO = UsersSearchRequestDTO(query: query)
         let task = RepositoryTask()
 
         cache.getSearchResponse(for: requestDTO) { result in
 
             if case let .success(responseDTO?) = result {
-                cached(responseDTO.toDomain())
                 completion(.success(responseDTO.toDomain()))
             }
             

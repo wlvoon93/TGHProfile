@@ -28,17 +28,15 @@ final class UsersSceneDIContainer {
     
     // MARK: - Use Cases
     func makeSearchUsersUseCase() -> SearchUsersUseCase {
-        return DefaultSearchUsersUseCase(usersRepository: makeUsersRepository(),
-                                          usersQueriesRepository: makeUsersQueriesRepository())
+        return DefaultSearchUsersUseCase(usersRepository: makeUsersRepository())
     }
     
     func makeListAllUsersUseCase() -> ListAllUsersUseCase {
-        return DefaultListAllUsersUseCase(usersRepository: makeUsersRepository(),
-                                          usersQueriesRepository: makeUsersQueriesRepository())
+        return DefaultListAllUsersUseCase(usersRepository: makeUsersRepository())
     }
     
     func makeLoadUserDetailsUseCase() -> LoadUserDetailsUseCase {
-        return DefaultLoadUserDetailsUseCase(usersRepository: makeUsersRepository(), usersQueriesRepository: makeUserDetailsQueriesRepository())
+        return DefaultLoadUserDetailsUseCase(usersRepository: makeUsersRepository())
     }
     
     func makeSaveUserNoteUseCase() -> SaveUserNoteUseCase {
@@ -51,14 +49,6 @@ final class UsersSceneDIContainer {
     
     func makeLoadUsersNoteUseCase() -> LoadUsersNoteUseCase {
         return DefaultLoadUsersNoteUseCase(userNoteRepository: makeUserNoteRepository())
-    }
-    
-    func makeFetchRecentUserQueriesUseCase(requestValue: FetchRecentUserQueriesUseCase.RequestValue,
-                                            completion: @escaping (FetchRecentUserQueriesUseCase.ResultValue) -> Void) -> UseCase {
-        return FetchRecentUserQueriesUseCase(requestValue: requestValue,
-                                              completion: completion,
-                                              usersQueriesRepository: makeUsersQueriesRepository()
-        )
     }
     
     // MARK: - Repositories

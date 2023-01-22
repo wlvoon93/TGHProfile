@@ -9,7 +9,6 @@ import Foundation
 
 protocol SearchUsersUseCase {
     func execute(requestValue: SearchUsersUseCaseRequestValue,
-                 cached: @escaping (UsersPage) -> Void,
                  completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable?
 }
 
@@ -17,25 +16,16 @@ final class DefaultSearchUsersUseCase: SearchUsersUseCase {
     
 
     private let usersRepository: UsersRepository
-    private let usersQueriesRepository: UsersQueriesRepository
 
-    init(usersRepository: UsersRepository,
-         usersQueriesRepository: UsersQueriesRepository) {
+    init(usersRepository: UsersRepository) {
 
         self.usersRepository = usersRepository
-        self.usersQueriesRepository = usersQueriesRepository
     }
 
-    func execute(requestValue: SearchUsersUseCaseRequestValue, cached: @escaping (UsersPage) -> Void, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
+    func execute(requestValue: SearchUsersUseCaseRequestValue, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
 
         return usersRepository.searchUsersList(query: requestValue.query,
-                                                page: requestValue.page,
-                                                cached: cached,
                                                 completion: { result in
-
-            if case .success = result {
-                self.usersQueriesRepository.saveRecentQuery(query: requestValue.query) { _ in }
-            }
 
             completion(result)
         })
@@ -43,6 +33,5 @@ final class DefaultSearchUsersUseCase: SearchUsersUseCase {
 }
 
 struct SearchUsersUseCaseRequestValue {
-    let query: UserQuery
-    let page: Int
+    let query: String
 }
