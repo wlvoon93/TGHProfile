@@ -95,13 +95,13 @@ final class UserDetailsViewModelWrapper: ObservableObject {
     
     init(viewModel: UserDetailsViewModel?) {
         self.viewModel = viewModel
-        viewModel?.username.sink { [weak self] value in self?.username = value }.store(in: &subsciptions)
-        viewModel?.company.sink { [weak self] value in self?.company = value }.store(in: &subsciptions)
-        viewModel?.blog.sink { [weak self] value in self?.blog = value }.store(in: &subsciptions)
-        viewModel?.following.sink { [weak self] value in self?.following = value }.store(in: &subsciptions)
-        viewModel?.followers.sink { [weak self] value in self?.followers = value }.store(in: &subsciptions)
-        viewModel?.profileImageData.sink { [weak self] value in self?.profileImageData = value }.store(in: &subsciptions)
-        viewModel?.note.sink { [weak self] value in self?.note = value }.store(in: &subsciptions)
+        viewModel?.username.receive(on: DispatchQueue.main).sink { [weak self] value in self?.username = value }.store(in: &subsciptions)
+        viewModel?.company.receive(on: DispatchQueue.main).sink { [weak self] value in self?.company = value }.store(in: &subsciptions)
+        viewModel?.blog.receive(on: DispatchQueue.main).sink { [weak self] value in self?.blog = value }.store(in: &subsciptions)
+        viewModel?.following.receive(on: DispatchQueue.main).sink { [weak self] value in self?.following = value }.store(in: &subsciptions)
+        viewModel?.followers.receive(on: DispatchQueue.main).sink { [weak self] value in self?.followers = value }.store(in: &subsciptions)
+        viewModel?.profileImageData.receive(on: DispatchQueue.main).sink { [weak self] value in self?.profileImageData = value }.store(in: &subsciptions)
+        viewModel?.note.receive(on: DispatchQueue.main).sink { [weak self] value in self?.note = value }.store(in: &subsciptions)
     }
 }
 
