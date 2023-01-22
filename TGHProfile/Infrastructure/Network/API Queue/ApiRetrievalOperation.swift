@@ -20,6 +20,7 @@ class ApiRetrievalOperation<T: Decodable, E: ResponseRequestable>: NetworkOperat
     }
        
     override func main() {
+        print("fetch: \(url.path)")
         requestCancellable = httpManager.request(endpoint: url, completion: { result in
             switch result {
             case .failure(let error):

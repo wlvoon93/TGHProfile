@@ -17,9 +17,12 @@ class ApiResultDecodeOperation<T: Decodable>: Operation {
     var decoder: ResponseDecoder?
     
     override func main() {
-        guard let dataFetched = dataFetched, let decoder = decoder, let decoderInstance = decoderInstance else { return }
+        guard let dataFetched = dataFetched, let decoder = decoder, let decoderInstance = decoderInstance else {
+            cancel()
+            return
+        }
         let result: Result<T, DataTransferError> = decoderInstance.decode(data: dataFetched, decoder: decoder)
-        
+
         if let completionHandler = completionHandler {
             completionHandler(result)
         }
