@@ -86,7 +86,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
     // MARK: - Private
 
-    private func appendPage(_ usersPage: UsersPage, completion: @escaping (Result<[BaseItemViewModel], Error>) -> Void) {
+    private func appendPage(_ usersPage: UsersPage) {
         currentPage = Int(Double((usersPage.since/usersPage.per_page)).rounded(.down))
         
         let userIDs = usersPage.users.compactMap { $0.id }
@@ -111,7 +111,6 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                 
             case .failure(let error):
                 self.handle(error: error)
-                completion(.failure(error))
                 return
             }
             
@@ -137,8 +136,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                     }
                 }
             }
-            
-            completion(.success(userListItems))
+            self.handleAppendAsyncReturnResult(result: .success(userListItems))
         }
     }
 
@@ -158,9 +156,8 @@ final class DefaultUsersListViewModel: UsersListViewModel {
             completion: { result in
                 switch result {
                 case .success(let page):
-                    self.appendPage(page) { appendPageResult in
-                        self.handleAppendAsyncReturnResult(result: appendPageResult)
-                    }
+                    self.appendPage(page)
+                    self.loading.value = .none
                 case .failure(let error):
                     self.handle(error: error)
                     self.loading.value = .none
@@ -188,9 +185,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
             completion: { result in
                 switch result {
                 case .success(let page):
-                    self.appendPage(page) { appendPageResult in
-                        self.handleAppendAsyncReturnResult(result: appendPageResult)
-                    }
+                    self.appendPage(page)
                     return 
                 case .failure(let error):
                     self.handle(error: error)

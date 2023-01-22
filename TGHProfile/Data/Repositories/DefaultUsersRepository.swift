@@ -21,12 +21,8 @@ final class DefaultUsersRepository {
 
 extension DefaultUsersRepository: UsersRepository {
     
-    private func blank(_: Result<[BaseItemViewModel], Error>) -> Void {
-        return
-    }
-    
     public func fetchAllUsersList(page: Int,
-                                  cached: @escaping (UsersPage, @escaping (Result<[BaseItemViewModel], Error>) -> Void) -> (),
+                                  cached: @escaping (UsersPage) -> Void,
                                   completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
 
         let requestDTO = UsersRequestDTO(since: page*10, per_page: 10)
@@ -35,7 +31,7 @@ extension DefaultUsersRepository: UsersRepository {
         cache.getResponse(for: requestDTO) { result in
 
             if case let .success(responseDTO?) = result {
-                cached(responseDTO.toDomain(), self.blank)
+                cached(responseDTO.toDomain())
             }
             guard !task.isCancelled else { return }
 
