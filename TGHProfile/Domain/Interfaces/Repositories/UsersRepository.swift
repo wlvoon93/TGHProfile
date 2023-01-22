@@ -16,4 +16,8 @@ protocol UsersRepository {
     func searchUsersList(query: UserQuery, page: Int,
                          cached: @escaping (UsersPage) -> Void,
                          completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable?
+    
+    @discardableResult
+    func fetchUserDetails(query: UserDetailsQuery,
+                          completion: @escaping (Result<User, Error>) -> Void) -> Cancellable?
 }

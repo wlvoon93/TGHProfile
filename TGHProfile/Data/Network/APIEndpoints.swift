@@ -15,6 +15,12 @@ struct APIEndpoints {
                         method: .get,
                         queryParametersEncodable: usersRequestDTO)
     }
+    
+    static func getUserDetails(with usersDetailsRequestDTO: UserDetailsRequestDTO) -> Endpoint<UserDetailsResponseDTO> {
+
+        return Endpoint(path: "users/\(usersDetailsRequestDTO.username)",
+                        method: .get)
+    }
 
     static func getUserProfile(path: String) -> Endpoint<Data> {
         return Endpoint(path: path,

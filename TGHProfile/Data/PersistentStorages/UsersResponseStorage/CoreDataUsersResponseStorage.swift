@@ -26,6 +26,13 @@ final class CoreDataUsersResponseStorage {
         return request
     }
     
+    private func fetchUserDetailsResponse(for requestDto: UserDetailsRequestDTO) -> NSFetchRequest<UserResponseEntity> {
+        let request: NSFetchRequest = UserResponseEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "%K = %@",
+                                        #keyPath(UserResponseEntity.login), requestDto.username)
+        return request
+    }
+    
     // currently is search since:0 AND per_page:5 but need to modify into directly query users
     // search result mode ( turn off scroll to load more ) until x is pressed.
     private func fetchSearchRequest(for requestDto: UsersSearchRequestDTO) -> NSFetchRequest<UserResponseEntity> {
@@ -85,7 +92,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
                         for note in userNoteEntities {
                             if note.userId == user.id {
                                 
-                                let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login, id: user.id, avatar_url: user.avatar_url, type: user.type, note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)))
+                                let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login, id: user.id, avatar_url: user.avatar_url, type: user.type, note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)), following: nil, followers: nil, company: nil, blog: nil)
                                 userDTOs.append(userDTO)
                             }
                         }
@@ -108,7 +115,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
             do {
                 let fetchRequest = self.fetchSearchRequest(for: requestDto)
                 let userResponseEntities = try context.fetch(fetchRequest)
-                let userWithoutNoteDTOs = userResponseEntities.map { UsersPageResponseDTO.UserDTO.init(login: $0.login, id: Int($0.id), avatar_url: $0.avatarUrl, type: $0.type, note: nil) }
+                let userWithoutNoteDTOs = userResponseEntities.map { UsersPageResponseDTO.UserDTO.init(login: $0.login, id: Int($0.id), avatar_url: $0.avatarUrl, type: $0.type, note: nil, following: nil, followers: nil, company: nil, blog: nil) }
                 let fetchNotesRequest = self.fetchNotesRequest(for: userWithoutNoteDTOs)
                 let userNoteEntities = try context.fetch(fetchNotesRequest)
                 var userWithNoteDTOs:[UsersPageResponseDTO.UserDTO] = []
@@ -116,7 +123,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
                     for note in userNoteEntities {
                         if note.userId == user.id {
                             
-                            let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login, id: user.id, avatar_url: user.avatar_url, type: user.type, note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)))
+                            let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login, id: user.id, avatar_url: user.avatar_url, type: user.type, note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)), following: nil, followers: nil, company: nil, blog: nil)
                             userWithNoteDTOs.append(userDTO)
                         }
                     }
@@ -145,6 +152,20 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
             }
         }
     }
+    
+    func getUserDetailsResponse(for requestDto: UserDetailsRequestDTO, completion: @escaping (Result<UsersPageResponseDTO.UserDTO?, CoreDataStorageError>) -> Void) {        coreDataStorage.performBackgroundTask { context in
+            do {
+                let fetchUserDetailsRequest = self.fetchUserDetailsResponse(for: requestDto)
+                let requestUserDetailsEntity = try context.fetch(fetchUserDetailsRequest).first
+                let userDetailsDTO = requestUserDetailsEntity?.toDTO()
+                
+                completion(.success(userDetailsDTO))
+         
+            } catch {
+                completion(.failure(CoreDataStorageError.readError(error)))
+            }
+        }
+    }
 
     func save(response responseDto: UsersPageResponseDTO, for requestDto: UsersRequestDTO) {
         coreDataStorage.performBackgroundTask { context in
@@ -165,6 +186,28 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
                     userNoteRecord.setValue(nil, forKey: "note")
                     userNoteRecord.setValue(user.id, forKey: "userId")
                 }
+                
+                try context.save()
+            } catch {
+                // TODO: - Log to Crashlytics
+                debugPrint("CoreDataUsersResponseStorage Unresolved error \(error), \((error as NSError).userInfo)")
+            }
+        }
+    }
+    
+    func updateUser(response responseDto: UserDetailsResponseDTO, for requestDto: UserDetailsRequestDTO) {
+        coreDataStorage.performBackgroundTask { context in
+            do {
+                let fetchUserDetailsRequest = self.fetchUserDetailsResponse(for: requestDto)
+                let requestUserDetailsEntity = try context.fetch(fetchUserDetailsRequest).first
+                
+                requestUserDetailsEntity?.setValue(responseDto.id, forKey: "id")
+                requestUserDetailsEntity?.setValue(responseDto.avatar_url, forKey: "avatarUrl")
+                requestUserDetailsEntity?.setValue(responseDto.type, forKey: "type")
+                requestUserDetailsEntity?.setValue(responseDto.followers, forKey: "followers")
+                requestUserDetailsEntity?.setValue(responseDto.following, forKey: "following")
+                requestUserDetailsEntity?.setValue(responseDto.company, forKey: "company")
+                requestUserDetailsEntity?.setValue(responseDto.blog, forKey: "blog")
                 
                 try context.save()
             } catch {

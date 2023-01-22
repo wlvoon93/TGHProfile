@@ -9,7 +9,7 @@ import UIKit
 
 protocol UsersSearchFlowCoordinatorDependencies  {
     func makeUsersListViewController(actions: UsersListViewModelActions) -> UsersListViewController
-    func makeUsersDetailsViewController(user: User) -> UIViewController
+    func makeUsersDetailsViewController(username: String) -> UIViewController
 }
 
 final class UsersSearchFlowCoordinator {
@@ -35,8 +35,8 @@ final class UsersSearchFlowCoordinator {
         usersListVC = vc
     }
 
-    private func showUserDetails(user: User) {
-        let vc = dependencies.makeUsersDetailsViewController(user: user)
+    private func showUserDetails(username: String) {
+        let vc = dependencies.makeUsersDetailsViewController(username: username)
         navigationController?.pushViewController(vc, animated: true)
     }
 

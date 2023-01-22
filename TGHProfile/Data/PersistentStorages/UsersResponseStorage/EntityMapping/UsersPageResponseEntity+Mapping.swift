@@ -22,7 +22,11 @@ extension UserResponseEntity {
                      id: Int(id),
                      avatar_url: avatarUrl,
                      type: type,
-                     note: nil)
+                     note: nil,
+                     following: Int(following),
+                     followers: Int(followers),
+                     company: company,
+                     blog: blog)
     }
 }
 

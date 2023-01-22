@@ -26,6 +26,10 @@ extension UsersPageResponseDTO {
         let avatar_url: String?
         let type: String?
         let note: NoteDTO?
+        let following: Int?
+        let followers: Int?
+        let company: String?
+        let blog: String?
     }
 }
 
@@ -47,6 +51,14 @@ extension UsersPageResponseDTO {
 extension UsersPageResponseDTO.UserDTO {
     func toDomain() -> User {
         
-        return .init(login: login, id: id, avatar_url: avatar_url, type: type, note: nil)
+        return .init(login: login,
+                     id: id,
+                     avatar_url: avatar_url,
+                     type: type,
+                     note: nil,
+                     following: nil,
+                     followers: nil,
+                     company: nil,
+                     blog: nil)
     }
 }

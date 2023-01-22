@@ -36,6 +36,10 @@ final class UsersSceneDIContainer {
                                           usersQueriesRepository: makeUsersQueriesRepository())
     }
     
+    func makeLoadUserDetailsUseCase() -> LoadUserDetailsUseCase {
+        return DefaultLoadUserDetailsUseCase(usersRepository: makeUsersRepository(), usersQueriesRepository: makeUserDetailsQueriesRepository())
+    }
+    
     func makeFetchRecentUserQueriesUseCase(requestValue: FetchRecentUserQueriesUseCase.RequestValue,
                                             completion: @escaping (FetchRecentUserQueriesUseCase.ResultValue) -> Void) -> UseCase {
         return FetchRecentUserQueriesUseCase(requestValue: requestValue,
@@ -49,6 +53,10 @@ final class UsersSceneDIContainer {
         return DefaultUsersRepository(dataTransferService: dependencies.apiDataTransferService, cache: usersResponseCache)
     }
     func makeUsersQueriesRepository() -> UsersQueriesRepository {
+        return DefaultUsersQueriesRepository(dataTransferService: dependencies.apiDataTransferService,
+                                              usersQueriesPersistentStorage: usersQueriesStorage)
+    }
+    func makeUserDetailsQueriesRepository() -> UsersQueriesRepository {
         return DefaultUsersQueriesRepository(dataTransferService: dependencies.apiDataTransferService,
                                               usersQueriesPersistentStorage: usersQueriesStorage)
     }
@@ -67,13 +75,17 @@ final class UsersSceneDIContainer {
     }
     
     // MARK: - User Details
-    func makeUsersDetailsViewController(user: User) -> UIViewController {
-        return UserDetailsViewController.create(with: makeUsersDetailsViewModel(user: user))
+    func makeUsersDetailsViewController(username: String) -> UIViewController {
+        let view = UserDetailsView(viewModelWrapper: makeUserDetailsViewModelWrapper(username: username))
+        return UIHostingController(rootView: view)
     }
     
-    func makeUsersDetailsViewModel(user: User) -> UserDetailsViewModel {
-        return DefaultUserDetailsViewModel(user: user,
-                                           profileImagesRepository: makeProfileImagesRepository())
+    func makeUserDetailsViewModel(username: String) -> UserDetailsViewModel {
+        return DefaultUserDetailsViewModel(username: username, loadUserDetailsUseCase: makeLoadUserDetailsUseCase())
+    }
+    
+    func makeUserDetailsViewModelWrapper(username: String) -> UserDetailsViewModelWrapper {
+        return UserDetailsViewModelWrapper(viewModel: makeUserDetailsViewModel(username: username))
     }
 
     // MARK: - Flow Coordinators

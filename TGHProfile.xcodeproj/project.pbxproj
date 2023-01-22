@@ -70,6 +70,10 @@
 		AE5F75C929505BF50098D4E9 /* BackButtonEmptyTitleNavigationBarBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F75C829505BF50098D4E9 /* BackButtonEmptyTitleNavigationBarBehavior.swift */; };
 		AE5F75CB29505C0F0098D4E9 /* BlackStyleNavigationBarBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F75CA29505C0F0098D4E9 /* BlackStyleNavigationBarBehavior.swift */; };
 		AE5F75CC2950B2320098D4E9 /* UsersListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F759F294AAD5D0098D4E9 /* UsersListViewController.swift */; };
+		AE6419F2295DDE4800093266 /* UserDetailsQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6419F1295DDE4800093266 /* UserDetailsQuery.swift */; };
+		AE6419F4295DDF4400093266 /* UserDetailsRequestDTO+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6419F3295DDF4400093266 /* UserDetailsRequestDTO+Mapping.swift */; };
+		AE6419FC2965BBA400093266 /* UserDetailsResponseDTO+mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6419FB2965BBA400093266 /* UserDetailsResponseDTO+mapping.swift */; };
+		AE641A012967197700093266 /* RemoteImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE641A002967197700093266 /* RemoteImageView.swift */; };
 		AE6B57AE2959A6360069DC43 /* UsersListDataTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57AD2959A6360069DC43 /* UsersListDataTransferService.swift */; };
 		AE6B57B02959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57AF2959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift */; };
 		AE6B57B2295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57B1295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift */; };
@@ -77,6 +81,8 @@
 		AE6B57B6295AE4150069DC43 /* UserListAvatarColourInvertedAndNoteItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57B5295AE4150069DC43 /* UserListAvatarColourInvertedAndNoteItemCell.swift */; };
 		AE6B57B8295AE4B30069DC43 /* UIImage+InvertedColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57B7295AE4B30069DC43 /* UIImage+InvertedColor.swift */; };
 		AE6B57BA295C0CE00069DC43 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57B9295C0CE00069DC43 /* Note.swift */; };
+		AE6B57BC295D73260069DC43 /* UserDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57BB295D73260069DC43 /* UserDetailsView.swift */; };
+		AE6B57BE295DD71A0069DC43 /* LoadUserDetailsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57BD295DD71A0069DC43 /* LoadUserDetailsUseCase.swift */; };
 		FC2B715C2156FF93002BD59E /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2B715B2156FF93002BD59E /* AppAppearance.swift */; };
 		FC740818216555C500FE52A5 /* UserDefaultsUsersQueriesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC740817216555C500FE52A5 /* UserDefaultsUsersQueriesStorage.swift */; };
 /* End PBXBuildFile section */
@@ -150,6 +156,10 @@
 		AE5F75C52950551C0098D4E9 /* UserDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewController.swift; sourceTree = "<group>"; };
 		AE5F75C829505BF50098D4E9 /* BackButtonEmptyTitleNavigationBarBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButtonEmptyTitleNavigationBarBehavior.swift; sourceTree = "<group>"; };
 		AE5F75CA29505C0F0098D4E9 /* BlackStyleNavigationBarBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackStyleNavigationBarBehavior.swift; sourceTree = "<group>"; };
+		AE6419F1295DDE4800093266 /* UserDetailsQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsQuery.swift; sourceTree = "<group>"; };
+		AE6419F3295DDF4400093266 /* UserDetailsRequestDTO+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDetailsRequestDTO+Mapping.swift"; sourceTree = "<group>"; };
+		AE6419FB2965BBA400093266 /* UserDetailsResponseDTO+mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDetailsResponseDTO+mapping.swift"; sourceTree = "<group>"; };
+		AE641A002967197700093266 /* RemoteImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImageView.swift; sourceTree = "<group>"; };
 		AE6B57AD2959A6360069DC43 /* UsersListDataTransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListDataTransferService.swift; sourceTree = "<group>"; };
 		AE6B57AF2959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersPageResponseDTO+Mapping.swift"; sourceTree = "<group>"; };
 		AE6B57B1295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListAvatarColourInvertedItemCell.swift; sourceTree = "<group>"; };
@@ -157,6 +167,8 @@
 		AE6B57B5295AE4150069DC43 /* UserListAvatarColourInvertedAndNoteItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListAvatarColourInvertedAndNoteItemCell.swift; sourceTree = "<group>"; };
 		AE6B57B7295AE4B30069DC43 /* UIImage+InvertedColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+InvertedColor.swift"; sourceTree = "<group>"; };
 		AE6B57B9295C0CE00069DC43 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		AE6B57BB295D73260069DC43 /* UserDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsView.swift; sourceTree = "<group>"; };
+		AE6B57BD295DD71A0069DC43 /* LoadUserDetailsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserDetailsUseCase.swift; sourceTree = "<group>"; };
 		FC2B715B2156FF93002BD59E /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
 		FC740817216555C500FE52A5 /* UserDefaultsUsersQueriesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsUsersQueriesStorage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -237,6 +249,8 @@
 				AE6B57AF2959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift */,
 				AE17697A29573CEB00A79A71 /* UsersSearchRequestDTO+Mapping.swift */,
 				AE17697C29573D8900A79A71 /* UsersSearchResponseDTO+Mapping.swift */,
+				AE6419F3295DDF4400093266 /* UserDetailsRequestDTO+Mapping.swift */,
+				AE6419FB2965BBA400093266 /* UserDetailsResponseDTO+mapping.swift */,
 			);
 			path = DataMapping;
 			sourceTree = "<group>";
@@ -331,6 +345,7 @@
 			children = (
 				AE5F75A7294B7C170098D4E9 /* User.swift */,
 				AE5F75A9294B7C430098D4E9 /* UserQuery.swift */,
+				AE6419F1295DDE4800093266 /* UserDetailsQuery.swift */,
 				AE6B57B9295C0CE00069DC43 /* Note.swift */,
 			);
 			path = Entities;
@@ -354,6 +369,7 @@
 				AE17697E2958315E00A79A71 /* ListAllUsersUseCase.swift */,
 				1F05A6CB2220A2CB001E2801 /* SearchUsersUseCase.swift */,
 				1F84DECF23006BDA00139F73 /* FetchRecentMovieQueriesUseCase.swift */,
+				AE6B57BD295DD71A0069DC43 /* LoadUserDetailsUseCase.swift */,
 				1F4102F2240BEE5800EC014A /* Protocol */,
 			);
 			path = UseCases;
@@ -376,6 +392,7 @@
 				1FEE31612218B17E00C160B9 /* Observable.swift */,
 				1F57F8D123C656F600981E09 /* AccessibilityIdentifier.swift */,
 				1FA2048F242F528E000C4B56 /* LoadingView.swift */,
+				AE641A002967197700093266 /* RemoteImageView.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -573,6 +590,7 @@
 			isa = PBXGroup;
 			children = (
 				AE5F75C52950551C0098D4E9 /* UserDetailsViewController.swift */,
+				AE6B57BB295D73260069DC43 /* UserDetailsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -677,17 +695,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE6B57BC295D73260069DC43 /* UserDetailsView.swift in Sources */,
 				AE5F75B329503ED20098D4E9 /* UserDetailsViewModel.swift in Sources */,
 				AE5F759E294AA8D30098D4E9 /* UsersListItemViewModel.swift in Sources */,
 				AE6B57BA295C0CE00069DC43 /* Note.swift in Sources */,
 				1FEED0F02023576A000F4EAA /* Alertable.swift in Sources */,
 				1F16031D2426919300C173C6 /* AppFlowCoordinator.swift in Sources */,
 				1FCBB8CE25237D4C007F23DC /* UIViewController+ActivityIndicator.swift in Sources */,
+				AE6419F4295DDF4400093266 /* UserDetailsRequestDTO+Mapping.swift in Sources */,
 				FC2B715C2156FF93002BD59E /* AppAppearance.swift in Sources */,
 				AE17697F2958315E00A79A71 /* ListAllUsersUseCase.swift in Sources */,
 				1FFF12AA243A022300937EE4 /* UsersPageResponseEntity+Mapping.swift in Sources */,
 				1F1FC48922E3693100BCBA8D /* NetworkService.swift in Sources */,
 				1FA20490242F528E000C4B56 /* LoadingView.swift in Sources */,
+				AE641A012967197700093266 /* RemoteImageView.swift in Sources */,
 				1F4102F4240BEE6A00EC014A /* UseCase.swift in Sources */,
 				1FFF12A72439FA9E00937EE4 /* CoreDataUsersResponseStorage.swift in Sources */,
 				1FFFC835221B0041007D99D2 /* DefaultUsersRepository.swift in Sources */,
@@ -696,6 +717,7 @@
 				1F77930F222C0DF2004E034C /* StoryboardInstantiable.swift in Sources */,
 				1FF53EB423688893008D6CCC /* DataTransferError+ConnectionError.swift in Sources */,
 				AE6B57B4295AE3F40069DC43 /* UserListNoteItemCell.swift in Sources */,
+				AE6419F2295DDE4800093266 /* UserDetailsQuery.swift in Sources */,
 				1F53E2B623125896008D6A05 /* UIViewController+AddChild.swift in Sources */,
 				AE5F75A4294B549A0098D4E9 /* UsersListView.swift in Sources */,
 				1F84DED023006BDA00139F73 /* FetchRecentMovieQueriesUseCase.swift in Sources */,
@@ -709,6 +731,7 @@
 				1F57F8D223C656F600981E09 /* AccessibilityIdentifier.swift in Sources */,
 				1F0CEFCF23436B67004141FA /* ConnectionError.swift in Sources */,
 				1F05A6CC2220A2CB001E2801 /* SearchUsersUseCase.swift in Sources */,
+				AE6B57BE295DD71A0069DC43 /* LoadUserDetailsUseCase.swift in Sources */,
 				AE6B57B02959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift in Sources */,
 				1FA533D7201EF2B500747E55 /* AppDIContainer.swift in Sources */,
 				1F6B521323630016002FCDE9 /* RepositoryTask.swift in Sources */,
@@ -718,6 +741,7 @@
 				AE5F75CB29505C0F0098D4E9 /* BlackStyleNavigationBarBehavior.swift in Sources */,
 				1F1FC48B22E3693100BCBA8D /* Endpoint.swift in Sources */,
 				AE5F75CC2950B2320098D4E9 /* UsersListViewController.swift in Sources */,
+				AE6419FC2965BBA400093266 /* UserDetailsResponseDTO+mapping.swift in Sources */,
 				1FFFC831221B0041007D99D2 /* DefaultUsersQueriesRepository.swift in Sources */,
 				AE5F75A8294B7C170098D4E9 /* User.swift in Sources */,
 				1FD03807239098650016D05F /* CoreDataStorage.xcdatamodeld in Sources */,
@@ -909,7 +933,7 @@
 				DEVELOPMENT_TEAM = "";
 				IMAGE_BASE_URL = "https://avatars.githubusercontent.com";
 				INFOPLIST_FILE = "$(SRCROOT)/TGHProfile/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Oleh-Kudinov.ExampleMVVM";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -930,7 +954,7 @@
 				DEVELOPMENT_TEAM = "";
 				IMAGE_BASE_URL = "https://avatars.githubusercontent.com";
 				INFOPLIST_FILE = "$(SRCROOT)/TGHProfile/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Oleh-Kudinov.ExampleMVVM";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -13,6 +13,10 @@ struct User: Equatable, Identifiable {
     let avatar_url: String?
     let type: String?
     let note: Note?
+    let following: Int?
+    let followers: Int?
+    let company: String?
+    let blog: String?
 }
 
 struct UsersPage: Equatable {

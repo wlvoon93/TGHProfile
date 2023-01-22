@@ -10,7 +10,8 @@ import Foundation
 struct UsersListViewModelActions {
     /// Note: if you would need to edit user inside Details screen and update this Users List screen with updated user then you would need this closure:
     /// showUserDetails: (User, @escaping (_ updated: User) -> Void) -> Void
-    let showUserDetails: (User) -> Void
+//    let showUserDetails: (User) -> Void
+    let showUserDetails: (String) -> Void
 }
 
 enum UsersListViewModelLoading {
@@ -167,7 +168,7 @@ extension DefaultUsersListViewModel {
     }
 
     func didSelectItem(at index: Int) {
-        actions?.showUserDetails(pages.users[index])
+        actions?.showUserDetails(pages.users[index].login ?? "")
     }
 }
 

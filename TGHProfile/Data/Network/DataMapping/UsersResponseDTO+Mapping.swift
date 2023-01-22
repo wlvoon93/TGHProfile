@@ -22,7 +22,14 @@ struct UsersResponseDTO: Decodable {
 
 extension UsersResponseDTO {
     func toDomain() -> User {
-        return .init(login: login, id: id, avatar_url: avatar_url, type: type, note: nil)
+        return .init(login: login,
+                     id: id,
+                     avatar_url: avatar_url,
+                     type: type,
+                     note: nil, following: nil,
+                     followers: nil,
+                     company: nil,
+                     blog: nil)
     }
 }
 

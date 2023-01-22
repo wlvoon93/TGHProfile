@@ -9,9 +9,6 @@ import UIKit
 
 final class UserDetailsViewController: UIViewController, StoryboardInstantiable {
 
-    @IBOutlet private var profileImageView: UIImageView!
-    @IBOutlet private var overviewTextView: UITextView!
-
     // MARK: - Lifecycle
 
     private var viewModel: UserDetailsViewModel!
@@ -29,20 +26,28 @@ final class UserDetailsViewController: UIViewController, StoryboardInstantiable 
     }
 
     private func bind(to viewModel: UserDetailsViewModel) {
-        viewModel.profileImage.observe(on: self) { [weak self] in self?.profileImageView.image = $0.flatMap(UIImage.init) }
+//        viewModel.error.observe(on: self) { [weak self] in self?.showError($0) }
+//        viewModel.id.observe(on: self) { [weak self] in self?.showError($0) }
+//        viewModel.avatarUrl.observe(on: self) { [weak self] in self?.showError($0) }
+//        viewModel.type.observe(on: self) { [weak self] in self?.showError($0) }
+//        viewModel.note.observe(on: self) { [weak self] in self?.showError($0) }
+    }
+    
+    private func showId() {
+//        rootv
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        viewModel.updateProfileImage(width: Int(profileImageView.imageSizeAfterAspectFit.scaledSize.width))
+//        viewModel.updateProfileImage(width: Int(profileImageView.imageSizeAfterAspectFit.scaledSize.width))
     }
 
     // MARK: - Private
 
     private func setupViews() {
-        title = viewModel.title
-        overviewTextView.text = viewModel.overview
-        profileImageView.isHidden = viewModel.isProfileImageHidden
+//        title = viewModel.title
+//        overviewTextView.text = viewModel.overview
+//        profileImageView.isHidden = viewModel.isProfileImageHidden
         view.accessibilityIdentifier = AccessibilityIdentifier.userDetailsView
     }
 }

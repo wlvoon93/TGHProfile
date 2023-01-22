@@ -9,6 +9,8 @@ import Foundation
 
 protocol UsersResponseStorage {
     func getResponse(for request: UsersRequestDTO, completion: @escaping (Result<UsersPageResponseDTO?, CoreDataStorageError>) -> Void)
+    func getUserDetailsResponse(for request: UserDetailsRequestDTO, completion: @escaping (Result<UsersPageResponseDTO.UserDTO?, CoreDataStorageError>) -> Void)
     func getSearchResponse(for request: UsersSearchRequestDTO, completion: @escaping (Result<UsersPageResponseDTO?, CoreDataStorageError>) -> Void)
     func save(response: UsersPageResponseDTO, for requestDto: UsersRequestDTO)
+    func updateUser(response responseDto: UserDetailsResponseDTO, for requestDto: UserDetailsRequestDTO)
 }

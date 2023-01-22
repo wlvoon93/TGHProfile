@@ -43,7 +43,7 @@ extension DefaultUsersRepository: UsersRepository {
                     // convert array(responseDTOs) into UserPageDTO
                     if let responseDTOsCasted = responseDTOs as? [UsersResponseDTO] {
                         let users = responseDTOsCasted.map {
-                            UsersPageResponseDTO.UserDTO.init(login: $0.login, id: $0.id, avatar_url: $0.avatar_url, type: $0.type, note: nil) }
+                            UsersPageResponseDTO.UserDTO.init(login: $0.login, id: $0.id, avatar_url: $0.avatar_url, type: $0.type, note: nil, following: nil, followers: nil, company: nil, blog: nil) }
                         let usersPageResponseDTO = UsersPageResponseDTO.init(since: requestDTO.since, per_page: requestDTO.per_page, users: users)
                         self.cache.save(response: usersPageResponseDTO, for:requestDTO)
                         completion(.success(usersPageResponseDTO.toDomain()))
@@ -77,13 +77,40 @@ extension DefaultUsersRepository: UsersRepository {
                 // use, UsersResponse DTO
                 // convert array(responseDTOs) into UserPageDTO
                 if let responseDTOsCasted = responseDTOs as? [UsersResponseDTO] {
-                    let users = responseDTOsCasted.map { UsersPageResponseDTO.UserDTO.init(login: $0.login, id: $0.id, avatar_url: $0.avatar_url, type: $0.type, note: nil) }
+                    let users = responseDTOsCasted.map { UsersPageResponseDTO.UserDTO.init(login: $0.login, id: $0.id, avatar_url: $0.avatar_url, type: $0.type, note: nil, following: nil, followers: nil, company: nil, blog: nil) }
                     let usersPageResponseDTO = UsersPageResponseDTO.init(since: 0, per_page: users.count, users: users)
                     completion(.success(usersPageResponseDTO.toDomain()))
                 }
             case .failure(let error):
                 completion(.failure(error))
             }
+        }
+        return task
+    }
+    
+    func fetchUserDetails(query: UserDetailsQuery,
+                          completion: @escaping (Result<User, Error>) -> Void) -> Cancellable? {
+        let requestDTO = UserDetailsRequestDTO(username: query.username)
+        let task = RepositoryTask()
+
+        cache.getUserDetailsResponse(for: requestDTO) { result in
+
+            if case let .success(responseDTO?) = result {
+                printIfDebug("User \(String(describing: responseDTO.login)) saved.")
+            }
+            guard !task.isCancelled else { return }
+
+            let endpoint = APIEndpoints.getUserDetails(with: requestDTO)
+            task.networkTask = self.dataTransferService.request(with: endpoint, completion: { result in
+                switch result {
+                case .success(let responseDTO):
+                    self.cache.updateUser(response: responseDTO, for: requestDTO)
+                    completion(.success(responseDTO.toDomain()))
+                    
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            })
         }
         return task
     }
