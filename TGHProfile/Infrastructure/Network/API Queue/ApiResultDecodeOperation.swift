@@ -1,5 +1,5 @@
 //
-//  UserListDecodeOperation.swift
+//  ApiResultDecodeOperation.swift
 //  TGHProfile
 //
 //  Created by T0366-ADE-MB-1 on 18/01/2023.

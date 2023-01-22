@@ -24,9 +24,6 @@ public protocol DataTransferService {
     @discardableResult
     func request<T: Decodable, E: ResponseRequestable>(with endpoint: E,
                                                        completion: @escaping CompletionHandler<T>) -> NetworkCancellable? where E.Response == T
-    @discardableResult
-    func request<E: ResponseRequestable>(with endpoint: E,
-                                         completion: @escaping CompletionHandler<Void>) -> NetworkCancellable? where E.Response == Void
 }
 
 public protocol DataTransferErrorResolver {
@@ -62,8 +59,8 @@ extension DefaultDataTransferService: DataTransferService {
     public func request<T: Decodable, E: ResponseRequestable>(with endpoint: E,
                                                               completion: @escaping CompletionHandler<T>) -> NetworkCancellable? where E.Response == T {
         
-        let fetch = ApiRetrievalOperation(url: endpoint, httpManager: self.networkService)
-        let parse = ApiResultDecodeOperation<T>()
+        let fetch = ApiRequestRetrievalOperation(url: endpoint, httpManager: self.networkService)
+        let parse = ApiRequestResultDecodeOperation<T>()
         
         let adapter = BlockOperation() { [unowned fetch, unowned parse, weak self] in
             guard let self = self else { return }
@@ -77,7 +74,9 @@ extension DefaultDataTransferService: DataTransferService {
         parse.addDependency(adapter)
         
         parse.completionHandler = {data in
-            completion(data)
+            DispatchQueue.main.async {
+                completion(data)
+            }
         }
         queueManager.addOperations([fetch, parse, adapter])
         
@@ -87,35 +86,32 @@ extension DefaultDataTransferService: DataTransferService {
     public func requestAll<T: Decodable, E: ResponseRequestable>(with endpoint: E,
                                                               completion: @escaping CompletionHandler<[T]>) -> NetworkCancellable? where E.Response == T {
 
-        return self.networkService.request(endpoint: endpoint) { result in
-            switch result {
-            case .success(let data):
-                
-                let result: Result<[T], DataTransferError> = self.decodeList(data: data, decoder: endpoint.responseDecoder)
-                DispatchQueue.main.async { return completion(result) }
-            case .failure(let error):
-                self.errorLogger.log(error: error)
-                let error = self.resolve(networkError: error)
-                DispatchQueue.main.async { return completion(.failure(error)) }
+        let fetch = ApiRequestRetrievalOperation(url: endpoint, httpManager: self.networkService)
+        let parse = ApiRequestResultDecodeOperation<[T]>()
+        
+        let adapter = BlockOperation() { [unowned fetch, unowned parse, weak self] in
+            guard let self = self else { return }
+            parse.dataFetched = fetch.dataFetched
+            parse.error = fetch.error
+            parse.decoderInstance = self
+            parse.decoder = endpoint.responseDecoder
+        }
+        
+        adapter.addDependency(fetch)
+        parse.addDependency(adapter)
+        
+        parse.completionHandler = {data in
+            DispatchQueue.main.async {
+                completion(data)
             }
         }
-    }
-
-    public func request<E>(with endpoint: E, completion: @escaping CompletionHandler<Void>) -> NetworkCancellable? where E : ResponseRequestable, E.Response == Void {
-        return self.networkService.request(endpoint: endpoint) { result in
-            switch result {
-            case .success:
-                DispatchQueue.main.async { return completion(.success(())) }
-            case .failure(let error):
-                self.errorLogger.log(error: error)
-                let error = self.resolve(networkError: error)
-                DispatchQueue.main.async { return completion(.failure(error)) }
-            }
-        }
+        queueManager.addOperations([fetch, parse, adapter])
+        
+        return fetch.requestCancellable
     }
 
     // MARK: - Private
-    public func decode<T: Decodable>(data: Data?, decoder: ResponseDecoder) -> Result<T, DataTransferError> {
+    func decode<T: Decodable>(data: Data?, decoder: ResponseDecoder) -> Result<T, DataTransferError> {
         do {
             print(String(describing: T.self))
             guard let data = data else { return .failure(.noResponse) }

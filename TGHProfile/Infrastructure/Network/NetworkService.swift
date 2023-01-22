@@ -25,6 +25,7 @@ public protocol NetworkService {
     typealias CompletionHandler = (Result<Data?, NetworkError>) -> Void
     
     func request(endpoint: Requestable, completion: @escaping CompletionHandler) -> NetworkCancellable?
+    
 }
 
 public protocol NetworkSessionManager {

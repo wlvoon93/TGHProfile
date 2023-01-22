@@ -739,8 +739,8 @@
 			isa = PBXGroup;
 			children = (
 				AE8B691629784E0B00C49CD9 /* QueueManager.swift */,
-				AE8B691829784E5300C49CD9 /* ApiResultDecodeOperation.swift */,
 				AE8B691A29784EA500C49CD9 /* NetworkOperation.swift */,
+				AE8B691829784E5300C49CD9 /* ApiResultDecodeOperation.swift */,
 				AE8B691C29784ED300C49CD9 /* ApiRetrievalOperation.swift */,
 			);
 			path = "API Queue";

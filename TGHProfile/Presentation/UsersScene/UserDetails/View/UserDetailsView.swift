@@ -56,9 +56,7 @@ struct UserDetailsView: View {
                 HStack() {
                     Button("Save") {
                         self.viewModelWrapper.viewModel?.didTapSave(noteString: noteString.description, completion: {
-                            DispatchQueue.main.async {
-                                self.presentationMode.wrappedValue.dismiss()
-                            }
+                            self.presentationMode.wrappedValue.dismiss()
                         })
                     }.padding(.bottom, 10)
                     .frame(maxWidth: .infinity, alignment: .center)

@@ -96,9 +96,7 @@ final class UsersListItemCell: UITableViewCell, BaseItemCell {
             imageLoadTask = profileImagesRepository?.fetchImage(for: userId,  imagePath: profileImagePath) { [weak self] profileImage in
                 guard let self = self else { return }
                 if let imageData = profileImage.image, let image = UIImage(data: imageData) {
-                    DispatchQueue.main.async {
-                        self.profileImageView.image = image
-                    }
+                    self.profileImageView.image = image
                 }
             } completion: { [weak self] result in
                 guard let self = self else { return }
