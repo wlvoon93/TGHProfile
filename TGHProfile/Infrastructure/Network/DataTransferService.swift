@@ -59,8 +59,8 @@ extension DefaultDataTransferService: DataTransferService {
     public func request<T: Decodable, E: ResponseRequestable>(with endpoint: E,
                                                               completion: @escaping CompletionHandler<T>) -> NetworkCancellable? where E.Response == T {
         
-        let fetch = ApiRequestRetrievalOperation(url: endpoint, httpManager: self.networkService)
-        let parse = ApiRequestResultDecodeOperation<T>()
+        let fetch = ApiRetrievalOperation(url: endpoint, httpManager: self.networkService)
+        let parse = ApiResultDecodeOperation<T>()
         
         let adapter = BlockOperation() { [unowned fetch, unowned parse, weak self] in
             guard let self = self else { return }
@@ -86,8 +86,8 @@ extension DefaultDataTransferService: DataTransferService {
     public func requestAll<T: Decodable, E: ResponseRequestable>(with endpoint: E,
                                                               completion: @escaping CompletionHandler<[T]>) -> NetworkCancellable? where E.Response == T {
 
-        let fetch = ApiRequestRetrievalOperation(url: endpoint, httpManager: self.networkService)
-        let parse = ApiRequestResultDecodeOperation<[T]>()
+        let fetch = ApiRetrievalOperation(url: endpoint, httpManager: self.networkService)
+        let parse = ApiResultDecodeOperation<[T]>()
         
         let adapter = BlockOperation() { [unowned fetch, unowned parse, weak self] in
             guard let self = self else { return }
