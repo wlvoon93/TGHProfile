@@ -128,11 +128,9 @@ class UsersListViewModelTests: XCTestCase {
         listUsersUseCaseMock.expectation = self.expectation(description: "contains only first page")
         listUsersUseCaseMock.page = UsersPage(since: 0, per_page: 3, users: usersPages[0].users)
         let searchUsersUseCaseMock = SearchUsersUseCaseMock()
-//        searchUsersUseCaseMock.expectation = self.expectation(description: "not searching user")
         searchUsersUseCaseMock.page = UsersPage(since: 0, per_page: 3, users: [
             User.stub(login: "Albert Liew", id: 0, avatar_url: "https://avatars.githubusercontent.com/u/25", type: "normal", note: Note(note: "left a note", userId: 0))])
         let loadUserNoteUseCaseMock = LoadUserNoteUseCaseMock()
-//        loadUserNoteUseCaseMock.expectation = self.expectation(description: "this is not executed")
         loadUserNoteUseCaseMock.note = Note.stub(note: "left a note", userId: 0)
         let loadUsersNoteUseCaseMock = LoadUsersNoteUseCaseMock()
         loadUsersNoteUseCaseMock.expectation = self.expectation(description: "load notes for users")
@@ -149,7 +147,6 @@ class UsersListViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
         XCTAssertEqual(viewModel.pages.count, 1) // page start with 0
         XCTAssertEqual(viewModel.items.value.count, 3)
-//        XCTAssertTrue(viewModel.hasMorePages)
     }
     
     func test_whenListUsersUseCaseRetrievesFirstAndSecondPage_thenViewModelContainsTwoPages() {

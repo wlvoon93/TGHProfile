@@ -14,7 +14,6 @@ class UsersDetailsViewModelTests: XCTestCase {
         case someError
     }
     
-    // since and per page might be wrong
     let userDetails: User = User.stub(login: "Albert Liew", id: 0, avatar_url: "https://avatars.githubusercontent.com/u/25", type: "normal", note: Note(note: "left a note", userId: 0))
     
     let note1: Note = Note.stub(note: "left a note", userId: 0)
@@ -80,13 +79,11 @@ class UsersDetailsViewModelTests: XCTestCase {
         
         let viewModel = DefaultUserDetailsViewModel(username: "Albert Liew", note: "left a note", loadUserDetailsUseCase: loadUserDetailsUseCaseMock, saveUserNoteUseCase: saveUserNoteUseCaseMock, loadProfileImageUseCase: loadProfileImageUseCaseMock, didSaveNote: nil)
         // when
-        // the current did search might not be accurate
         viewModel.load()
-        
-        
         
         // then
         waitForExpectations(timeout: 1, handler: nil)
+        XCTAssertEqual(viewModel.note.value, note1.note)
     }
     
 }
