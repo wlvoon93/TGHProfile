@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 @available(iOS 13.0, *)
 struct UserDetailsView: View {
@@ -92,18 +93,17 @@ final class UserDetailsViewModelWrapper: ObservableObject {
     @Published var followers: Int = 0
     @Published var profileImageData: Data? = nil
     @Published var note: String = ""
+    var subsciptions = Set<AnyCancellable>()
     
     init(viewModel: UserDetailsViewModel?) {
         self.viewModel = viewModel
-        viewModel?.username.observe(on: self) { [weak self] value in self?.username = value }
-        viewModel?.company.observe(on: self) { [weak self] value in self?.company = value }
-        viewModel?.blog.observe(on: self) { [weak self] value in self?.blog = value }
-        viewModel?.following.observe(on: self) { [weak self] value in self?.following = value }
-        viewModel?.followers.observe(on: self) { [weak self] value in self?.followers = value }
-        viewModel?.profileImageData.observe(on: self) { [weak self] value in self?.profileImageData = value }
-        viewModel?.note.observe(on: self) { [weak self] value in self?.note = value
-            
-        }
+        viewModel?.username.sink { [weak self] value in self?.username = value }.store(in: &subsciptions)
+        viewModel?.company.sink { [weak self] value in self?.company = value }.store(in: &subsciptions)
+        viewModel?.blog.sink { [weak self] value in self?.blog = value }.store(in: &subsciptions)
+        viewModel?.following.sink { [weak self] value in self?.following = value }.store(in: &subsciptions)
+        viewModel?.followers.sink { [weak self] value in self?.followers = value }.store(in: &subsciptions)
+        viewModel?.profileImageData.sink { [weak self] value in self?.profileImageData = value }.store(in: &subsciptions)
+        viewModel?.note.sink { [weak self] value in self?.note = value }.store(in: &subsciptions)
     }
 }
 

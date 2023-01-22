@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 struct UsersListViewModelActions {
     let showUserDetails: (String, String, @escaping (_ didSelect: Note) -> Void) -> Void
@@ -33,12 +34,12 @@ protocol UsersListViewModelInput {
 }
 
 protocol UsersListViewModelOutput {
-    var items: Observable<[BaseItemViewModel]> { get } /// Also we can calculate view model items on demand:  https://github.com/kudoleh/iOS-Clean-Architecture-MVVM/pull/10/files
-    var searchItems: Observable<[BaseItemViewModel]> { get }
-    var tableMode: Observable<TableMode> { get }
-    var loading: Observable<UsersListViewModelLoading?> { get }
-    var query: Observable<String> { get }
-    var error: Observable<String> { get }
+    var items: CurrentValueSubject<[BaseItemViewModel], Never> { get } /// Also we can calculate view model items on demand:  https://github.com/kudoleh/iOS-Clean-Architecture-MVVM/pull/10/files
+    var searchItems: CurrentValueSubject<[BaseItemViewModel], Never> { get }
+    var tableMode: CurrentValueSubject<TableMode, Never> { get }
+    var loading: CurrentValueSubject<UsersListViewModelLoading?, Never> { get }
+    var query: CurrentValueSubject<String, Never> { get }
+    var error: CurrentValueSubject<String, Never> { get }
     var isEmpty: Bool { get }
     var isSearchEmpty: Bool { get }
     var screenTitle: String { get }
@@ -71,12 +72,12 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
     // MARK: - OUTPUT
 
-    let items: Observable<[BaseItemViewModel]> = Observable([])
-    let searchItems: Observable<[BaseItemViewModel]> = Observable([])
-    let tableMode: Observable<TableMode> = Observable(.listAll)
-    let loading: Observable<UsersListViewModelLoading?> = Observable(.none)
-    let query: Observable<String> = Observable("")
-    let error: Observable<String> = Observable("")
+    let items = CurrentValueSubject<[BaseItemViewModel], Never>([])
+    let searchItems = CurrentValueSubject<[BaseItemViewModel], Never>([])
+    let tableMode = CurrentValueSubject<TableMode, Never>(.listAll)
+    let loading = CurrentValueSubject<UsersListViewModelLoading?, Never>(.none)
+    let query = CurrentValueSubject<String, Never>("")
+    let error = CurrentValueSubject<String, Never>("")
     var isEmpty: Bool { return items.value.isEmpty }
     var isSearchEmpty: Bool { return searchItems.value.isEmpty }
     let screenTitle = NSLocalizedString("Users", comment: "")
@@ -269,8 +270,8 @@ final class DefaultUsersListViewModel: UsersListViewModel {
         }
         self.loading.value = .none
     }
-    // username and note (see Profile section) fields should be used when
-    // searching; precise match as well as contains should be used.
+    
+    
     private func searchUser(userQuery: UserQuery, loading: UsersListViewModelLoading) {
         self.loading.value = loading
         query.value = userQuery.query
@@ -331,7 +332,7 @@ extension DefaultUsersListViewModel {
         actions?.showUserDetails(self.items.value[index].user.login ?? "", self.items.value[index].user.note?.note ?? "") { note in
             let isFourthItem = (self.items.value.count) % 4 == 3 && index != 0
             if let noteString = note.note, noteString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-                // search and update using note user id
+                
                 if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
                     self.searchItems.value[searchItemIndex].user.note = note
                     self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user) : UserListNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user)
@@ -361,7 +362,7 @@ extension DefaultUsersListViewModel {
         actions?.showUserDetails(self.searchItems.value[index].user.login ?? "", self.searchItems.value[index].user.note?.note ?? "") { note in
             let isFourthItem = (self.searchItems.value.count) % 4 == 3 && index != 0
             if let noteString = note.note, noteString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-                // search and update using note user id
+                
                 if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
                     self.searchItems.value[searchItemIndex].user.note = note
                     self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user) : UserListNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user)

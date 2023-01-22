@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Combine
 
 typealias UserDetailsViewModelDidSelectAction = (User) -> Void
 typealias UserDetailsViewModelDidSaveNoteAction = (Note) -> Void
@@ -17,31 +18,31 @@ protocol UserDetailsViewModelInput {
 }
 
 protocol UserDetailsViewModelOutput {
-    var username: Observable<String> { get }
-    var profileImageUrl: Observable<String?> { get }
-    var profileImageData: Observable<Data?> { get }
-    var followers: Observable<Int> { get }
-    var following: Observable<Int> { get }
-    var company: Observable<String> { get }
-    var blog: Observable<String> { get }
-    var note: Observable<String> { get }
-    var error: Observable<String> { get }
+    var username: CurrentValueSubject<String, Never> { get }
+    var profileImageUrl: CurrentValueSubject<String?, Never> { get }
+    var profileImageData: CurrentValueSubject<Data?, Never> { get }
+    var followers: CurrentValueSubject<Int, Never> { get }
+    var following: CurrentValueSubject<Int, Never> { get }
+    var company: CurrentValueSubject<String, Never> { get }
+    var blog: CurrentValueSubject<String, Never> { get }
+    var note: CurrentValueSubject<String, Never> { get }
+    var error: CurrentValueSubject<String, Never> { get }
 }
 
 protocol UserDetailsViewModel: UserDetailsViewModelInput, UserDetailsViewModelOutput { }
 
 final class DefaultUserDetailsViewModel: UserDetailsViewModel {
     
-    let userId: Observable<Int?> = Observable(nil)
-    let username: Observable<String> = Observable("")
-    let profileImageUrl: Observable<String?> = Observable(nil)
-    let profileImageData: Observable<Data?> = Observable(nil)
-    let followers: Observable<Int> = Observable(0)
-    let following: Observable<Int> = Observable(0)
-    let company: Observable<String> = Observable("")
-    let blog: Observable<String> = Observable("")
-    let type: Observable<String> = Observable("")
-    let note: Observable<String> = Observable("")
+    let userId = CurrentValueSubject<Int?, Never>(nil)
+    let username = CurrentValueSubject<String, Never>("")
+    let profileImageUrl = CurrentValueSubject<String?, Never>(nil)
+    let profileImageData = CurrentValueSubject<Data?, Never>(nil)
+    let followers = CurrentValueSubject<Int, Never>(0)
+    let following = CurrentValueSubject<Int, Never>(0)
+    let company = CurrentValueSubject<String, Never>("")
+    let blog = CurrentValueSubject<String, Never>("")
+    let type = CurrentValueSubject<String, Never>("")
+    let note = CurrentValueSubject<String, Never>("")
     
     private let loadUserDetailsUseCase: LoadUserDetailsUseCase
     private let saveUserNoteUseCase: SaveUserNoteUseCase
@@ -52,7 +53,7 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
     private var userDetailsLoadTask: Cancellable? { willSet { userDetailsLoadTask?.cancel() } }
     private var userNoteSaveTask: Cancellable? { willSet { userNoteSaveTask?.cancel() } }
     private var imageLoadTask: Cancellable? { willSet { imageLoadTask?.cancel() } }
-    let error: Observable<String> = Observable("")
+    let error = CurrentValueSubject<String, Never>("")
 
     // MARK: - OUTPUT
     

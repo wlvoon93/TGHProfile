@@ -35,7 +35,6 @@
 		1FC5B7D2242635CC0086FA8C /* CGSize+ScaledSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC5B7D1242635CB0086FA8C /* CGSize+ScaledSize.swift */; };
 		1FCBB8CE25237D4C007F23DC /* UIViewController+ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FCBB8CD25237D4C007F23DC /* UIViewController+ActivityIndicator.swift */; };
 		1FD03807239098650016D05F /* CoreDataStorage.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1FD03804239098650016D05F /* CoreDataStorage.xcdatamodeld */; };
-		1FEE31622218B17E00C160B9 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE31612218B17E00C160B9 /* Observable.swift */; };
 		1FEED0F02023576A000F4EAA /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEED0EF2023576A000F4EAA /* Alertable.swift */; };
 		1FF082B3239438DC00876A22 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1FF082B5239438DC00876A22 /* Localizable.strings */; };
 		1FF53EB423688893008D6CCC /* DataTransferError+ConnectionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF53EB323688893008D6CCC /* DataTransferError+ConnectionError.swift */; };
@@ -158,8 +157,6 @@
 		1FC5B7D1242635CB0086FA8C /* CGSize+ScaledSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+ScaledSize.swift"; sourceTree = "<group>"; };
 		1FCBB8CD25237D4C007F23DC /* UIViewController+ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+ActivityIndicator.swift"; sourceTree = "<group>"; };
 		1FD03805239098650016D05F /* CoreDataStorage 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "CoreDataStorage 2.xcdatamodel"; sourceTree = "<group>"; };
-		1FD03806239098650016D05F /* CoreDataStorage.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataStorage.xcdatamodel; sourceTree = "<group>"; };
-		1FEE31612218B17E00C160B9 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		1FEED0EF2023576A000F4EAA /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
 		1FF082B2239438D900876A22 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		1FF082B4239438DC00876A22 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -446,7 +443,6 @@
 			children = (
 				1FD2696524261A24005236FB /* Extensions */,
 				1FEED0EE2023575C000F4EAA /* Protocols */,
-				1FEE31612218B17E00C160B9 /* Observable.swift */,
 				1F57F8D123C656F600981E09 /* AccessibilityIdentifier.swift */,
 				1FA2048F242F528E000C4B56 /* LoadingView.swift */,
 				AE9187C0296AAA9A004A102C /* VoidResult.swift */,
@@ -927,7 +923,6 @@
 				AE9187C1296AAA9A004A102C /* VoidResult.swift in Sources */,
 				AE688931296C3ED0007994FF /* UserListAvatarColourInvertedItemViewModel.swift in Sources */,
 				1F1FC48A22E3693100BCBA8D /* DataTransferService.swift in Sources */,
-				1FEE31622218B17E00C160B9 /* Observable.swift in Sources */,
 				1FFFC836221B0041007D99D2 /* UsersRepository.swift in Sources */,
 				AE688933296C4069007994FF /* UserListNoteItemViewModel.swift in Sources */,
 				AE6B57B6295AE4150069DC43 /* UserListAvatarColourInvertedAndNoteItemCell.swift in Sources */,

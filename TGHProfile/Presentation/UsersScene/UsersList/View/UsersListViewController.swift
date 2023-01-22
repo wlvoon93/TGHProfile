@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class UsersListViewController: UIViewController, StoryboardInstantiable, Alertable {
     
@@ -20,6 +21,8 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     private var usersTableViewController: UsersListTableViewController?
     private var searchUserTableViewController: SearchUserListTableViewController?
     private var searchController = UISearchController(searchResultsController: nil)
+    
+    var subsciptions = Set<AnyCancellable>()
 
     // MARK: - Lifecycle
 
@@ -40,15 +43,15 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     }
 
     private func bind(to viewModel: UsersListViewModel) {
-        viewModel.items.observe(on: self) { [weak self] _ in self?.updateItems() }
-        viewModel.searchItems.observe(on: self) { [weak self] _ in self?.updateSearchItems() }
-        viewModel.loading.observe(on: self) { [weak self] in self?.updateLoading($0) }
-        viewModel.query.observe(on: self) { [weak self] in self?.updateSearchQuery($0) }
-        viewModel.error.observe(on: self) { [weak self] in self?.showError($0) }
-        viewModel.tableMode.observe(on: self) { [weak self] in
+        viewModel.items.sink {  [weak self] _ in self?.updateItems() }.store(in: &subsciptions)
+        viewModel.searchItems.sink { [weak self] _ in self?.updateSearchItems() }.store(in: &subsciptions)
+        viewModel.loading.sink { [weak self] in self?.updateLoading($0) }.store(in: &subsciptions)
+        viewModel.query.sink { [weak self] in self?.updateSearchQuery($0) }.store(in: &subsciptions)
+        viewModel.error.sink { [weak self] in self?.showError($0) }.store(in: &subsciptions)
+        viewModel.tableMode.sink { [weak self] in
             self?.displayTable($0)
             self?.title = ($0 == TableMode.listAll) ? "Users" : "Search User"
-        }
+        }.store(in: &subsciptions)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
