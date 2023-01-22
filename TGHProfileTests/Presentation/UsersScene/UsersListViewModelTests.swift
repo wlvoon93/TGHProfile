@@ -143,7 +143,7 @@ class UsersListViewModelTests: XCTestCase {
                                                   loadUsersNoteUseCase: loadUsersNoteUseCaseMock)
         // when
         // the current did search might not be accurate
-        viewModel.didloadFirstPage()
+        viewModel.didLoadFirstPage()
         
         // then
         waitForExpectations(timeout: 1, handler: nil)
@@ -171,7 +171,7 @@ class UsersListViewModelTests: XCTestCase {
                                                   loadUsersNoteUseCase: loadUsersNoteUseCaseMock)
         
         // when
-        viewModel.didloadFirstPage()
+        viewModel.didLoadFirstPage()
         waitForExpectations(timeout: 1, handler: nil)
         
         listUsersUseCaseMock.expectation = self.expectation(description: "load second page users")

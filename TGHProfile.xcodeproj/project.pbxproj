@@ -100,7 +100,7 @@
 		AE8B691929784E5300C49CD9 /* ApiResultDecodeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8B691829784E5300C49CD9 /* ApiResultDecodeOperation.swift */; };
 		AE8B691B29784EA500C49CD9 /* NetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8B691A29784EA500C49CD9 /* NetworkOperation.swift */; };
 		AE8B691D29784ED300C49CD9 /* ApiRetrievalOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8B691C29784ED300C49CD9 /* ApiRetrievalOperation.swift */; };
-		AE8B6942297AF64A00C49CD9 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8B6941297AF64A00C49CD9 /* Reachability.swift */; };
+		AE8B6944297BD49200C49CD9 /* NetworkConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8B6943297BD49200C49CD9 /* NetworkConnectivityManager.swift */; };
 		AE9187AC296954A9004A102C /* SaveUserNoteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187AB296954A9004A102C /* SaveUserNoteUseCase.swift */; };
 		AE9187B2296A77CA004A102C /* UserNoteResponseStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187B1296A77CA004A102C /* UserNoteResponseStorage.swift */; };
 		AE9187B4296A77DF004A102C /* CoreDataUserNoteResponseStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187B3296A77DF004A102C /* CoreDataUserNoteResponseStorage.swift */; };
@@ -226,7 +226,7 @@
 		AE8B691829784E5300C49CD9 /* ApiResultDecodeOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiResultDecodeOperation.swift; sourceTree = "<group>"; };
 		AE8B691A29784EA500C49CD9 /* NetworkOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkOperation.swift; sourceTree = "<group>"; };
 		AE8B691C29784ED300C49CD9 /* ApiRetrievalOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiRetrievalOperation.swift; sourceTree = "<group>"; };
-		AE8B6941297AF64A00C49CD9 /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		AE8B6943297BD49200C49CD9 /* NetworkConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConnectivityManager.swift; sourceTree = "<group>"; };
 		AE9187AB296954A9004A102C /* SaveUserNoteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveUserNoteUseCase.swift; sourceTree = "<group>"; };
 		AE9187B1296A77CA004A102C /* UserNoteResponseStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNoteResponseStorage.swift; sourceTree = "<group>"; };
 		AE9187B3296A77DF004A102C /* CoreDataUserNoteResponseStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataUserNoteResponseStorage.swift; sourceTree = "<group>"; };
@@ -269,6 +269,7 @@
 				1F1FC48522E3693100BCBA8D /* NetworkService.swift */,
 				1F1FC48722E3693100BCBA8D /* Endpoint.swift */,
 				1F1FC48822E3693100BCBA8D /* NetworkConfig.swift */,
+				AE8B6943297BD49200C49CD9 /* NetworkConnectivityManager.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -436,7 +437,6 @@
 			children = (
 				1FA533E1201EF5F700747E55 /* APIEndpoints.swift */,
 				1F8D092D2301C2F20061FB6F /* DataMapping */,
-				AE8B6940297AF62C00C49CD9 /* Utils */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -749,14 +749,6 @@
 			path = "API Queue";
 			sourceTree = "<group>";
 		};
-		AE8B6940297AF62C00C49CD9 /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				AE8B6941297AF64A00C49CD9 /* Reachability.swift */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
 		AE9187B0296A77A9004A102C /* UserNoteResponseStorage */ = {
 			isa = PBXGroup;
 			children = (
@@ -919,6 +911,7 @@
 				AE9187C3296AFCD1004A102C /* LoadUserNoteUseCase.swift in Sources */,
 				1FFFC835221B0041007D99D2 /* DefaultUsersRepository.swift in Sources */,
 				1FA533E2201EF5F700747E55 /* APIEndpoints.swift in Sources */,
+				AE8B6944297BD49200C49CD9 /* NetworkConnectivityManager.swift in Sources */,
 				AE17697B29573CEB00A79A71 /* UsersSearchRequestDTO+Mapping.swift in Sources */,
 				AE8B691729784E0B00C49CD9 /* QueueManager.swift in Sources */,
 				1F77930F222C0DF2004E034C /* StoryboardInstantiable.swift in Sources */,
@@ -928,7 +921,6 @@
 				AE6419F2295DDE4800093266 /* UserDetailsQuery.swift in Sources */,
 				1F53E2B623125896008D6A05 /* UIViewController+AddChild.swift in Sources */,
 				AE5F75A4294B549A0098D4E9 /* UsersListView.swift in Sources */,
-				AE8B6942297AF64A00C49CD9 /* Reachability.swift in Sources */,
 				AE688939296C42CF007994FF /* BaseItemCell.swift in Sources */,
 				1FFF12A42439F2E700937EE4 /* UsersResponseStorage.swift in Sources */,
 				1F2AB951242789B80010DEEE /* UsersResponseDTO+Mapping.swift in Sources */,

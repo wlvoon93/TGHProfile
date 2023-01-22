@@ -30,6 +30,8 @@ protocol UsersListViewModelInput {
     func didCancelSearch()
     func didSelectItem(at index: Int)
     func didSelectSearchItem(at index: Int)
+    func didLoadFirstPage()
+    func handleReachabilityNoInternet()
     func resetSearchPages()
 }
 
@@ -305,6 +307,10 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 // MARK: - INPUT. View event methods
 
 extension DefaultUsersListViewModel {
+    
+    func handleReachabilityNoInternet() {
+        self.error.value = NSLocalizedString("No internet connection", comment: "")
+    }
 
     func viewDidLoad() {
         loadFirstPage()
@@ -320,7 +326,7 @@ extension DefaultUsersListViewModel {
         searchUser(userQuery: .init(query: query), loading: .fullScreen)
     }
     
-    func didloadFirstPage() {
+    func didLoadFirstPage() {
         loadFirstPage()
     }
 

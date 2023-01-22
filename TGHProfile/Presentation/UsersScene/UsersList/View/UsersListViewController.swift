@@ -91,24 +91,16 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     }
     
     private func setupReachability() {
-        //declare this property where it won't go out of scope relative to your listener
-        let reachability = try! Reachability()
-
-        reachability.whenReachable = { reachability in
-            if reachability.connection == .wifi {
-                print("Reachable via WiFi")
-            } else {
-                print("Reachable via Cellular")
-            }
-        }
-        reachability.whenUnreachable = { _ in
-            print("Not reachable")
-        }
-
-        do {
-            try reachability.startNotifier()
-        } catch {
-            print("Unable to start notifier")
+        NotificationCenter.default.addObserver(self, selector: #selector(showOfflineDeviceUI(notification:)), name: NSNotification.Name.connectivityStatus, object: nil)
+    }
+    
+    @objc func showOfflineDeviceUI(notification: Notification) {
+        if NetworkMonitor.shared.isConnected {
+            print("Connected")
+            viewModel.didLoadFirstPage()
+        } else {
+            print("Not connected")
+            viewModel.handleReachabilityNoInternet()
         }
     }
 

@@ -27,7 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         appFlowCoordinator?.start()
         window?.makeKeyAndVisible()
         
-        print("Documents Directory: ", FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last ?? "Not Found!")
+//        print("Documents Directory: ", FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last ?? "Not Found!")
+        NetworkMonitor.shared.startMonitoring()
     
         return true
     }
