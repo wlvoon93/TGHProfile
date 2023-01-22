@@ -108,8 +108,9 @@ final class UserListAvatarColourInvertedItemCell: UITableViewCell, BaseItemCell 
                         filter.setValue(beginImage, forKey: kCIInputImageKey)
                         if let outputCiimage = filter.outputImage,
                             let filteredImageData = UIImage(ciImage: outputCiimage).pngData() {
-                            self.profileImageView.image = UIImage(data: filteredImageData)
-                            self.profileImageView.image = UIImage(data: filteredImageData)
+                            DispatchQueue.main.async {
+                                self.profileImageView.image = UIImage(data: filteredImageData)
+                            }
                             _ = self.profileImagesRepository?.saveImage(userId: userId, imageData: data, completion: { _ in
                                 
                             })

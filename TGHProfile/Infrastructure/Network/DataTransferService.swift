@@ -15,7 +15,7 @@ public enum DataTransferError: Error {
 }
 
 public protocol DataTransferService {
-    typealias CompletionHandler<T> = (Result<T, DataTransferError>) -> Void
+    typealias CompletionHandler<T> = (Result<T, Error>) -> Void
     
     @discardableResult
     func requestAll<T: Decodable, E: ResponseRequestable>(with endpoint: E,
@@ -73,9 +73,21 @@ extension DefaultDataTransferService: DataTransferService {
         adapter.addDependency(fetch)
         parse.addDependency(adapter)
         
-        parse.completionHandler = {data in
-            DispatchQueue.main.async {
-                completion(data)
+        parse.networkErrorCompletionHandler = { result in
+            switch result {
+            case .success(let data):
+                return completion(.success(data))
+            case .failure(let error):
+                return completion(.failure(error))
+            }
+        }
+        
+        parse.completionHandler = { result in
+            switch result {
+            case .success(let data):
+                return completion(.success(data))
+            case .failure(let error):
+                return completion(.failure(error))
             }
         }
         queueManager.addOperations([fetch, parse, adapter])
@@ -100,9 +112,21 @@ extension DefaultDataTransferService: DataTransferService {
         adapter.addDependency(fetch)
         parse.addDependency(adapter)
         
-        parse.completionHandler = {data in
-            DispatchQueue.main.async {
-                completion(data)
+        parse.networkErrorCompletionHandler = { result in
+            switch result {
+            case .success(let data):
+                return completion(.success(data))
+            case .failure(let error):
+                return completion(.failure(error))
+            }
+        }
+        
+        parse.completionHandler = { result in
+            switch result {
+            case .success(let data):
+                return completion(.success(data))
+            case .failure(let error):
+                return completion(.failure(error))
             }
         }
         queueManager.addOperations([fetch, parse, adapter])

@@ -23,7 +23,9 @@ final class SearchUserListTableViewController: UITableViewController {
     }
 
     func reload() {
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 
     func updateLoading(_ loading: UsersListViewModelLoading?) {

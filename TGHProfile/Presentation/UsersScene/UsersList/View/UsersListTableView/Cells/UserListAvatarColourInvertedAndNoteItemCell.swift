@@ -113,7 +113,9 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell, BaseIt
             imageLoadTask = profileImagesRepository?.fetchImage(for: userId,  imagePath: profileImagePath) { [weak self] profileImage in
                 guard let self = self else { return }
                 if let imageData = profileImage.invertedImage, let image = UIImage(data: imageData) {
-                    self.profileImageView.image = image
+                    DispatchQueue.main.async {
+                        self.profileImageView.image = image
+                    }
                 }
             } completion: { [weak self] result in
                 guard let self = self else { return }
@@ -124,8 +126,9 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell, BaseIt
                         filter.setValue(beginImage, forKey: kCIInputImageKey)
                         if let outputCiimage = filter.outputImage,
                             let filteredImageData = UIImage(ciImage: outputCiimage).pngData() {
-                            self.profileImageView.image = UIImage(data: filteredImageData)
-                            self.profileImageView.image = UIImage(data: filteredImageData)
+                            DispatchQueue.main.async {
+                                self.profileImageView.image = UIImage(data: filteredImageData)
+                            }
                             _ = self.profileImagesRepository?.saveImage(userId: userId, imageData: data, completion: { _ in
                                 
                             })

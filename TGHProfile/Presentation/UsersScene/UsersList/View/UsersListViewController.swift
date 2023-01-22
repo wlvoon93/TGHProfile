@@ -38,6 +38,7 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
         super.viewDidLoad()
         setupViews()
         setupBehaviours()
+        setupReachability()
         bind(to: viewModel)
         viewModel.viewDidLoad()
     }
@@ -45,7 +46,9 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     private func bind(to viewModel: UsersListViewModel) {
         viewModel.items.sink {  [weak self] _ in self?.updateItems() }.store(in: &subsciptions)
         viewModel.searchItems.sink { [weak self] _ in self?.updateSearchItems() }.store(in: &subsciptions)
-        viewModel.loading.sink { [weak self] in self?.updateLoading($0) }.store(in: &subsciptions)
+        viewModel.loading.sink { [weak self] in
+            self?.updateLoading($0)
+        }.store(in: &subsciptions)
         viewModel.query.sink { [weak self] in self?.updateSearchQuery($0) }.store(in: &subsciptions)
         viewModel.error.sink { [weak self] in self?.showError($0) }.store(in: &subsciptions)
         viewModel.tableMode.sink { [weak self] in
@@ -86,6 +89,28 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
         addBehaviors([BackButtonEmptyTitleNavigationBarBehavior(),
                       BlackStyleNavigationBarBehavior()])
     }
+    
+    private func setupReachability() {
+        //declare this property where it won't go out of scope relative to your listener
+        let reachability = try! Reachability()
+
+        reachability.whenReachable = { reachability in
+            if reachability.connection == .wifi {
+                print("Reachable via WiFi")
+            } else {
+                print("Reachable via Cellular")
+            }
+        }
+        reachability.whenUnreachable = { _ in
+            print("Not reachable")
+        }
+
+        do {
+            try reachability.startNotifier()
+        } catch {
+            print("Unable to start notifier")
+        }
+    }
 
     private func updateItems() {
         usersTableViewController?.reload()
@@ -96,20 +121,22 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     }
 
     private func updateLoading(_ loading: UsersListViewModelLoading?) {
-        rootView.emptyDataLabel.isHidden = true
-        rootView.usersListContainerView.isHidden = true
-        rootView.suggestionsListContainerView.isHidden = true
-        LoadingView.hide()
+        DispatchQueue.main.async {
+            self.rootView.emptyDataLabel.isHidden = true
+            self.rootView.usersListContainerView.isHidden = true
+            self.rootView.suggestionsListContainerView.isHidden = true
+            LoadingView.hide()
 
-        switch loading {
-        case .fullScreen: LoadingView.show()
-        case .nextPage: rootView.usersListContainerView.isHidden = false
-        case .none:
-            rootView.usersListContainerView.isHidden = (viewModel.isEmpty && viewModel.tableMode.value == .listAll) || (viewModel.isSearchEmpty && viewModel.tableMode.value == .search)
-            rootView.emptyDataLabel.isHidden = !(viewModel.isEmpty && viewModel.tableMode.value == .listAll) || !(viewModel.isSearchEmpty && viewModel.tableMode.value == .search)
+            switch loading {
+            case .fullScreen: LoadingView.show()
+            case .nextPage: self.rootView.usersListContainerView.isHidden = false
+            case .none:
+                self.rootView.usersListContainerView.isHidden = (self.viewModel.isEmpty && self.viewModel.tableMode.value == .listAll) || (self.viewModel.isSearchEmpty && self.viewModel.tableMode.value == .search)
+                self.rootView.emptyDataLabel.isHidden = !(self.viewModel.isEmpty && self.viewModel.tableMode.value == .listAll) || !(self.viewModel.isSearchEmpty && self.viewModel.tableMode.value == .search)
+            }
+
+            self.usersTableViewController?.updateLoading(loading)
         }
-
-        usersTableViewController?.updateLoading(loading)
     }
     
     private func displayTable(_ tableMode: TableMode) {
@@ -130,7 +157,9 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
 
     private func showError(_ error: String) {
         guard !error.isEmpty else { return }
-        showAlert(title: viewModel.errorTitle, message: error)
+        DispatchQueue.main.async {
+            self.showAlert(title: self.viewModel.errorTitle, message: error)
+        }
     }
 }
 

@@ -35,7 +35,7 @@ extension DefaultProfileImagesRepository: ProfileImagesRepository {
             
             let endpoint = APIEndpoints.getUserProfile(path: imagePath)
             let task = RepositoryTask()
-            task.networkTask = self.dataTransferService.request(with: endpoint) { (result: Result<Data, DataTransferError>) in
+            task.networkTask = self.dataTransferService.request(with: endpoint) { (result: Result<Data, Error>) in
 
                 let result = result.mapError { $0 as Error }
                 completion(result)

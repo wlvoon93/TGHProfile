@@ -114,14 +114,18 @@ final class UserListNoteItemCell: UITableViewCell, BaseItemCell {
             imageLoadTask = profileImagesRepository?.fetchImage(for: userId,  imagePath: profileImagePath) { [weak self] profileImage in
                 guard let self = self else { return }
                 if let imageData = profileImage.image, let image = UIImage(data: imageData) {
-                    self.profileImageView.image = image
+                    DispatchQueue.main.async {
+                        self.profileImageView.image = image
+                    }
                 }
             } completion: { [weak self] result in
                 guard let self = self else { return }
                 if case let .success(data) = result {
                     if let profileImage = UIImage(data: data) {
                             
-                        self.profileImageView.image = profileImage
+                        DispatchQueue.main.async {
+                            self.profileImageView.image = profileImage
+                        }
                         
                         _ = self.profileImagesRepository?.saveImage(userId: userId, imageData: data, completion: { _ in
                             

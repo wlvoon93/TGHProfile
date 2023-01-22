@@ -13,10 +13,16 @@ class ApiResultDecodeOperation<T: Decodable>: Operation {
     var decodedURL: URL?
     typealias CompletionHandler = (_ result: Result<T, DataTransferError>) -> Void
     var completionHandler: (CompletionHandler)?
+    typealias NetworkErrorCompletionHandler = (_ result: Result<T, NetworkError>) -> Void
+    var networkErrorCompletionHandler: (NetworkErrorCompletionHandler)?
     var decoderInstance: DefaultDataTransferService? = nil
     var decoder: ResponseDecoder?
     
     override func main() {
+        if let error = error as? NetworkError,
+            let networkErrorCompletionHandler = networkErrorCompletionHandler{
+            return networkErrorCompletionHandler(.failure(error))
+        }
         guard let dataFetched = dataFetched, let decoder = decoder, let decoderInstance = decoderInstance else {
             cancel()
             return
