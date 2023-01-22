@@ -22,9 +22,17 @@ struct UsersPageResponseDTO: Decodable {
 extension UsersPageResponseDTO {
     struct UserDTO: Decodable {
         let login: String?
-        let id: Int?
+        let id: Int
         let avatar_url: String?
         let type: String?
+        let note: NoteDTO?
+    }
+}
+
+extension UsersPageResponseDTO.UserDTO {
+    struct NoteDTO: Decodable {
+        let note: String?
+        let userId: Int
     }
 }
 
@@ -38,6 +46,7 @@ extension UsersPageResponseDTO {
 
 extension UsersPageResponseDTO.UserDTO {
     func toDomain() -> User {
-        return .init(login: login, id: id, avatar_url: avatar_url, type: type)
+        
+        return .init(login: login, id: id, avatar_url: avatar_url, type: type, note: nil)
     }
 }

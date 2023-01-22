@@ -72,8 +72,13 @@
 		AE5F75CC2950B2320098D4E9 /* UsersListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F759F294AAD5D0098D4E9 /* UsersListViewController.swift */; };
 		AE6B57AE2959A6360069DC43 /* UsersListDataTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57AD2959A6360069DC43 /* UsersListDataTransferService.swift */; };
 		AE6B57B02959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57AF2959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift */; };
+		AE6B57B2295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57B1295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift */; };
+		AE6B57B4295AE3F40069DC43 /* UserListNoteItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57B3295AE3F40069DC43 /* UserListNoteItemCell.swift */; };
+		AE6B57B6295AE4150069DC43 /* UserListAvatarColourInvertedAndNoteItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57B5295AE4150069DC43 /* UserListAvatarColourInvertedAndNoteItemCell.swift */; };
+		AE6B57B8295AE4B30069DC43 /* UIImage+InvertedColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57B7295AE4B30069DC43 /* UIImage+InvertedColor.swift */; };
+		AE6B57BA295C0CE00069DC43 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57B9295C0CE00069DC43 /* Note.swift */; };
 		FC2B715C2156FF93002BD59E /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2B715B2156FF93002BD59E /* AppAppearance.swift */; };
-		FC740818216555C500FE52A5 /* UserDefaultsMoviesQueriesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC740817216555C500FE52A5 /* UserDefaultsMoviesQueriesStorage.swift */; };
+		FC740818216555C500FE52A5 /* UserDefaultsUsersQueriesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC740817216555C500FE52A5 /* UserDefaultsUsersQueriesStorage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -147,8 +152,13 @@
 		AE5F75CA29505C0F0098D4E9 /* BlackStyleNavigationBarBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackStyleNavigationBarBehavior.swift; sourceTree = "<group>"; };
 		AE6B57AD2959A6360069DC43 /* UsersListDataTransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListDataTransferService.swift; sourceTree = "<group>"; };
 		AE6B57AF2959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersPageResponseDTO+Mapping.swift"; sourceTree = "<group>"; };
+		AE6B57B1295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListAvatarColourInvertedItemCell.swift; sourceTree = "<group>"; };
+		AE6B57B3295AE3F40069DC43 /* UserListNoteItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListNoteItemCell.swift; sourceTree = "<group>"; };
+		AE6B57B5295AE4150069DC43 /* UserListAvatarColourInvertedAndNoteItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListAvatarColourInvertedAndNoteItemCell.swift; sourceTree = "<group>"; };
+		AE6B57B7295AE4B30069DC43 /* UIImage+InvertedColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+InvertedColor.swift"; sourceTree = "<group>"; };
+		AE6B57B9295C0CE00069DC43 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		FC2B715B2156FF93002BD59E /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
-		FC740817216555C500FE52A5 /* UserDefaultsMoviesQueriesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsMoviesQueriesStorage.swift; sourceTree = "<group>"; };
+		FC740817216555C500FE52A5 /* UserDefaultsUsersQueriesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsUsersQueriesStorage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -234,7 +244,7 @@
 		1F9034DD2307461C00DEA4BD /* UserDefaultsStorage */ = {
 			isa = PBXGroup;
 			children = (
-				FC740817216555C500FE52A5 /* UserDefaultsMoviesQueriesStorage.swift */,
+				FC740817216555C500FE52A5 /* UserDefaultsUsersQueriesStorage.swift */,
 				1F9034E0230746E400DEA4BD /* DataMapping */,
 			);
 			path = UserDefaultsStorage;
@@ -321,6 +331,7 @@
 			children = (
 				AE5F75A7294B7C170098D4E9 /* User.swift */,
 				AE5F75A9294B7C430098D4E9 /* UserQuery.swift */,
+				AE6B57B9295C0CE00069DC43 /* Note.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -378,6 +389,7 @@
 				1FC5B7CF242634EB0086FA8C /* UIImageView+ImageSizeAfterAspectFit.swift */,
 				1FC5B7D1242635CB0086FA8C /* CGSize+ScaledSize.swift */,
 				1FF53EB323688893008D6CCC /* DataTransferError+ConnectionError.swift */,
+				AE6B57B7295AE4B30069DC43 /* UIImage+InvertedColor.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -542,6 +554,9 @@
 			isa = PBXGroup;
 			children = (
 				AE5F75AF29503DE40098D4E9 /* UsersListItemCell.swift */,
+				AE6B57B1295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift */,
+				AE6B57B3295AE3F40069DC43 /* UserListNoteItemCell.swift */,
+				AE6B57B5295AE4150069DC43 /* UserListAvatarColourInvertedAndNoteItemCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -664,6 +679,7 @@
 			files = (
 				AE5F75B329503ED20098D4E9 /* UserDetailsViewModel.swift in Sources */,
 				AE5F759E294AA8D30098D4E9 /* UsersListItemViewModel.swift in Sources */,
+				AE6B57BA295C0CE00069DC43 /* Note.swift in Sources */,
 				1FEED0F02023576A000F4EAA /* Alertable.swift in Sources */,
 				1F16031D2426919300C173C6 /* AppFlowCoordinator.swift in Sources */,
 				1FCBB8CE25237D4C007F23DC /* UIViewController+ActivityIndicator.swift in Sources */,
@@ -679,6 +695,7 @@
 				AE17697B29573CEB00A79A71 /* UsersSearchRequestDTO+Mapping.swift in Sources */,
 				1F77930F222C0DF2004E034C /* StoryboardInstantiable.swift in Sources */,
 				1FF53EB423688893008D6CCC /* DataTransferError+ConnectionError.swift in Sources */,
+				AE6B57B4295AE3F40069DC43 /* UserListNoteItemCell.swift in Sources */,
 				1F53E2B623125896008D6A05 /* UIViewController+AddChild.swift in Sources */,
 				AE5F75A4294B549A0098D4E9 /* UsersListView.swift in Sources */,
 				1F84DED023006BDA00139F73 /* FetchRecentMovieQueriesUseCase.swift in Sources */,
@@ -688,12 +705,14 @@
 				1F1FC48A22E3693100BCBA8D /* DataTransferService.swift in Sources */,
 				1FEE31622218B17E00C160B9 /* Observable.swift in Sources */,
 				1FFFC836221B0041007D99D2 /* UsersRepository.swift in Sources */,
+				AE6B57B6295AE4150069DC43 /* UserListAvatarColourInvertedAndNoteItemCell.swift in Sources */,
 				1F57F8D223C656F600981E09 /* AccessibilityIdentifier.swift in Sources */,
 				1F0CEFCF23436B67004141FA /* ConnectionError.swift in Sources */,
 				1F05A6CC2220A2CB001E2801 /* SearchUsersUseCase.swift in Sources */,
 				AE6B57B02959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift in Sources */,
 				1FA533D7201EF2B500747E55 /* AppDIContainer.swift in Sources */,
 				1F6B521323630016002FCDE9 /* RepositoryTask.swift in Sources */,
+				AE6B57B8295AE4B30069DC43 /* UIImage+InvertedColor.swift in Sources */,
 				1F9034DF2307464700DEA4BD /* UsersQueriesStorage.swift in Sources */,
 				AE5F75C929505BF50098D4E9 /* BackButtonEmptyTitleNavigationBarBehavior.swift in Sources */,
 				AE5F75CB29505C0F0098D4E9 /* BlackStyleNavigationBarBehavior.swift in Sources */,
@@ -709,13 +728,14 @@
 				AE17697D29573D8900A79A71 /* UsersSearchResponseDTO+Mapping.swift in Sources */,
 				1F9035272307528F00DEA4BD /* CoreDataUsersQueriesStorage.swift in Sources */,
 				1FB0903A2437651700DBE132 /* UIViewController+AddBehaviors.swift in Sources */,
+				AE6B57B2295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift in Sources */,
 				1F5CE1CD242C303700A9CDE3 /* CoreDataStorage.swift in Sources */,
 				AE5F75AA294B7C430098D4E9 /* UserQuery.swift in Sources */,
 				AE5F759C294AA8C30098D4E9 /* UsersListViewModel.swift in Sources */,
 				1F1CD656222368CA00B0143C /* AppConfigurations.swift in Sources */,
 				1F474F2222356B1E0092DB4B /* Cancellable.swift in Sources */,
 				1FFFC833221B0041007D99D2 /* DefaultProfileImagesRepository.swift in Sources */,
-				FC740818216555C500FE52A5 /* UserDefaultsMoviesQueriesStorage.swift in Sources */,
+				FC740818216555C500FE52A5 /* UserDefaultsUsersQueriesStorage.swift in Sources */,
 				AE5F75B029503DE40098D4E9 /* UsersListItemCell.swift in Sources */,
 				1F2AB95324278CC20010DEEE /* UsersRequestDTO+Mapping.swift in Sources */,
 				1F903535230759AC00DEA4BD /* UserQueryEntity+Mapping.swift in Sources */,

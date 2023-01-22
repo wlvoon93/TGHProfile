@@ -1,13 +1,13 @@
 //
-//  UsersListItemCell.swift
-//  ExampleMVVM
+//  UserListNoteItemCell.swift
+//  TGHProfile
 //
-//  Created by T0366-ADE-MB-1 on 19/12/2022.
+//  Created by T0366-ADE-MB-1 on 27/12/2022.
 //
 
 import UIKit
 
-final class UsersListItemCell: UITableViewCell {
+final class UserListNoteItemCell: UITableViewCell {
 
     static let reuseIdentifier = String(describing: UsersListItemCell.self)
     static let height = CGFloat(130)
@@ -33,6 +33,16 @@ final class UsersListItemCell: UITableViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.numberOfLines = 0
         return view
+    }()
+    
+    private lazy var noteImageView: UIImageView = {
+        let icon = UIImageView()
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        icon.contentMode = .scaleAspectFit
+        icon.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        icon.image = UIImage(named: "note")
+        
+        return icon
     }()
 
     private var viewModel: UsersListItemViewModel!
@@ -64,6 +74,7 @@ final class UsersListItemCell: UITableViewCell {
         contentView.addSubview(profileImageView)
         contentView.addSubview(userNameLabel)
         contentView.addSubview(userTypeLabel)
+        contentView.addSubview(noteImageView)
         
         NSLayoutConstraint.activate([
             profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
@@ -77,7 +88,13 @@ final class UsersListItemCell: UITableViewCell {
             userNameLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor),
             
             userTypeLabel.leadingAnchor.constraint(equalTo: userNameLabel.leadingAnchor),
-            userTypeLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 5)
+            userTypeLabel.trailingAnchor.constraint(equalTo: userNameLabel.trailingAnchor),
+            userTypeLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 5),
+            
+            noteImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
+            noteImageView.topAnchor.constraint(equalTo: userNameLabel.topAnchor),
+            noteImageView.heightAnchor.constraint(equalToConstant: 25),
+            noteImageView.widthAnchor.constraint(equalToConstant: 25)
         ])
     }
 

@@ -1,13 +1,13 @@
 //
-//  UsersListItemCell.swift
-//  ExampleMVVM
+//  UserListAvatarColourInvertedItemCell.swift
+//  TGHProfile
 //
-//  Created by T0366-ADE-MB-1 on 19/12/2022.
+//  Created by T0366-ADE-MB-1 on 27/12/2022.
 //
 
 import UIKit
 
-final class UsersListItemCell: UITableViewCell {
+final class UserListAvatarColourInvertedItemCell: UITableViewCell {
 
     static let reuseIdentifier = String(describing: UsersListItemCell.self)
     static let height = CGFloat(130)
@@ -77,6 +77,7 @@ final class UsersListItemCell: UITableViewCell {
             userNameLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor),
             
             userTypeLabel.leadingAnchor.constraint(equalTo: userNameLabel.leadingAnchor),
+            userTypeLabel.trailingAnchor.constraint(equalTo: userNameLabel.trailingAnchor),
             userTypeLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 5)
         ])
     }
@@ -90,6 +91,7 @@ final class UsersListItemCell: UITableViewCell {
             guard self.viewModel.profileImagePath == profileImagePath else { return }
             if case let .success(data) = result {
                 self.profileImageView.image = UIImage(data: data)
+                self.profileImageView.image = self.profileImageView.image?.inverseImage(cgResult: false)
             }
             self.imageLoadTask = nil
         }

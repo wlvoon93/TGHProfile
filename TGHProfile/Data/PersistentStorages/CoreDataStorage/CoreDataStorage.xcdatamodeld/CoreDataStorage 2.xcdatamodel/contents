@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="UserNoteEntity" representedClassName="UserNoteEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="userId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="userId"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="UserQueryEntity" representedClassName="UserQueryEntity" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="query" optional="YES" attributeType="String"/>
     </entity>
     <entity name="UserResponseEntity" representedClassName="UserResponseEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="avatar_url" optional="YES" attributeType="String"/>
+        <attribute name="avatarUrl" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="login" optional="YES" attributeType="String"/>
-        <attribute name="note" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
         <relationship name="usersResponse" maxCount="1" deletionRule="Nullify" destinationEntity="UsersPageResponseEntity" inverseName="users" inverseEntity="UsersPageResponseEntity"/>
     </entity>
     <entity name="UsersPageResponseEntity" representedClassName="UsersPageResponseEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="per_page" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="perPage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="since" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="request" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UsersRequestEntity" inverseName="response" inverseEntity="UsersRequestEntity"/>
         <relationship name="users" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="UserResponseEntity" inverseName="usersResponse" inverseEntity="UserResponseEntity"/>
     </entity>
     <entity name="UsersRequestEntity" representedClassName="UsersRequestEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="per_page" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="perPage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="since" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="response" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UsersPageResponseEntity" inverseName="request" inverseEntity="UsersPageResponseEntity"/>
     </entity>
     <elements>
         <element name="UserQueryEntity" positionX="6913.73828125" positionY="-748.890625" width="128" height="59"/>
-        <element name="UserResponseEntity" positionX="7183.984375" positionY="-567.76171875" width="128" height="119"/>
-        <element name="UsersRequestEntity" positionX="6822.30859375" positionY="-559.6484375" width="128" height="74"/>
-        <element name="UsersPageResponseEntity" positionX="6993.70703125" positionY="-578.1640625" width="128" height="89"/>
+        <element name="UserResponseEntity" positionX="7183.984375" positionY="-567.76171875" width="128" height="118"/>
+        <element name="UsersRequestEntity" positionX="6822.30859375" positionY="-559.6484375" width="128" height="88"/>
+        <element name="UsersPageResponseEntity" positionX="6993.70703125" positionY="-578.1640625" width="128" height="103"/>
+        <element name="UserNoteEntity" positionX="7076.125" positionY="-746.9453125" width="112.66796875" height="73"/>
     </elements>
 </model>

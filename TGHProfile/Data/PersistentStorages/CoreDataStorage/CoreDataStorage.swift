@@ -34,6 +34,7 @@ final class CoreDataStorage {
     // MARK: - Core Data Saving support
     func saveContext() {
         let context = persistentContainer.viewContext
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         if context.hasChanges {
             do {
                 try context.save()

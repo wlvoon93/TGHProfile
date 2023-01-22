@@ -11,7 +11,7 @@ import CoreData
 extension UsersPageResponseEntity {
     func toDTO() -> UsersPageResponseDTO {
         return .init(since: Int(since),
-                     per_page: Int(per_page),
+                     per_page: Int(perPage),
                      users: users?.allObjects.map{ ($0 as! UserResponseEntity).toDTO() } ?? [])
     }
 }
@@ -20,8 +20,15 @@ extension UserResponseEntity {
     func toDTO() -> UsersPageResponseDTO.UserDTO {
         return .init(login: login,
                      id: Int(id),
-                     avatar_url: avatar_url,
-                        type: type)
+                     avatar_url: avatarUrl,
+                     type: type,
+                     note: nil)
+    }
+}
+
+extension UserNoteEntity {
+    func toDomain() -> Note {
+        return .init(note: note, userId: Int(userId))
     }
 }
 
@@ -29,7 +36,7 @@ extension UsersRequestDTO {
     func toEntity(in context: NSManagedObjectContext) -> UsersRequestEntity {
         let entity: UsersRequestEntity = .init(context: context)
         entity.since = Int32(since)
-        entity.per_page = Int32(per_page)
+        entity.perPage = Int32(per_page)
         return entity
     }
 }
@@ -38,20 +45,21 @@ extension UsersPageResponseDTO {
     func toEntity(in context: NSManagedObjectContext) -> UsersPageResponseEntity {
         let entity: UsersPageResponseEntity = .init(context: context)
         entity.since = Int32(since)
-        entity.per_page = Int32(per_page)
+        entity.perPage = Int32(per_page)
+        users.forEach {
+            entity.addToUsers($0.toEntity(in: context))
+        }
         return entity
     }
 }
-//
-//extension UsersResponseDTO.UserDTO {
-//    func toEntity(in context: NSManagedObjectContext) -> UserResponseEntity {
-//        let entity: UserResponseEntity = .init(context: context)
-//        entity.id = Int64(id)
-//        entity.title = title
-//        entity.genre = genre?.rawValue
-//        entity.posterPath = posterPath
-//        entity.overview = overview
-//        entity.releaseDate = releaseDate
-//        return entity
-//    }
-//}
+
+extension UsersPageResponseDTO.UserDTO {
+    func toEntity(in context: NSManagedObjectContext) -> UserResponseEntity {
+        let entity: UserResponseEntity = .init(context: context)
+        entity.id = Int64(id)
+        entity.login = login
+        entity.avatarUrl = avatar_url
+        entity.type = type
+        return entity
+    }
+}

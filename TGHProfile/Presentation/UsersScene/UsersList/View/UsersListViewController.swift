@@ -130,7 +130,6 @@ extension UsersListViewController {
 
 extension UsersListViewController {
     private func setupSearchController() {
-//        searchController.delegate = self
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = viewModel.searchBarPlaceholder
         searchController.obscuresBackgroundDuringPresentation = false
