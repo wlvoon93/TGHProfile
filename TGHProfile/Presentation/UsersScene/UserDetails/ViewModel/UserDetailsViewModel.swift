@@ -8,13 +8,13 @@
 import Foundation
 
 protocol UserDetailsViewModelInput {
-    func updatePosterImage(width: Int)
+    func updateProfileImage(width: Int)
 }
 
 protocol UserDetailsViewModelOutput {
     var title: String { get }
-    var posterImage: Observable<Data?> { get }
-    var isPosterImageHidden: Bool { get }
+    var profileImage: Observable<Data?> { get }
+    var isProfileImageHidden: Bool { get }
     var overview: String { get }
 }
 
@@ -22,37 +22,37 @@ protocol UserDetailsViewModel: UserDetailsViewModelInput, UserDetailsViewModelOu
 
 final class DefaultUserDetailsViewModel: UserDetailsViewModel {
     
-    private let posterImagePath: String?
-    private let posterImagesRepository: PosterImagesRepository
+    private let profileImagePath: String?
+    private let profileImagesRepository: ProfileImagesRepository
     private var imageLoadTask: Cancellable? { willSet { imageLoadTask?.cancel() } }
 
     // MARK: - OUTPUT
     let title: String
-    let posterImage: Observable<Data?> = Observable(nil)
-    let isPosterImageHidden: Bool
+    let profileImage: Observable<Data?> = Observable(nil)
+    let isProfileImageHidden: Bool
     let overview: String
     
     init(user: User,
-         posterImagesRepository: PosterImagesRepository) {
+         profileImagesRepository: ProfileImagesRepository) {
         self.title = user.avatar_url ?? ""
         self.overview = user.avatar_url ?? ""
-        self.posterImagePath = user.avatar_url
-        self.isPosterImageHidden = user.id == nil
-        self.posterImagesRepository = posterImagesRepository
+        self.profileImagePath = user.avatar_url
+        self.isProfileImageHidden = user.id == nil
+        self.profileImagesRepository = profileImagesRepository
     }
 }
 
 // MARK: - INPUT. View event methods
 extension DefaultUserDetailsViewModel {
     
-    func updatePosterImage(width: Int) {
-        guard let posterImagePath = posterImagePath else { return }
+    func updateProfileImage(width: Int) {
+        guard let profileImagePath = profileImagePath else { return }
 
-        imageLoadTask = posterImagesRepository.fetchImage(with: posterImagePath, width: width) { result in
-            guard self.posterImagePath == posterImagePath else { return }
+        imageLoadTask = profileImagesRepository.fetchImage(with: profileImagePath, width: width) { result in
+            guard self.profileImagePath == profileImagePath else { return }
             switch result {
             case .success(let data):
-//                self.posterImage.value = data
+//                self.profileImage.value = data
                 break
             case .failure: break
             }

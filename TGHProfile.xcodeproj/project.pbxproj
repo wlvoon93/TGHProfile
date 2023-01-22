@@ -49,8 +49,8 @@
 		1FFF12AA243A022300937EE4 /* UsersPageResponseEntity+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFF12A9243A022300937EE4 /* UsersPageResponseEntity+Mapping.swift */; };
 		1FFFC831221B0041007D99D2 /* DefaultUsersQueriesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFC827221B0041007D99D2 /* DefaultUsersQueriesRepository.swift */; };
 		1FFFC832221B0041007D99D2 /* UsersQueriesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFC828221B0041007D99D2 /* UsersQueriesRepository.swift */; };
-		1FFFC833221B0041007D99D2 /* DefaultPosterImagesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFC82B221B0041007D99D2 /* DefaultPosterImagesRepository.swift */; };
-		1FFFC834221B0041007D99D2 /* PosterImagesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFC82C221B0041007D99D2 /* PosterImagesRepository.swift */; };
+		1FFFC833221B0041007D99D2 /* DefaultProfileImagesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFC82B221B0041007D99D2 /* DefaultProfileImagesRepository.swift */; };
+		1FFFC834221B0041007D99D2 /* ProfileImagesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFC82C221B0041007D99D2 /* ProfileImagesRepository.swift */; };
 		1FFFC835221B0041007D99D2 /* DefaultUsersRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFC82F221B0041007D99D2 /* DefaultUsersRepository.swift */; };
 		1FFFC836221B0041007D99D2 /* UsersRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFC830221B0041007D99D2 /* UsersRepository.swift */; };
 		AE17697B29573CEB00A79A71 /* UsersSearchRequestDTO+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17697A29573CEB00A79A71 /* UsersSearchRequestDTO+Mapping.swift */; };
@@ -124,8 +124,8 @@
 		1FFF12A9243A022300937EE4 /* UsersPageResponseEntity+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersPageResponseEntity+Mapping.swift"; sourceTree = "<group>"; };
 		1FFFC827221B0041007D99D2 /* DefaultUsersQueriesRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultUsersQueriesRepository.swift; sourceTree = "<group>"; };
 		1FFFC828221B0041007D99D2 /* UsersQueriesRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersQueriesRepository.swift; sourceTree = "<group>"; };
-		1FFFC82B221B0041007D99D2 /* DefaultPosterImagesRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultPosterImagesRepository.swift; sourceTree = "<group>"; };
-		1FFFC82C221B0041007D99D2 /* PosterImagesRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PosterImagesRepository.swift; sourceTree = "<group>"; };
+		1FFFC82B221B0041007D99D2 /* DefaultProfileImagesRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultProfileImagesRepository.swift; sourceTree = "<group>"; };
+		1FFFC82C221B0041007D99D2 /* ProfileImagesRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImagesRepository.swift; sourceTree = "<group>"; };
 		1FFFC82F221B0041007D99D2 /* DefaultUsersRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultUsersRepository.swift; sourceTree = "<group>"; };
 		1FFFC830221B0041007D99D2 /* UsersRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersRepository.swift; sourceTree = "<group>"; };
 		AE17697A29573CEB00A79A71 /* UsersSearchRequestDTO+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersSearchRequestDTO+Mapping.swift"; sourceTree = "<group>"; };
@@ -187,7 +187,7 @@
 			children = (
 				1FFFC830221B0041007D99D2 /* UsersRepository.swift */,
 				1FFFC828221B0041007D99D2 /* UsersQueriesRepository.swift */,
-				1FFFC82C221B0041007D99D2 /* PosterImagesRepository.swift */,
+				1FFFC82C221B0041007D99D2 /* ProfileImagesRepository.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -467,7 +467,7 @@
 			children = (
 				1FFFC82F221B0041007D99D2 /* DefaultUsersRepository.swift */,
 				1FFFC827221B0041007D99D2 /* DefaultUsersQueriesRepository.swift */,
-				1FFFC82B221B0041007D99D2 /* DefaultPosterImagesRepository.swift */,
+				1FFFC82B221B0041007D99D2 /* DefaultProfileImagesRepository.swift */,
 				1F6B52142363002C002FCDE9 /* Utils */,
 			);
 			path = Repositories;
@@ -714,14 +714,14 @@
 				AE5F759C294AA8C30098D4E9 /* UsersListViewModel.swift in Sources */,
 				1F1CD656222368CA00B0143C /* AppConfigurations.swift in Sources */,
 				1F474F2222356B1E0092DB4B /* Cancellable.swift in Sources */,
-				1FFFC833221B0041007D99D2 /* DefaultPosterImagesRepository.swift in Sources */,
+				1FFFC833221B0041007D99D2 /* DefaultProfileImagesRepository.swift in Sources */,
 				FC740818216555C500FE52A5 /* UserDefaultsMoviesQueriesStorage.swift in Sources */,
 				AE5F75B029503DE40098D4E9 /* UsersListItemCell.swift in Sources */,
 				1F2AB95324278CC20010DEEE /* UsersRequestDTO+Mapping.swift in Sources */,
 				1F903535230759AC00DEA4BD /* UserQueryEntity+Mapping.swift in Sources */,
 				1F1FC48C22E3693100BCBA8D /* NetworkConfig.swift in Sources */,
 				AE5F75C62950551C0098D4E9 /* UserDetailsViewController.swift in Sources */,
-				1FFFC834221B0041007D99D2 /* PosterImagesRepository.swift in Sources */,
+				1FFFC834221B0041007D99D2 /* ProfileImagesRepository.swift in Sources */,
 				1FA5338D201E1FDE00747E55 /* AppDelegate.swift in Sources */,
 				AE5F7598294AA8340098D4E9 /* UsersSearchFlowCoordinator.swift in Sources */,
 				AE6B57AE2959A6360069DC43 /* UsersListDataTransferService.swift in Sources */,
@@ -887,7 +887,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				IMAGE_BASE_URL = "http://image.tmdb.org";
+				IMAGE_BASE_URL = "https://avatars.githubusercontent.com";
 				INFOPLIST_FILE = "$(SRCROOT)/TGHProfile/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -908,7 +908,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				IMAGE_BASE_URL = "http://image.tmdb.org";
+				IMAGE_BASE_URL = "https://avatars.githubusercontent.com";
 				INFOPLIST_FILE = "$(SRCROOT)/TGHProfile/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

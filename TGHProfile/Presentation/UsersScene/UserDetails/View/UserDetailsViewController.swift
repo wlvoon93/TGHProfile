@@ -9,7 +9,7 @@ import UIKit
 
 final class UserDetailsViewController: UIViewController, StoryboardInstantiable {
 
-    @IBOutlet private var posterImageView: UIImageView!
+    @IBOutlet private var profileImageView: UIImageView!
     @IBOutlet private var overviewTextView: UITextView!
 
     // MARK: - Lifecycle
@@ -29,12 +29,12 @@ final class UserDetailsViewController: UIViewController, StoryboardInstantiable 
     }
 
     private func bind(to viewModel: UserDetailsViewModel) {
-        viewModel.posterImage.observe(on: self) { [weak self] in self?.posterImageView.image = $0.flatMap(UIImage.init) }
+        viewModel.profileImage.observe(on: self) { [weak self] in self?.profileImageView.image = $0.flatMap(UIImage.init) }
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        viewModel.updatePosterImage(width: Int(posterImageView.imageSizeAfterAspectFit.scaledSize.width))
+        viewModel.updateProfileImage(width: Int(profileImageView.imageSizeAfterAspectFit.scaledSize.width))
     }
 
     // MARK: - Private
@@ -42,7 +42,7 @@ final class UserDetailsViewController: UIViewController, StoryboardInstantiable 
     private func setupViews() {
         title = viewModel.title
         overviewTextView.text = viewModel.overview
-        posterImageView.isHidden = viewModel.isPosterImageHidden
+        profileImageView.isHidden = viewModel.isProfileImageHidden
         view.accessibilityIdentifier = AccessibilityIdentifier.userDetailsView
     }
 }

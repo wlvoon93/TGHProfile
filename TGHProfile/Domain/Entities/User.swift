@@ -17,6 +17,7 @@ struct User: Equatable, Identifiable {
     let login: String?
     let id: Int?
     let avatar_url: String?
+    let type: String?
 }
 
 struct UsersPage: Equatable {

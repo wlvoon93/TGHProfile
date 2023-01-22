@@ -24,6 +24,7 @@ extension UsersPageResponseDTO {
         let login: String?
         let id: Int?
         let avatar_url: String?
+        let type: String?
     }
 }
 
@@ -37,6 +38,6 @@ extension UsersPageResponseDTO {
 
 extension UsersPageResponseDTO.UserDTO {
     func toDomain() -> User {
-        return .init(login: login, id: id, avatar_url: avatar_url)
+        return .init(login: login, id: id, avatar_url: avatar_url, type: type)
     }
 }

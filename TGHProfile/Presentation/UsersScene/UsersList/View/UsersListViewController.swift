@@ -15,7 +15,7 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     }
     
     private var viewModel: UsersListViewModel!
-    private var posterImagesRepository: PosterImagesRepository?
+    private var profileImagesRepository: ProfileImagesRepository?
 
     private var usersTableViewController: UsersListTableViewController?
     private var searchController = UISearchController(searchResultsController: nil)
@@ -23,10 +23,10 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     // MARK: - Lifecycle
 
     static func create(with viewModel: UsersListViewModel,
-                       posterImagesRepository: PosterImagesRepository?) -> UsersListViewController {
+                       profileImagesRepository: ProfileImagesRepository?) -> UsersListViewController {
         let view = UsersListViewController()
         view.viewModel = viewModel
-        view.posterImagesRepository = posterImagesRepository
+        view.profileImagesRepository = profileImagesRepository
         return view
     }
 
@@ -55,7 +55,7 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
             let destinationVC = segue.destination as? UsersListTableViewController {
             usersTableViewController = destinationVC
             usersTableViewController?.viewModel = viewModel
-            usersTableViewController?.posterImagesRepository = posterImagesRepository
+            usersTableViewController?.profileImagesRepository = profileImagesRepository
         }
     }
     
@@ -115,7 +115,7 @@ extension UsersListViewController {
     private func setupTableController() {
         usersTableViewController = UsersListTableViewController()
         usersTableViewController?.viewModel = viewModel
-        usersTableViewController?.posterImagesRepository = posterImagesRepository
+        usersTableViewController?.profileImagesRepository = profileImagesRepository
         
         guard let usersTableViewController = usersTableViewController else { return }
         usersTableViewController.tableView.backgroundColor = .black

@@ -20,7 +20,8 @@ extension UserResponseEntity {
     func toDTO() -> UsersPageResponseDTO.UserDTO {
         return .init(login: login,
                      id: Int(id),
-                     avatar_url: avatar_url)
+                     avatar_url: avatar_url,
+                        type: type)
     }
 }
 

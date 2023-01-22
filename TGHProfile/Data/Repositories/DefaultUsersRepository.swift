@@ -25,7 +25,7 @@ extension DefaultUsersRepository: UsersRepository {
                                   cached: @escaping (UsersPage) -> Void,
                                   completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
 
-        let requestDTO = UsersRequestDTO(since: 0, per_page: 10*page)
+        let requestDTO = UsersRequestDTO(since: page*10, per_page: 10)
         let task = RepositoryTask()
 
         cache.getResponse(for: requestDTO) { result in
@@ -42,7 +42,7 @@ extension DefaultUsersRepository: UsersRepository {
                     // use, UsersResponse DTO
                     // convert array(responseDTOs) into UserPageDTO
                     if let responseDTOsCasted = responseDTOs as? [UsersResponseDTO] {
-                        let users = responseDTOsCasted.map { UsersPageResponseDTO.UserDTO.init(login: $0.login, id: $0.id, avatar_url: $0.avatar_url) }
+                        let users = responseDTOsCasted.map { UsersPageResponseDTO.UserDTO.init(login: $0.login, id: $0.id, avatar_url: $0.avatar_url, type: $0.type) }
                         let usersPageResponseDTO = UsersPageResponseDTO.init(since: requestDTO.since, per_page: requestDTO.per_page, users: users)
                         self.cache.save(response: usersPageResponseDTO, for:requestDTO)
                         completion(.success(usersPageResponseDTO.toDomain()))

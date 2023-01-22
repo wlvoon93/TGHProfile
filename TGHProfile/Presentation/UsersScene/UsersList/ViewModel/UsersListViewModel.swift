@@ -48,8 +48,8 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
     var currentPage: Int = 0
     var totalPageCount: Int = 1
-    var hasMorePages: Bool { currentPage < totalPageCount }
-    var nextPage: Int { hasMorePages ? currentPage + 1 : currentPage }
+//    var hasMorePages: Bool { currentPage < totalPageCount }
+    var nextPage: Int { currentPage + 1 }
 
     private var pages: [UsersPage] = []
     private var usersLoadTask: Cancellable? { willSet { usersLoadTask?.cancel() } }
@@ -79,7 +79,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     // MARK: - Private
 
     private func appendPage(_ usersPage: UsersPage) {
-        currentPage = 1
+        currentPage = Int(Double((usersPage.since/usersPage.per_page)).rounded(.down))
 //        totalPageCount = usersPage.totalPages
 
         pages = pages
@@ -153,9 +153,8 @@ extension DefaultUsersListViewModel {
     }
 
     func didLoadNextPage() {
-        guard hasMorePages, loading.value == .none else { return }
-        load(userQuery: .init(query: query.value),
-             loading: .nextPage)
+        guard loading.value == .none else { return }
+        loadAllUsers(loading: .nextPage)
     }
 
     func didSearch(query: String) {

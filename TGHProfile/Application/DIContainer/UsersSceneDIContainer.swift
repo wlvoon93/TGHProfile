@@ -52,14 +52,14 @@ final class UsersSceneDIContainer {
         return DefaultUsersQueriesRepository(dataTransferService: dependencies.apiDataTransferService,
                                               usersQueriesPersistentStorage: usersQueriesStorage)
     }
-    func makePosterImagesRepository() -> PosterImagesRepository {
-        return DefaultPosterImagesRepository(dataTransferService: dependencies.imageDataTransferService)
+    func makeProfileImagesRepository() -> ProfileImagesRepository {
+        return DefaultProfileImagesRepository(dataTransferService: dependencies.imageDataTransferService)
     }
     
     // MARK: - Users List
     func makeUsersListViewController(actions: UsersListViewModelActions) -> UsersListViewController {
         return UsersListViewController.create(with: makeUsersListViewModel(actions: actions),
-                                               posterImagesRepository: makePosterImagesRepository())
+                                              profileImagesRepository: makeProfileImagesRepository())
     }
     
     func makeUsersListViewModel(actions: UsersListViewModelActions) -> UsersListViewModel {
@@ -73,7 +73,7 @@ final class UsersSceneDIContainer {
     
     func makeUsersDetailsViewModel(user: User) -> UserDetailsViewModel {
         return DefaultUserDetailsViewModel(user: user,
-                                            posterImagesRepository: makePosterImagesRepository())
+                                           profileImagesRepository: makeProfileImagesRepository())
     }
 
     // MARK: - Flow Coordinators

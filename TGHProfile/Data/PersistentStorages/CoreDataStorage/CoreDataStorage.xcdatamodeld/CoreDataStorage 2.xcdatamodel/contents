@@ -8,6 +8,8 @@
         <attribute name="avatar_url" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="login" optional="YES" attributeType="String"/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
         <relationship name="usersResponse" maxCount="1" deletionRule="Nullify" destinationEntity="UsersPageResponseEntity" inverseName="users" inverseEntity="UsersPageResponseEntity"/>
     </entity>
     <entity name="UsersPageResponseEntity" representedClassName="UsersPageResponseEntity" syncable="YES" codeGenerationType="class">
@@ -23,7 +25,7 @@
     </entity>
     <elements>
         <element name="UserQueryEntity" positionX="6913.73828125" positionY="-748.890625" width="128" height="59"/>
-        <element name="UserResponseEntity" positionX="7183.984375" positionY="-567.76171875" width="128" height="89"/>
+        <element name="UserResponseEntity" positionX="7183.984375" positionY="-567.76171875" width="128" height="119"/>
         <element name="UsersRequestEntity" positionX="6822.30859375" positionY="-559.6484375" width="128" height="74"/>
         <element name="UsersPageResponseEntity" positionX="6993.70703125" positionY="-578.1640625" width="128" height="89"/>
     </elements>

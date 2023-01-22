@@ -8,19 +8,17 @@
 import Foundation
 
 struct UsersListItemViewModel: Equatable {
-    let title: String
-    let overview: String
-    let releaseDate: String
-    let posterImagePath: String?
+    let username: String
+    let type: String
+    let profileImagePath: String?
 }
 
 extension UsersListItemViewModel {
 
     init(user: User) {
-        self.title = user.login ?? ""
-        self.posterImagePath = user.login
-        self.overview = user.login ?? ""
-        self.releaseDate = title
+        self.username = user.login ?? ""
+        self.profileImagePath = user.avatar_url
+        self.type = user.type ?? ""
     }
 }
 

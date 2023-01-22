@@ -11,7 +11,7 @@ final class UsersListTableViewController: UITableViewController {
 
     var viewModel: UsersListViewModel!
 
-    var posterImagesRepository: PosterImagesRepository?
+    var profileImagesRepository: ProfileImagesRepository?
     var nextPageLoadingSpinner: UIActivityIndicatorView?
 
     // MARK: - Lifecycle
@@ -61,7 +61,7 @@ extension UsersListTableViewController {
         }
 
         cell.fill(with: viewModel.items.value[indexPath.row],
-                  posterImagesRepository: posterImagesRepository)
+                  profileImagesRepository: profileImagesRepository)
 
         if indexPath.row == viewModel.items.value.count - 1 {
             viewModel.didLoadNextPage()

@@ -1,5 +1,5 @@
 //
-//  DefaultPosterImagesRepository.swift
+//  DefaultProfileImagesRepository.swift
 //  ExampleMVVM
 //
 //  Created by Oleh Kudinov on 01.10.18.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class DefaultPosterImagesRepository {
+final class DefaultProfileImagesRepository {
     
     private let dataTransferService: DataTransferService
 
@@ -16,11 +16,11 @@ final class DefaultPosterImagesRepository {
     }
 }
 
-extension DefaultPosterImagesRepository: PosterImagesRepository {
+extension DefaultProfileImagesRepository: ProfileImagesRepository {
     
     func fetchImage(with imagePath: String, width: Int, completion: @escaping (Result<Data, Error>) -> Void) -> Cancellable? {
         
-        let endpoint = APIEndpoints.getUserPoster(path: imagePath, width: width)
+        let endpoint = APIEndpoints.getUserProfile(path: imagePath)
         let task = RepositoryTask()
         task.networkTask = dataTransferService.request(with: endpoint) { (result: Result<Data, DataTransferError>) in
 
