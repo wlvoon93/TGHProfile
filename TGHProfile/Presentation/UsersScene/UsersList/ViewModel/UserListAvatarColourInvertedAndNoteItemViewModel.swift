@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-struct UserListAvatarColourInvertedAndNoteItemViewModel: Equatable, BaseItemViewModel {
+struct UserListAvatarColourInvertedAndNoteItemViewModel: Equatable, UserListTVCVMDisplayable {
     let cellType: CellTypes
     var user: User
 }

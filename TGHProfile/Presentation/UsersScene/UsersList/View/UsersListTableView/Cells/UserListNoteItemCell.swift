@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class UserListNoteItemCell: UITableViewCell, BaseItemCell {
+final class UserListNoteItemCell: UITableViewCell, UserListTVCDisplayable {
     
-    func fill(with viewModel: BaseItemViewModel, profileImagesRepository: ProfileImagesRepository?) {
+    func fill(with viewModel: UserListTVCVMDisplayable, profileImagesRepository: ProfileImagesRepository?) {
         self.viewModel = viewModel
         self.profileImagesRepository = profileImagesRepository
 
@@ -18,7 +18,7 @@ final class UserListNoteItemCell: UITableViewCell, BaseItemCell {
         updateProfileImage(width: Int(profileImageView.imageSizeAfterAspectFit.scaledSize.width))
     }
     
-    internal var viewModel: BaseItemViewModel?
+    internal var viewModel: UserListTVCVMDisplayable?
 
     static let reuseIdentifier = String(describing: UsersListItemCell.self)
     static let height = CGFloat(130)

@@ -26,13 +26,11 @@ extension DefaultProfileImagesRepository: ProfileImagesRepository {
         
         cache.loadImage(for: userId) { cache in
             guard !task.isCancelled else { return }
-            
+
             if case let .success(imageDto?) = cache {
                 cached(imageDto.toDomain())
             }
-            
-            guard !task.isCancelled else { return }
-            
+
             let endpoint = APIEndpoints.getUserProfile(path: imagePath)
             let task = RepositoryTask()
             task.networkTask = self.dataTransferService.request(with: endpoint) { (result: Result<Data, Error>) in

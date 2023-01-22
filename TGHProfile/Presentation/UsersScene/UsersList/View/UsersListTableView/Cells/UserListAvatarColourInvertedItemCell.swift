@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class UserListAvatarColourInvertedItemCell: UITableViewCell, BaseItemCell {
+final class UserListAvatarColourInvertedItemCell: UITableViewCell, UserListTVCDisplayable {
 
     static let reuseIdentifier = String(describing: UsersListItemCell.self)
     static let height = CGFloat(130)
@@ -37,7 +37,7 @@ final class UserListAvatarColourInvertedItemCell: UITableViewCell, BaseItemCell 
         return label
     }()
 
-    internal var viewModel: BaseItemViewModel?
+    internal var viewModel: UserListTVCVMDisplayable?
     private var profileImagesRepository: ProfileImagesRepository?
     private var imageLoadTask: Cancellable? { willSet { imageLoadTask?.cancel() } }
     
@@ -58,7 +58,7 @@ final class UserListAvatarColourInvertedItemCell: UITableViewCell, BaseItemCell 
         userTypeLabel.text = nil
     }
 
-    func fill(with viewModel: BaseItemViewModel, profileImagesRepository: ProfileImagesRepository?) {
+    func fill(with viewModel: UserListTVCVMDisplayable, profileImagesRepository: ProfileImagesRepository?) {
         self.viewModel = viewModel
         self.profileImagesRepository = profileImagesRepository
 

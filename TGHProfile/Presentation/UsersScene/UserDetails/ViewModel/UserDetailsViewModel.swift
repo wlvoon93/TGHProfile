@@ -14,6 +14,8 @@ typealias UserDetailsViewModelDidSaveNoteAction = (Note) -> Void
 
 protocol UserDetailsViewModelInput {
     func viewWillAppear()
+    func load()
+    func handleReachabilityNoInternet()
     func didTapSave(noteString: String, completion: @escaping (() -> Void))
 }
 
@@ -85,19 +87,19 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
         self.updateProfileImage()
     }
     
-    private func loadUserDetails() {
-
+    func loadUserDetails() {
         userDetailsLoadTask = loadUserDetailsUseCase.execute(
-            requestValue: .init(username: username.value), cached: { user in
-                self.updateUserDetails(user: user)
-                
+            requestValue: .init(username: username.value), cached: { [weak self] user in
+                guard let strongSelf = self else { return }
+                strongSelf.updateUserDetails(user: user)
             },
-            completion: { result in
+            completion: { [weak self] result in
+                guard let strongSelf = self else { return }
                 switch result {
                     case .success(let user):
-                        self.updateUserDetails(user: user)
+                        strongSelf.updateUserDetails(user: user)
                     case .failure(let error):
-                        self.handle(error: error)
+                        strongSelf.handle(error: error)
                 }
             }
         )
@@ -105,15 +107,16 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
     
     private func updateUserNote(noteString: String, completion: @escaping (() -> Void)) {
         if let userId = self.userId.value {
-            userNoteSaveTask = saveUserNoteUseCase.execute(requestValue: .init(userId: userId, note: noteString), completion: { result in
+            userNoteSaveTask = saveUserNoteUseCase.execute(requestValue: .init(userId: userId, note: noteString), completion: { [weak self] result in
+                guard let strongSelf = self else { return }
                 switch result {
                     case .success:
-                        if let didSaveNote = self.didSaveNote {
+                        if let didSaveNote = strongSelf.didSaveNote {
                             didSaveNote(.init(note: noteString, userId: userId))
                         }
                         completion()
                     case .failure(let error):
-                        self.handle(error: error)
+                        strongSelf.handle(error: error)
                 }
             })
         }
@@ -123,6 +126,10 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
         self.error.value = error.isInternetConnectionError ?
             NSLocalizedString("No internet connection", comment: "") :
             NSLocalizedString("Failed loading users", comment: "")
+    }
+    
+    func handleReachabilityNoInternet() {
+        self.error.value = NSLocalizedString("No internet connection", comment: "")
     }
 }
 
@@ -147,9 +154,9 @@ extension DefaultUserDetailsViewModel {
             _ = loadProfileImageUseCase.execute(requestValue: .init(userId: userId, imageUrl: profileImagePath), cached: {_ in
                 
             }, completion: {[weak self] result in
-                guard let self = self else { return }
+                guard let strongSelf = self else { return }
                 if case let .success(data) = result {
-                    self.profileImageData.value = data
+                    strongSelf.profileImageData.value = data
                 }
             })
         }

@@ -7,8 +7,8 @@
 
 import UIKit
 
-protocol BaseItemCell {
-    var viewModel: BaseItemViewModel? { get }
+protocol UserListTVCDisplayable {
+    var viewModel: UserListTVCVMDisplayable? { get }
     
-    func fill(with viewModel: BaseItemViewModel, profileImagesRepository: ProfileImagesRepository?)
+    func fill(with viewModel: UserListTVCVMDisplayable, profileImagesRepository: ProfileImagesRepository?)
 }

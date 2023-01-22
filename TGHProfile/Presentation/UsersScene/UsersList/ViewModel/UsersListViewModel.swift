@@ -36,8 +36,8 @@ protocol UsersListViewModelInput {
 }
 
 protocol UsersListViewModelOutput {
-    var items: CurrentValueSubject<[BaseItemViewModel], Never> { get } /// Also we can calculate view model items on demand:  https://github.com/kudoleh/iOS-Clean-Architecture-MVVM/pull/10/files
-    var searchItems: CurrentValueSubject<[BaseItemViewModel], Never> { get }
+    var items: CurrentValueSubject<[UserListTVCVMDisplayable], Never> { get } /// Also we can calculate view model items on demand:  https://github.com/kudoleh/iOS-Clean-Architecture-MVVM/pull/10/files
+    var searchItems: CurrentValueSubject<[UserListTVCVMDisplayable], Never> { get }
     var tableMode: CurrentValueSubject<TableMode, Never> { get }
     var loading: CurrentValueSubject<UsersListViewModelLoading?, Never> { get }
     var query: CurrentValueSubject<String, Never> { get }
@@ -74,8 +74,8 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
     // MARK: - OUTPUT
 
-    let items = CurrentValueSubject<[BaseItemViewModel], Never>([])
-    let searchItems = CurrentValueSubject<[BaseItemViewModel], Never>([])
+    let items = CurrentValueSubject<[UserListTVCVMDisplayable], Never>([])
+    let searchItems = CurrentValueSubject<[UserListTVCVMDisplayable], Never>([])
     let tableMode = CurrentValueSubject<TableMode, Never>(.listAll)
     let loading = CurrentValueSubject<UsersListViewModelLoading?, Never>(.none)
     let query = CurrentValueSubject<String, Never>("")
@@ -101,21 +101,23 @@ final class DefaultUsersListViewModel: UsersListViewModel {
         self.actions = actions
     }
 
-    // MARK: - Private
-
+    // MARK: - Private - All Users List
     private func appendPage(_ usersPage: UsersPage) {
         
         perPage = usersPage.users.count
         since = nextSince
         
         let userIDs = usersPage.users.compactMap { $0.userId }
-        multipleNoteLoadTask = loadUsersNoteUseCase.execute(requestValue: .init(userIds: userIDs)) { result in
+        multipleNoteLoadTask = loadUsersNoteUseCase.execute(requestValue: .init(userIds: userIDs)) { [weak self] result in
+            
+            guard let strongSelf = self else { return }
             
             var usersWithNote: [User] = []
             
             switch result {
             case .success(let notes):
                 
+                // add notes to the users
                 for user in usersPage.users {
                     let userNote = notes.filter {
                         return $0.userId == user.userId
@@ -129,19 +131,20 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                 }
                 
             case .failure(let error):
-                self.handle(error: error)
+                strongSelf.handle(error: error)
                 return
             }
             
             let usersPageWithNote = UsersPage.init(since: usersPage.since, per_page: usersPage.per_page, users: usersWithNote)
 
-            self.pages = self.pages
+            strongSelf.pages = strongSelf.pages
                 .filter { $0.since != usersPageWithNote.since }
                 + [usersPageWithNote]
 
-            var userListItems: [BaseItemViewModel] = []
-            for (_, page) in self.pages.enumerated() {
+            var userListItems: [UserListTVCVMDisplayable] = []
+            for (_, page) in strongSelf.pages.enumerated() {
                 for (userIndex, user) in page.users.enumerated() {
+                    // append different kind of cell view models
                     let isFourthItem = (userListItems.count) % 4 == 3 && userIndex != 0
                     let hasNote = user.note != nil && user.note?.note != "" && user.note?.note != nil
                     if isFourthItem && hasNote {
@@ -155,91 +158,15 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                     }
                 }
             }
-            self.handleAppendAsyncReturnResult(result: .success(userListItems))
-            let userIDsTest = userListItems.compactMap { $0.user.userId }
-            let userIdSet: Set = Set(userIDsTest)
-            
-            var array: [Int] = []
-            for item in userListItems {
-                if let id = item.user.userId{
-                    if array.contains(id) {
-                        print("\(id) is already exist")
-                    } else {
-                        array.append(id)
-                    }
-                }
-            }
-            if userListItems.count != userIdSet.count {
-    
-            }
+            strongSelf.handleAppendAsyncReturnResult(result: .success(userListItems))
         }
     }
     
-    // for search user list page
-    private func setSearchUserPage(_ usersPage: UsersPage) {
-        
-        let userIDs = usersPage.users.compactMap { $0.userId }
-        multipleNoteLoadTask = loadUsersNoteUseCase.execute(requestValue: .init(userIds: userIDs)) { result in
-            
-            var usersWithNote: [User] = []
-            
-            switch result {
-            case .success(let notes):
-                
-                for user in usersPage.users {
-                    let userNote = notes.filter {
-                        return $0.userId == user.userId
-                    }
-                    
-                    var userWithNote: User? = nil
-                    if !userNote.isEmpty {
-                        userWithNote = User.init(login: user.login, userId: user.userId, profileImage: user.profileImage, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
-                    }
-                    usersWithNote.append(userWithNote ?? user)
-                }
-                
-            case .failure(let error):
-                self.handle(error: error)
-                return
-            }
-            
-            let usersPageWithNote = UsersPage.init(since: usersPage.since, per_page: usersPage.per_page, users: usersWithNote)
-
-            self.searchPage = self.searchPage
-                .filter { $0.since != usersPageWithNote.since }
-                + [usersPageWithNote]
-
-            var userListItems: [BaseItemViewModel] = []
-            for (_, page) in self.searchPage.enumerated() {
-                for (userIndex, user) in page.users.enumerated() {
-                    let isFourthItem = (userListItems.count) % 4 == 3 && userIndex != 0
-                    let hasNote = user.note != nil && user.note?.note != "" && user.note?.note != nil
-                    if isFourthItem && hasNote {
-                        userListItems.append(UserListAvatarColourInvertedAndNoteItemViewModel.init(user: user))
-                    } else if isFourthItem {
-                        userListItems.append(UserListAvatarColourInvertedItemViewModel.init(user: user))
-                    } else if hasNote {
-                        userListItems.append(UserListNoteItemViewModel.init(user: user))
-                    } else {
-                        userListItems.append(UsersListItemViewModel.init(user: user))
-                    }
-                }
-            }
-            
-            self.searchItems.value = userListItems
-        }
-    }
-
     private func resetPages() {
         since = 0
         totalPageCount = 1
         pages.removeAll()
         items.value.removeAll()
-    }
-    
-    internal func resetSearchPages() {
-        searchPage.removeAll()
-        searchItems.value.removeAll()
     }
     
     private func loadAllUsers(pageQuery: ListAllUsersUseCaseRequestValue, loading: UsersListViewModelLoading) {
@@ -248,21 +175,23 @@ final class DefaultUsersListViewModel: UsersListViewModel {
         usersLoadTask = listAllUsersUseCase.execute(
             requestValue: pageQuery,
             cached: appendPage,
-            completion: { result in
+            completion: { [weak self] result in
+                
+                guard let strongSelf = self else { return }
+                
                 switch result {
                 case .success(let page):
-                    self.perPage = page.users.count
-                    self.appendPage(page)
-                    self.loading.value = .none
+                    strongSelf.perPage = page.users.count
+                    strongSelf.appendPage(page)
+                    strongSelf.loading.value = .none
                 case .failure(let error):
-                    self.handle(error: error)
-                    self.loading.value = .none
+                    strongSelf.handle(error: error)
+                    strongSelf.loading.value = .none
                 }
         })
     }
     
-    
-    private func handleAppendAsyncReturnResult(result: Result<[BaseItemViewModel], Error>){
+    private func handleAppendAsyncReturnResult(result: Result<[UserListTVCVMDisplayable], Error>){
         switch result {
         case .success(let vms):
             self.items.value = vms
@@ -273,34 +202,98 @@ final class DefaultUsersListViewModel: UsersListViewModel {
         self.loading.value = .none
     }
     
+    private func loadFirstPage() {
+        resetPages()
+        loadAllUsers(pageQuery: ListAllUsersUseCaseRequestValue.init(since: 0, perPage: nil), loading: .nextPage)
+    }
     
+    // MARK: - Private - Search Users List
+    private func setSearchUserPage(_ usersPage: UsersPage) {
+        
+        let userIDs = usersPage.users.compactMap { $0.userId }
+        multipleNoteLoadTask = loadUsersNoteUseCase.execute(requestValue: .init(userIds: userIDs)) { [weak self] result in
+            guard let strongSelf = self else { return }
+            
+            var usersWithNote: [User] = []
+            
+            switch result {
+            case .success(let notes):
+                
+                for user in usersPage.users {
+                    let userNote = notes.filter {
+                        return $0.userId == user.userId
+                    }
+                    
+                    var userWithNote: User? = nil
+                    if !userNote.isEmpty {
+                        userWithNote = User.init(login: user.login, userId: user.userId, profileImage: user.profileImage, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
+                    }
+                    usersWithNote.append(userWithNote ?? user)
+                }
+                
+            case .failure(let error):
+                strongSelf.handle(error: error)
+                return
+            }
+            
+            let usersPageWithNote = UsersPage.init(since: usersPage.since, per_page: usersPage.per_page, users: usersWithNote)
+
+            strongSelf.searchPage = strongSelf.searchPage
+                .filter { $0.since != usersPageWithNote.since }
+                + [usersPageWithNote]
+
+            var userListItems: [UserListTVCVMDisplayable] = []
+            for (_, page) in strongSelf.searchPage.enumerated() {
+                for (userIndex, user) in page.users.enumerated() {
+                    let isFourthItem = (userListItems.count) % 4 == 3 && userIndex != 0
+                    let hasNote = user.note != nil && user.note?.note != "" && user.note?.note != nil
+                    if isFourthItem && hasNote {
+                        userListItems.append(UserListAvatarColourInvertedAndNoteItemViewModel.init(user: user))
+                    } else if isFourthItem {
+                        userListItems.append(UserListAvatarColourInvertedItemViewModel.init(user: user))
+                    } else if hasNote {
+                        userListItems.append(UserListNoteItemViewModel.init(user: user))
+                    } else {
+                        userListItems.append(UsersListItemViewModel.init(user: user))
+                    }
+                }
+            }
+            
+            strongSelf.searchItems.value = userListItems
+        }
+    }
+
+    internal func resetSearchPages() {
+        searchPage.removeAll()
+        searchItems.value.removeAll()
+    }
+
     private func searchUser(userQuery: UserQuery, loading: UsersListViewModelLoading) {
         self.loading.value = loading
         query.value = userQuery.query
 
         usersLoadTask = searchUsersUseCase.execute(
             requestValue: .init(query: userQuery.query),
-            completion: { result in
+            completion: { [weak self] result in
+                
+                guard let strongSelf = self else { return }
+                
                 switch result {
                 case .success(let page):
-                    self.resetSearchPages()
-                    self.setSearchUserPage(page)
+                    strongSelf.resetSearchPages()
+                    strongSelf.setSearchUserPage(page)
                 case .failure(let error):
-                    self.handle(error: error)
+                    strongSelf.handle(error: error)
                 }
-                self.loading.value = .none
+                strongSelf.loading.value = .none
         })
     }
 
+    // MARK: - Private - General
     private func handle(error: Error) {
         self.error.value = error.isInternetConnectionError ?
             NSLocalizedString("No internet connection", comment: "") :
             NSLocalizedString("Failed loading users", comment: "")
-    }
-
-    private func loadFirstPage() {
-        resetPages()
-        loadAllUsers(pageQuery: ListAllUsersUseCaseRequestValue.init(since: 0, perPage: nil), loading: .nextPage)
     }
 }
 
@@ -335,60 +328,66 @@ extension DefaultUsersListViewModel {
     }
 
     func didSelectItem(at index: Int) {
-        actions?.showUserDetails(self.items.value[index].user.login ?? "", self.items.value[index].user.note?.note ?? "") { note in
-            let isFourthItem = (self.items.value.count) % 4 == 3 && index != 0
+        actions?.showUserDetails(self.items.value[index].user.login ?? "", self.items.value[index].user.note?.note ?? "") { [weak self] note in
+            
+            guard let strongSelf = self else { return }
+            
+            let isFourthItem = (strongSelf.items.value.count) % 4 == 3 && index != 0
             if let noteString = note.note, noteString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
                 
-                if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
-                    self.searchItems.value[searchItemIndex].user.note = note
-                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user) : UserListNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user)
+                if let searchItemIndex = strongSelf.searchItems.value.indices.filter({ return strongSelf.searchItems.value[$0].user.userId == note.userId }).first {
+                    strongSelf.searchItems.value[searchItemIndex].user.note = note
+                    strongSelf.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: strongSelf.searchItems.value[searchItemIndex].user) : UserListNoteItemViewModel.init(user: strongSelf.searchItems.value[searchItemIndex].user)
                 }
                 
-                if let itemIndex = self.items.value.indices.filter({ return self.items.value[$0].user.userId == note.userId }).first {
-                    self.items.value[itemIndex].user.note = note
-                    self.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.items.value[itemIndex].user) : UserListNoteItemViewModel.init(user: self.items.value[itemIndex].user)
+                if let itemIndex = strongSelf.items.value.indices.filter({ return strongSelf.items.value[$0].user.userId == note.userId }).first {
+                    strongSelf.items.value[itemIndex].user.note = note
+                    strongSelf.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: strongSelf.items.value[itemIndex].user) : UserListNoteItemViewModel.init(user: strongSelf.items.value[itemIndex].user)
                 }
                 
             } else {
                 
-                if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
-                    self.searchItems.value[searchItemIndex].user.note = note
-                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.searchItems.value[searchItemIndex].user) : UsersListItemViewModel.init(user: self.searchItems.value[searchItemIndex].user)
+                if let searchItemIndex = strongSelf.searchItems.value.indices.filter({ return strongSelf.searchItems.value[$0].user.userId == note.userId }).first {
+                    strongSelf.searchItems.value[searchItemIndex].user.note = note
+                    strongSelf.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: strongSelf.searchItems.value[searchItemIndex].user) : UsersListItemViewModel.init(user: strongSelf.searchItems.value[searchItemIndex].user)
                 }
                 
-                if let itemIndex = self.items.value.indices.filter({ return self.items.value[$0].user.userId == note.userId }).first {
-                    self.items.value[itemIndex].user.note = note
-                    self.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.items.value[itemIndex].user) : UsersListItemViewModel.init(user: self.items.value[itemIndex].user)
+                if let itemIndex = strongSelf.items.value.indices.filter({ return strongSelf.items.value[$0].user.userId == note.userId }).first {
+                    strongSelf.items.value[itemIndex].user.note = note
+                    strongSelf.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: strongSelf.items.value[itemIndex].user) : UsersListItemViewModel.init(user: strongSelf.items.value[itemIndex].user)
                 }
             }
         }
     }
     
     func didSelectSearchItem(at index: Int) {
-        actions?.showUserDetails(self.searchItems.value[index].user.login ?? "", self.searchItems.value[index].user.note?.note ?? "") { note in
-            let isFourthItem = (self.searchItems.value.count) % 4 == 3 && index != 0
+        actions?.showUserDetails(self.searchItems.value[index].user.login ?? "", self.searchItems.value[index].user.note?.note ?? "") { [weak self] note in
+            
+            guard let strongSelf = self else { return }
+            
+            let isFourthItem = (strongSelf.searchItems.value.count) % 4 == 3 && index != 0
             if let noteString = note.note, noteString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
                 
-                if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
-                    self.searchItems.value[searchItemIndex].user.note = note
-                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user) : UserListNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user)
+                if let searchItemIndex = strongSelf.searchItems.value.indices.filter({ return strongSelf.searchItems.value[$0].user.userId == note.userId }).first {
+                    strongSelf.searchItems.value[searchItemIndex].user.note = note
+                    strongSelf.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: strongSelf.searchItems.value[searchItemIndex].user) : UserListNoteItemViewModel.init(user: strongSelf.searchItems.value[searchItemIndex].user)
                 }
                 
-                if let itemIndex = self.items.value.indices.filter({ return self.items.value[$0].user.userId == note.userId }).first {
-                    self.items.value[itemIndex].user.note = note
-                    self.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.items.value[itemIndex].user) : UserListNoteItemViewModel.init(user: self.items.value[itemIndex].user)
+                if let itemIndex = strongSelf.items.value.indices.filter({ return strongSelf.items.value[$0].user.userId == note.userId }).first {
+                    strongSelf.items.value[itemIndex].user.note = note
+                    strongSelf.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: strongSelf.items.value[itemIndex].user) : UserListNoteItemViewModel.init(user: strongSelf.items.value[itemIndex].user)
                 }
                 
             } else {
                 
-                if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
-                    self.searchItems.value[searchItemIndex].user.note = note
-                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.searchItems.value[searchItemIndex].user) : UsersListItemViewModel.init(user: self.searchItems.value[searchItemIndex].user)
+                if let searchItemIndex = strongSelf.searchItems.value.indices.filter({ return strongSelf.searchItems.value[$0].user.userId == note.userId }).first {
+                    strongSelf.searchItems.value[searchItemIndex].user.note = note
+                    strongSelf.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: strongSelf.searchItems.value[searchItemIndex].user) : UsersListItemViewModel.init(user: strongSelf.searchItems.value[searchItemIndex].user)
                 }
                 
-                if let itemIndex = self.items.value.indices.filter({ return self.items.value[$0].user.userId == note.userId }).first {
-                    self.items.value[itemIndex].user.note = note
-                    self.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.items.value[itemIndex].user) : UsersListItemViewModel.init(user: self.items.value[itemIndex].user)
+                if let itemIndex = strongSelf.items.value.indices.filter({ return strongSelf.items.value[$0].user.userId == note.userId }).first {
+                    strongSelf.items.value[itemIndex].user.note = note
+                    strongSelf.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: strongSelf.items.value[itemIndex].user) : UsersListItemViewModel.init(user: strongSelf.items.value[itemIndex].user)
                 }
             }
         }

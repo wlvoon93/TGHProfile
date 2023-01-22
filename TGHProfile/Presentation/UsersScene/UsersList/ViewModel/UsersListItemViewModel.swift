@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UsersListItemViewModel: Equatable, BaseItemViewModel {
+struct UsersListItemViewModel: Equatable, UserListTVCVMDisplayable {
     let cellType: CellTypes
     var user: User
 }

@@ -104,10 +104,11 @@ extension DefaultUsersRepository: UsersRepository {
             guard !task.isCancelled else { return }
 
             let endpoint = APIEndpoints.getUserDetails(with: requestDTO)
-            task.networkTask = self.dataTransferService.request(with: endpoint, completion: { result in
+            task.networkTask = self.dataTransferService.request(with: endpoint, completion: { [weak self] result in
+                guard let strongSelf = self else { return }
                 switch result {
                 case .success(let responseDTO):
-                    self.cache.updateUser(response: responseDTO, for: requestDTO)
+                    strongSelf.cache.updateUser(response: responseDTO, for: requestDTO)
                     completion(.success(responseDTO.toDomain()))
                     
                 case .failure(let error):

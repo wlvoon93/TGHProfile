@@ -61,7 +61,7 @@ extension UsersListTableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: self.viewModel.items.value[indexPath.row].cellType.rawValue,
-                                                       for: indexPath) as? BaseItemCell else {
+                                                       for: indexPath) as? UserListTVCDisplayable else {
             assertionFailure("Cannot dequeue reusable cell \(UsersListItemCell.self) with reuseIdentifier: \(UsersListItemCell.reuseIdentifier)")
             return UITableViewCell()
         }

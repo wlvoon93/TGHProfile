@@ -15,7 +15,7 @@ enum CellTypes: String{
     case noteAndFourthItem = "noteAndFourthItemCell"
 }
 
-protocol BaseItemViewModel {
+protocol UserListTVCVMDisplayable {
     var user: User { get set }
     var cellType: CellTypes { get }
 }

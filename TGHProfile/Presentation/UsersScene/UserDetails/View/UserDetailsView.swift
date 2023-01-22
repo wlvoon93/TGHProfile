@@ -108,13 +108,65 @@ final class UserDetailsViewModelWrapper: ObservableObject {
     
     init(viewModel: UserDetailsViewModel?) {
         self.viewModel = viewModel
-        viewModel?.username.receive(on: DispatchQueue.main).sink { [weak self] value in self?.username = value }.store(in: &subsciptions)
-        viewModel?.company.receive(on: DispatchQueue.main).sink { [weak self] value in self?.company = value }.store(in: &subsciptions)
-        viewModel?.blog.receive(on: DispatchQueue.main).sink { [weak self] value in self?.blog = value }.store(in: &subsciptions)
-        viewModel?.following.receive(on: DispatchQueue.main).sink { [weak self] value in self?.following = value }.store(in: &subsciptions)
-        viewModel?.followers.receive(on: DispatchQueue.main).sink { [weak self] value in self?.followers = value }.store(in: &subsciptions)
-        viewModel?.profileImageData.receive(on: DispatchQueue.main).sink { [weak self] value in self?.profileImageData = value }.store(in: &subsciptions)
-        viewModel?.note.receive(on: DispatchQueue.main).sink { [weak self] value in self?.note = value }.store(in: &subsciptions)
+        viewModel?.username.receive(on: DispatchQueue.main).sink { [weak self] value in
+            guard let strongSelf = self else { return }
+            strongSelf.username = value
+        }.store(in: &subsciptions)
+        
+        viewModel?.company.receive(on: DispatchQueue.main).sink { [weak self] value in
+            guard let strongSelf = self else { return }
+            strongSelf.company = value
+        }.store(in: &subsciptions)
+        
+        viewModel?.blog.receive(on: DispatchQueue.main).sink { [weak self] value in
+            guard let strongSelf = self else { return }
+            strongSelf.blog = value
+        }.store(in: &subsciptions)
+        
+        viewModel?.following.receive(on: DispatchQueue.main).sink { [weak self] value in
+            guard let strongSelf = self else { return }
+            strongSelf.following = value
+        }.store(in: &subsciptions)
+        
+        viewModel?.followers.receive(on: DispatchQueue.main).sink { [weak self] value in
+            guard let strongSelf = self else { return }
+            strongSelf.followers = value
+        }.store(in: &subsciptions)
+        
+        viewModel?.profileImageData.receive(on: DispatchQueue.main).sink { [weak self] value in
+            guard let strongSelf = self else { return }
+            strongSelf.profileImageData = value
+        }.store(in: &subsciptions)
+        
+        viewModel?.note.receive(on: DispatchQueue.main).sink { [weak self] value in
+            guard let strongSelf = self else { return }
+            strongSelf.note = value
+        }.store(in: &subsciptions)
+        
+        viewModel?.error.receive(on: DispatchQueue.main).sink { [weak self] value in
+            guard let strongSelf = self else { return }
+            strongSelf.showError(value)
+        }.store(in: &subsciptions)
+        
+        setupReachability()
+    }
+    
+    func showError(_ error: String) {
+        _ = Alert(title: Text("Error"), message: Text(error), dismissButton: .default(Text("Got it!")))
+    }
+    
+    private func setupReachability() {
+        NotificationCenter.default.addObserver(self, selector: #selector(showOfflineDeviceUI(notification:)), name: NSNotification.Name.connectivityStatus, object: nil)
+    }
+    
+    @objc func showOfflineDeviceUI(notification: Notification) {
+        if NetworkMonitor.shared.isConnected {
+            print("Connected")
+            viewModel?.load()
+        } else {
+            print("Not connected")
+            viewModel?.handleReachabilityNoInternet()
+        }
     }
 }
 

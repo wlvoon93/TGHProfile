@@ -44,16 +44,35 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     }
 
     private func bind(to viewModel: UsersListViewModel) {
-        viewModel.items.sink {  [weak self] _ in self?.updateItems() }.store(in: &subsciptions)
-        viewModel.searchItems.sink { [weak self] _ in self?.updateSearchItems() }.store(in: &subsciptions)
-        viewModel.loading.sink { [weak self] in
-            self?.updateLoading($0)
+        viewModel.items.sink {  [weak self] _ in
+            guard let strongSelf = self else { return }
+            strongSelf.updateItems()
         }.store(in: &subsciptions)
-        viewModel.query.sink { [weak self] in self?.updateSearchQuery($0) }.store(in: &subsciptions)
-        viewModel.error.sink { [weak self] in self?.showError($0) }.store(in: &subsciptions)
+        
+        viewModel.searchItems.sink { [weak self] _ in
+            guard let strongSelf = self else { return }
+            strongSelf.updateSearchItems()
+        }.store(in: &subsciptions)
+        
+        viewModel.loading.sink { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.updateLoading($0)
+        }.store(in: &subsciptions)
+        
+        viewModel.query.sink { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.updateSearchQuery($0)
+        }.store(in: &subsciptions)
+        
+        viewModel.error.sink { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.showError($0)
+        }.store(in: &subsciptions)
+        
         viewModel.tableMode.sink { [weak self] in
-            self?.displayTable($0)
-            self?.title = ($0 == TableMode.listAll) ? "Users" : "Search User"
+            guard let strongSelf = self else { return }
+            strongSelf.displayTable($0)
+            strongSelf.title = ($0 == TableMode.listAll) ? "Users" : "Search User"
         }.store(in: &subsciptions)
     }
 

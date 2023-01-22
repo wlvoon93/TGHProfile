@@ -183,7 +183,6 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
             let userDetailsDTO = requestUserDetailsEntity?.toDTO()
             
             completion(.success(userDetailsDTO))
-     
         } catch {
             completion(.failure(CoreDataStorageError.readError(error)))
         }

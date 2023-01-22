@@ -7,8 +7,8 @@
 
 import UIKit
 
-final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell, BaseItemCell {
-    internal var viewModel: BaseItemViewModel?
+final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell, UserListTVCDisplayable {
+    internal var viewModel: UserListTVCVMDisplayable?
   
     static let reuseIdentifier = String(describing: UsersListItemCell.self)
     static let height = CGFloat(130)
@@ -68,7 +68,7 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell, BaseIt
         userTypeLabel.text = nil
     }
 
-    func fill(with viewModel: BaseItemViewModel, profileImagesRepository: ProfileImagesRepository?) {
+    func fill(with viewModel: UserListTVCVMDisplayable, profileImagesRepository: ProfileImagesRepository?) {
         self.viewModel = viewModel
         self.profileImagesRepository = profileImagesRepository
 
