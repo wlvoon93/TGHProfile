@@ -83,15 +83,27 @@ final class UsersListItemCell: UITableViewCell, BaseItemCell {
     }
 
     private func updateProfileImage(width: Int) {
-        guard let profileImagePath = viewModel?.user.avatar_url else { return }
-
-        imageLoadTask = profileImagesRepository?.fetchImage(with: profileImagePath, width: width) { [weak self] result in
-            guard let self = self else { return }
-            guard self.viewModel?.user.avatar_url == profileImagePath else { return }
-            if case let .success(data) = result {
-                self.profileImageView.image = UIImage(data: data)
+        guard let profileImagePath = viewModel?.user.profileImage?.imageUrl else { return }
+        
+        if let profileImageData = viewModel?.user.profileImage?.image {
+            self.profileImageView.image = UIImage(data: profileImageData)
+        } else {
+            imageLoadTask = profileImagesRepository?.fetchImage(with: profileImagePath, width: width) { [weak self] result in
+                guard let self = self else { return }
+                if case let .success(data) = result {
+                    if let profileImage = UIImage(data: data) {
+                            
+                        self.profileImageView.image = profileImage
+                        
+                        if let userId = self.viewModel?.user.userId {
+                            _ = self.profileImagesRepository?.saveImage(userId: userId, imageData: data, completion: { _ in
+                                
+                            })
+                        }
+                    }
+                }
+                self.imageLoadTask = nil
             }
-            self.imageLoadTask = nil
         }
     }
 }

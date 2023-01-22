@@ -9,6 +9,7 @@ import Foundation
 
 protocol LoadUserDetailsUseCase {
     func execute(requestValue: LoadUserDetailsUseCaseRequestValue,
+                 cached: @escaping (User) -> Void,
                  completion: @escaping (Result<User, Error>) -> Void) -> Cancellable? 
 }
 
@@ -22,9 +23,11 @@ final class DefaultLoadUserDetailsUseCase: LoadUserDetailsUseCase {
     }
 
     func execute(requestValue: LoadUserDetailsUseCaseRequestValue,
+                 cached: @escaping (User) -> Void,
                  completion: @escaping (Result<User, Error>) -> Void) -> Cancellable? {
 
         return usersRepository.fetchUserDetails(query: .init(username: requestValue.username),
+                                                cached: cached,
                                                 completion: { result in
             completion(result)
         })

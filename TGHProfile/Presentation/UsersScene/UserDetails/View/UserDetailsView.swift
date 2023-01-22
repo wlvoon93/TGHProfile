@@ -12,20 +12,16 @@ import SwiftUI
 struct UserDetailsView: View {
     @ObservedObject var viewModelWrapper: UserDetailsViewModelWrapper
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @State var noteString: String = "Contrary to popular belief, Lorem ipsum is the best placeholder text eva"
+    @State var noteString: String = ""
 
     var body: some View {
         List {
             VStack(spacing: 8) {
-                RemoteImageView(
-                  urlString: viewModelWrapper.avatarUrl,
-                  placeholder: {
-                    Image("placeholder").frame(width: 40) // etc.
-                  },
-                  image: {
-                    $0.resizable().aspectRatio(UIImage(named: "profile_picture")!.size, contentMode: .fill)
-                  }
-                ).padding(.top, 10)
+                Image(uiImage: viewModelWrapper.profileImageData != nil ? (UIImage(data: viewModelWrapper.profileImageData!) ?? UIImage(named: "placeholder"))! : UIImage(named: "placeholder")!)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200, height: 200)
+                    .padding(.top, 10)
                 HStack(spacing: 30) {
                     Text("followers: \(viewModelWrapper.followers)")
                     Text("following: \(viewModelWrapper.following)")
@@ -82,7 +78,7 @@ final class UserDetailsViewModelWrapper: ObservableObject {
     @Published var blog: String = ""
     @Published var following: Int = 0
     @Published var followers: Int = 0
-    @Published var avatarUrl: String = ""
+    @Published var profileImageData: Data? = nil
     @Published var noteString: String = ""
     
     init(viewModel: UserDetailsViewModel?) {
@@ -92,8 +88,7 @@ final class UserDetailsViewModelWrapper: ObservableObject {
         viewModel?.blog.observe(on: self) { [weak self] value in self?.blog = value }
         viewModel?.following.observe(on: self) { [weak self] value in self?.following = value }
         viewModel?.followers.observe(on: self) { [weak self] value in self?.followers = value }
-        viewModel?.avatarUrl.observe(on: self) { [weak self] value in self?.avatarUrl = value }
-        viewModel?.avatarUrl.observe(on: self) { [weak self] value in self?.noteString = value }
+        viewModel?.profileImageData.observe(on: self) { [weak self] value in self?.profileImageData = value }
     }
 }
 

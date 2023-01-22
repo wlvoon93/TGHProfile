@@ -21,6 +21,7 @@ final class UsersSceneDIContainer {
     lazy var usersQueriesStorage: UsersQueriesStorage = CoreDataUsersQueriesStorage(maxStorageLimit: 10)
     lazy var usersResponseCache: UsersResponseStorage = CoreDataUsersResponseStorage()
     lazy var userNoteResponseCache: UserNoteResponseStorage = CoreDataUserNoteResponseStorage()
+    lazy var userProfileImageCache: UserProfileImageStorage = CoreDataUserImageStorage()
 
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -64,7 +65,7 @@ final class UsersSceneDIContainer {
                                               usersQueriesPersistentStorage: usersQueriesStorage)
     }
     func makeProfileImagesRepository() -> ProfileImagesRepository {
-        return DefaultProfileImagesRepository(dataTransferService: dependencies.imageDataTransferService)
+        return DefaultProfileImagesRepository(dataTransferService: dependencies.imageDataTransferService, cache: userProfileImageCache)
     }
     func makeUserNoteRepository() -> UserNoteRepository {
         return DefaultUserNoteRepository(cache: userNoteResponseCache)
@@ -94,6 +95,7 @@ final class UsersSceneDIContainer {
         return DefaultUserDetailsViewModel(username: username,
                                            loadUserDetailsUseCase: makeLoadUserDetailsUseCase(),
                                            saveUserNoteUseCase: makeSaveUserNoteUseCase(),
+                                           profileImagesRepository: makeProfileImagesRepository(),
                                            didSaveNote: didSaveNote)
     }
     

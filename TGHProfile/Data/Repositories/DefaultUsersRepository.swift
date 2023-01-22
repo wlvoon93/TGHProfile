@@ -42,14 +42,21 @@ extension DefaultUsersRepository: UsersRepository {
             task.networkTask = self.dataTransferService.requestAll(with: endpoint, completion: { result in
                 switch result {
                 case .success(let responseDTOs):
-                    if let responseDTOsCasted = responseDTOs as? [UsersResponseDTO] {
-                        let users = responseDTOsCasted.map {
-                            UsersPageResponseDTO.UserDTO.init(login: $0.login, id: $0.id, avatar_url: $0.avatar_url, type: $0.type, note: nil, following: nil, followers: nil, company: nil, blog: nil) }
-                        let usersPageResponseDTO = UsersPageResponseDTO.init(since: requestDTO.since, per_page: users.count, users: users)
-                        let usersRequestDTO = UsersRequestDTO.init(since: since, per_page: users.count)
-                        self.cache.save(response: usersPageResponseDTO, for:usersRequestDTO)
-                        completion(.success(usersPageResponseDTO.toDomain()))
-                    }
+                    let users = responseDTOs.map {
+                        UsersPageResponseDTO.UserDTO.init(login: $0.login,
+                                                          id: $0.id,
+                                                          profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: $0.avatar_url, image: nil, invertedImage: nil),
+                                                          type: $0.type,
+                                                          note: nil,
+                                                          following: nil,
+                                                          followers: nil,
+                                                          company: nil,
+                                                          blog: nil) }
+                    let usersPageResponseDTO = UsersPageResponseDTO.init(since: requestDTO.since, per_page: users.count, users: users)
+                    let usersRequestDTO = UsersRequestDTO.init(since: since, per_page: users.count)
+                    self.cache.save(response: usersPageResponseDTO, for:usersRequestDTO)
+                    completion(.success(usersPageResponseDTO.toDomain()))
+                    
                 case .failure(let error):
                     completion(.failure(error))
                 }
@@ -73,10 +80,8 @@ extension DefaultUsersRepository: UsersRepository {
             
             switch result {
             case .success(let responseDTOs):
-                // use, UsersResponse DTO
-                // convert array(responseDTOs) into UserPageDTO
                 if let responseDTOsCasted = responseDTOs as? [UsersResponseDTO] {
-                    let users = responseDTOsCasted.map { UsersPageResponseDTO.UserDTO.init(login: $0.login, id: $0.id, avatar_url: $0.avatar_url, type: $0.type, note: nil, following: nil, followers: nil, company: nil, blog: nil) }
+                    let users = responseDTOsCasted.map { UsersPageResponseDTO.UserDTO.init(login: $0.login, id: $0.id, profileImage: .init(imageUrl: $0.avatar_url, image: nil, invertedImage: nil), type: $0.type, note: nil, following: nil, followers: nil, company: nil, blog: nil) }
                     let usersPageResponseDTO = UsersPageResponseDTO.init(since: 0, per_page: users.count, users: users)
                     completion(.success(usersPageResponseDTO.toDomain()))
                 }
@@ -88,6 +93,7 @@ extension DefaultUsersRepository: UsersRepository {
     }
     
     func fetchUserDetails(query: UserDetailsQuery,
+                          cached: @escaping (User) -> Void,
                           completion: @escaping (Result<User, Error>) -> Void) -> Cancellable? {
         let requestDTO = UserDetailsRequestDTO(username: query.username)
         let task = RepositoryTask()
@@ -95,7 +101,7 @@ extension DefaultUsersRepository: UsersRepository {
         cache.getUserDetailsResponse(for: requestDTO) { result in
 
             if case let .success(responseDTO?) = result {
-                printIfDebug("User \(String(describing: responseDTO.login)) saved.")
+                cached(responseDTO.toDomain())
             }
             guard !task.isCancelled else { return }
 

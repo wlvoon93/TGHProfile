@@ -19,14 +19,22 @@ extension UsersPageResponseEntity {
 extension UserResponseEntity {
     func toDTO() -> UsersPageResponseDTO.UserDTO {
         return .init(login: login,
-                     id: Int(id),
-                     avatar_url: avatarUrl,
+                     id: Int(userId),
+                     profileImage: profileImage?.toDTO(),
                      type: type,
                      note: nil,
                      following: Int(following),
                      followers: Int(followers),
                      company: company,
                      blog: blog)
+    }
+}
+
+extension UserProfileImageEntity {
+    func toDTO() -> UsersPageResponseDTO.UserDTO.ProfileImageDTO {
+        return .init(imageUrl: imageUrl,
+                     image: image,
+                     invertedImage: invertedImage)
     }
 }
 
@@ -54,10 +62,20 @@ extension UsersPageResponseDTO {
 extension UsersPageResponseDTO.UserDTO {
     func toEntity(in context: NSManagedObjectContext) -> UserResponseEntity {
         let entity: UserResponseEntity = .init(context: context)
-        entity.id = Int64(id)
+        entity.userId = Int64(id)
         entity.login = login
-        entity.avatarUrl = avatar_url
+        entity.profileImage = profileImage?.toEntity(in: context)
         entity.type = type
+        return entity
+    }
+}
+
+extension UsersPageResponseDTO.UserDTO.ProfileImageDTO {
+    func toEntity(in context: NSManagedObjectContext) -> UserProfileImageEntity {
+        let entity: UserProfileImageEntity = .init(context: context)
+        entity.imageUrl = imageUrl
+        entity.image = image
+        entity.invertedImage = invertedImage
         return entity
     }
 }

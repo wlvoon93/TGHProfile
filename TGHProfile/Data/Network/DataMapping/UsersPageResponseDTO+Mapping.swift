@@ -7,12 +7,6 @@
 
 import Foundation
 
-//struct UsersPageResponseDTO: Decodable {
-//    let since: Int?
-//    let per_page: Int?
-//    let users: [User]?
-//}
-
 struct UsersPageResponseDTO: Decodable {
     let since: Int
     let per_page: Int
@@ -20,16 +14,26 @@ struct UsersPageResponseDTO: Decodable {
 }
 
 extension UsersPageResponseDTO {
-    struct UserDTO: Decodable {
+    struct UserDTO: Decodable, Comparable {
+                
         let login: String?
         let id: Int
-        let avatar_url: String?
+        let profileImage: ProfileImageDTO?
         let type: String?
         let note: NoteDTO?
         let following: Int?
         let followers: Int?
         let company: String?
         let blog: String?
+        
+        static func < (lhs: UsersPageResponseDTO.UserDTO, rhs: UsersPageResponseDTO.UserDTO) -> Bool {
+            lhs.id < rhs.id
+        }
+        
+        static func == (lhs: UsersPageResponseDTO.UserDTO, rhs: UsersPageResponseDTO.UserDTO) -> Bool {
+            lhs.id == rhs.id
+        }
+
     }
 }
 
@@ -37,6 +41,14 @@ extension UsersPageResponseDTO.UserDTO {
     struct NoteDTO: Decodable {
         let note: String?
         let userId: Int
+    }
+}
+
+extension UsersPageResponseDTO.UserDTO {
+    struct ProfileImageDTO: Decodable {
+        let imageUrl: String?
+        let image: Data?
+        let invertedImage: Data?
     }
 }
 
@@ -52,8 +64,8 @@ extension UsersPageResponseDTO.UserDTO {
     func toDomain() -> User {
         
         return .init(login: login,
-                     id: id,
-                     avatar_url: avatar_url,
+                     userId: id,
+                     profileImage: .init(imageUrl: profileImage?.imageUrl, image: profileImage?.image, invertedImage: profileImage?.invertedImage),
                      type: type,
                      note: nil,
                      following: nil,

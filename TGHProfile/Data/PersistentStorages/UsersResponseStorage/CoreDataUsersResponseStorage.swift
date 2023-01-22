@@ -91,11 +91,20 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
                     // put note dto into response page dto
                     let fetchNotesRequest = self.fetchNotesRequest(for: userPageResponseDTO.users)
                     let userNoteEntities = try context.fetch(fetchNotesRequest)
-                    for user in userPageResponseDTO.users{
+                    // sort the users
+                    let sortedUsers = userPageResponseDTO.users.sorted()
+                    for user in sortedUsers{
                         for note in userNoteEntities {
                             if note.userId == user.id {
                                 
-                                let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login, id: user.id, avatar_url: user.avatar_url, type: user.type, note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)), following: nil, followers: nil, company: nil, blog: nil)
+                                let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login,
+                                                                                id: user.id,
+                                                                                profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: user.profileImage?.imageUrl, image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
+                                                                                type: user.type,
+                                                                                note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)),
+                                                                                following: nil,
+                                                                                followers: nil,
+                                                                                company: nil, blog: nil)
                                 userDTOs.append(userDTO)
                             }
                         }
@@ -118,7 +127,21 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
             do {
                 let fetchRequest = self.fetchSearchRequest(for: requestDto)
                 let userResponseEntities = try context.fetch(fetchRequest)
-                let userWithoutNoteDTOs = userResponseEntities.map { UsersPageResponseDTO.UserDTO.init(login: $0.login, id: Int($0.id), avatar_url: $0.avatarUrl, type: $0.type, note: nil, following: nil, followers: nil, company: nil, blog: nil) }
+                let userWithoutNoteDTOs = userResponseEntities.map {
+                                            UsersPageResponseDTO.UserDTO.init(
+                                                login: $0.login,
+                                                id: Int($0.userId),
+                                                profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO(
+                                                    imageUrl: $0.profileImage?.imageUrl,
+                                                    image: $0.profileImage?.image,
+                                                    invertedImage: $0.profileImage?.invertedImage),
+                                                type: $0.type,
+                                                note: nil,
+                                                following: nil,
+                                                followers: nil,
+                                                company: nil,
+                                                blog: nil)
+                }
                 let fetchNotesRequest = self.fetchNotesRequest(for: userWithoutNoteDTOs)
                 let userNoteEntities = try context.fetch(fetchNotesRequest)
                 var userWithNoteDTOs:[UsersPageResponseDTO.UserDTO] = []
@@ -126,7 +149,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
                     for note in userNoteEntities {
                         if note.userId == user.id {
                             
-                            let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login, id: user.id, avatar_url: user.avatar_url, type: user.type, note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)), following: nil, followers: nil, company: nil, blog: nil)
+                            let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login, id: user.id, profileImage: user.profileImage, type: user.type, note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)), following: nil, followers: nil, company: nil, blog: nil)
                             userWithNoteDTOs.append(userDTO)
                         }
                     }
@@ -203,14 +226,14 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
             do {
                 let fetchUserDetailsRequest = self.fetchUserDetailsResponse(for: requestDto)
                 let requestUserDetailsEntity = try context.fetch(fetchUserDetailsRequest).first
-                
-                requestUserDetailsEntity?.setValue(responseDto.id, forKey: "id")
-                requestUserDetailsEntity?.setValue(responseDto.avatar_url, forKey: "avatarUrl")
+                requestUserDetailsEntity?.profileImage?.setValue(responseDto.avatar_url, forKey: "imageUrl")
+                requestUserDetailsEntity?.setValue(responseDto.id, forKey: "userId")
                 requestUserDetailsEntity?.setValue(responseDto.type, forKey: "type")
                 requestUserDetailsEntity?.setValue(responseDto.followers, forKey: "followers")
                 requestUserDetailsEntity?.setValue(responseDto.following, forKey: "following")
                 requestUserDetailsEntity?.setValue(responseDto.company, forKey: "company")
                 requestUserDetailsEntity?.setValue(responseDto.blog, forKey: "blog")
+                
                 
                 try context.save()
             } catch {

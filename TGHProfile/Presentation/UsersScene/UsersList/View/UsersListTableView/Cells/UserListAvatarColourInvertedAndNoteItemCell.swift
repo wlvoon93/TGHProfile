@@ -100,23 +100,30 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell, BaseIt
     }
 
     private func updateProfileImage(width: Int) {
-        var cellVM = viewModel as! UserListAvatarColourInvertedAndNoteItemViewModel
-        if let savedImage = cellVM.profileImage {
-            self.profileImageView.image = savedImage
-            return
-        }
-        guard let profileImagePath = viewModel?.user.avatar_url else { return }
+        guard let profileImagePath = viewModel?.user.profileImage?.imageUrl else { return }
 
         imageLoadTask = profileImagesRepository?.fetchImage(with: profileImagePath, width: width) { [weak self] result in
             guard let self = self else { return }
-            guard self.viewModel?.user.avatar_url == profileImagePath else { return }
+            guard self.viewModel?.user.profileImage?.imageUrl == profileImagePath else { return }
             if case let .success(data) = result {
-                let beginImage = CIImage(image: UIImage(data: data)!)
-                if let filter = CIFilter(name: "CIColorInvert") {
+                if let filter = CIFilter(name: "CIColorInvert"), let initialImage = UIImage(data: data) {
+                    let beginImage = CIImage(image: initialImage)
                     filter.setValue(beginImage, forKey: kCIInputImageKey)
-                    let newImage = UIImage(ciImage: filter.outputImage!)
-                    self.profileImageView.image = newImage
-                    cellVM.profileImage = newImage
+                    if let outputCiimage = filter.outputImage,
+                        let filteredImageData = UIImage(ciImage: outputCiimage).pngData() {
+                        
+                        self.profileImageView.image = UIImage(data: filteredImageData)
+                        
+                        if let userId = self.viewModel?.user.userId {
+                            self.profileImageView.image = UIImage(data: filteredImageData)
+                            _ = self.profileImagesRepository?.saveImage(userId: userId, imageData: data, completion: { _ in
+                                
+                            })
+                            _ = self.profileImagesRepository?.saveInvertedImage(userId: userId, imageData: filteredImageData, completion: { _ in
+                                
+                            })
+                        }
+                    }
                 }
             }
             self.imageLoadTask = nil

@@ -9,7 +9,6 @@ import Foundation
 import UIKit
 
 struct UserListAvatarColourInvertedItemViewModel: Equatable, BaseItemViewModel {
-    var profileImage: UIImage?
     let cellType: CellTypes
     let user: User
 }

@@ -21,8 +21,8 @@ struct UsersSearchResponseDTO: Decodable {
 extension UsersSearchResponseDTO {
     func toDomain() -> User {
         return .init(login: login,
-                     id: id,
-                     avatar_url: avatar_url,
+                     userId: id,
+                     profileImage: .init(imageUrl: avatar_url, image: nil, invertedImage: nil),
                      type: type,
                      note: nil,
                      following: nil,

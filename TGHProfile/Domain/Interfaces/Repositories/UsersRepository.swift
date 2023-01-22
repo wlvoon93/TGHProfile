@@ -18,5 +18,6 @@ protocol UsersRepository {
     
     @discardableResult
     func fetchUserDetails(query: UserDetailsQuery,
+                          cached: @escaping (User) -> Void,
                           completion: @escaping (Result<User, Error>) -> Void) -> Cancellable?
 }

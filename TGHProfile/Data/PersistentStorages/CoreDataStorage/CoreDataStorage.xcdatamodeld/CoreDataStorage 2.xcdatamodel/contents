@@ -9,19 +9,24 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="UserProfileImageEntity" representedClassName="UserProfileImageEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="imageUrl" optional="YES" attributeType="String"/>
+        <attribute name="invertedImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+    </entity>
     <entity name="UserQueryEntity" representedClassName="UserQueryEntity" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="query" optional="YES" attributeType="String"/>
     </entity>
     <entity name="UserResponseEntity" representedClassName="UserResponseEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="avatarUrl" optional="YES" attributeType="String"/>
         <attribute name="blog" optional="YES" attributeType="String"/>
         <attribute name="company" optional="YES" attributeType="String"/>
         <attribute name="followers" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="following" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="login" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
+        <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="profileImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserProfileImageEntity"/>
         <relationship name="usersResponse" maxCount="1" deletionRule="Nullify" destinationEntity="UsersPageResponseEntity" inverseName="users" inverseEntity="UsersPageResponseEntity"/>
     </entity>
     <entity name="UsersPageResponseEntity" representedClassName="UsersPageResponseEntity" syncable="YES" codeGenerationType="class">
@@ -38,8 +43,9 @@
     <elements>
         <element name="UserNoteEntity" positionX="7076.125" positionY="-746.9453125" width="112.66796875" height="73"/>
         <element name="UserQueryEntity" positionX="6913.73828125" positionY="-748.890625" width="128" height="59"/>
-        <element name="UserResponseEntity" positionX="7183.984375" positionY="-567.76171875" width="128" height="14"/>
+        <element name="UserResponseEntity" positionX="7183.984375" positionY="-567.76171875" width="128" height="164"/>
         <element name="UsersPageResponseEntity" positionX="6993.70703125" positionY="-578.1640625" width="128" height="103"/>
         <element name="UsersRequestEntity" positionX="6822.30859375" positionY="-559.6484375" width="128" height="88"/>
+        <element name="UserProfileImageEntity" positionX="7002" positionY="-585" width="128" height="74"/>
     </elements>
 </model>

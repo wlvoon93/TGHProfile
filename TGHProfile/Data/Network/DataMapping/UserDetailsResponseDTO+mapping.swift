@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 // MARK: - Data Transfer Object
 
@@ -25,8 +26,8 @@ struct UserDetailsResponseDTO: Decodable {
 extension UserDetailsResponseDTO {
     func toDomain() -> User {
         return .init(login: login,
-                     id: id,
-                     avatar_url: avatar_url,
+                     userId: id,
+                     profileImage: .init(imageUrl: avatar_url, image: nil, invertedImage: nil),
                      type: type,
                      note: nil,
                      following: following,

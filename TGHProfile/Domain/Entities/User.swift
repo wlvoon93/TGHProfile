@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import SwiftUI
 
-struct User: Equatable, Identifiable {
+struct User: Equatable {
     let login: String?
-    let id: Int?
-    let avatar_url: String?
+    let userId: Int?
+    let profileImage: ProfileImage?
     let type: String?
     let note: Note?
     let following: Int?

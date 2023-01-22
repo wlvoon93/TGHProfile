@@ -100,7 +100,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
         perPage = usersPage.users.count
         since = nextSince
         
-        let userIDs = usersPage.users.compactMap { $0.id }
+        let userIDs = usersPage.users.compactMap { $0.userId }
         multipleNoteLoadTask = loadUsersNoteUseCase.execute(requestValue: .init(userIds: userIDs)) { result in
             
             var usersWithNote: [User] = []
@@ -110,12 +110,12 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                 
                 for user in usersPage.users {
                     let userNote = notes.filter {
-                        return $0.userId == user.id
+                        return $0.userId == user.userId
                     }
                     
                     var userWithNote: User? = nil
                     if !userNote.isEmpty {
-                        userWithNote = User.init(login: user.login, id: user.id, avatar_url: user.avatar_url, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
+                        userWithNote = User.init(login: user.login, userId: user.userId, profileImage: user.profileImage, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
                     }
                     usersWithNote.append(userWithNote ?? user)
                 }
@@ -148,12 +148,12 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                 }
             }
             self.handleAppendAsyncReturnResult(result: .success(userListItems))
-            let userIDsTest = userListItems.compactMap { $0.user.id }
+            let userIDsTest = userListItems.compactMap { $0.user.userId }
             let userIdSet: Set = Set(userIDsTest)
             
             var array: [Int] = []
             for item in userListItems {
-                if let id = item.user.id{
+                if let id = item.user.userId{
                     if array.contains(id) {
                         print("\(id) is already exist")
                     } else {
@@ -170,7 +170,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     // for search user list page
     private func setSearchUserPage(_ usersPage: UsersPage) {
         
-        let userIDs = usersPage.users.compactMap { $0.id }
+        let userIDs = usersPage.users.compactMap { $0.userId }
         multipleNoteLoadTask = loadUsersNoteUseCase.execute(requestValue: .init(userIds: userIDs)) { result in
             
             var usersWithNote: [User] = []
@@ -180,12 +180,12 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                 
                 for user in usersPage.users {
                     let userNote = notes.filter {
-                        return $0.userId == user.id
+                        return $0.userId == user.userId
                     }
                     
                     var userWithNote: User? = nil
                     if !userNote.isEmpty {
-                        userWithNote = User.init(login: user.login, id: user.id, avatar_url: user.avatar_url, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
+                        userWithNote = User.init(login: user.login, userId: user.userId, profileImage: user.profileImage, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
                     }
                     usersWithNote.append(userWithNote ?? user)
                 }
@@ -321,8 +321,8 @@ extension DefaultUsersListViewModel {
             if let pageSize = self.pages.first?.users.count {
                 let page = Int(Float(index / pageSize).rounded(.up))
                 self.pages[page] = UsersPage.init(since: self.pages[page].since, per_page: self.pages[page].per_page, users: self.pages[page].users.map {
-                    if $0.id == note.userId {
-                        return User.init(login: $0.login, id: $0.id, avatar_url: $0.avatar_url, type: $0.type, note: note, following: $0.following, followers: $0.followers, company: $0.company, blog: $0.blog)
+                    if $0.userId == note.userId {
+                        return User.init(login: $0.login, userId: $0.userId, profileImage: .init(imageUrl: $0.profileImage?.imageUrl, image: $0.profileImage?.image, invertedImage: $0.profileImage?.invertedImage), type: $0.type, note: note, following: $0.following, followers: $0.followers, company: $0.company, blog: $0.blog)
                     }
                     return $0
                 })
