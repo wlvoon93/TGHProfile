@@ -1,14 +1,14 @@
 //
-//  UsersListTableViewController.swift
-//  ExampleMVVM
+//  SearchUserListTableView.swift
+//  TGHProfile
 //
-//  Created by T0366-ADE-MB-1 on 19/12/2022.
+//  Created by T0366-ADE-MB-1 on 13/01/2023.
 //
 
 import UIKit
 import SwiftUI
 
-final class UsersListTableViewController: UITableViewController {
+final class SearchUserListTableViewController: UITableViewController {
 
     var viewModel: UsersListViewModel!
 
@@ -51,7 +51,7 @@ final class UsersListTableViewController: UITableViewController {
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
 
-extension UsersListTableViewController {
+extension SearchUserListTableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.items.value.count
@@ -69,7 +69,6 @@ extension UsersListTableViewController {
 
         if indexPath.row == viewModel.items.value.count - 1 {
             viewModel.didLoadNextPage()
-            // when load next page disable no internet error
         }
 
         return cell as? UITableViewCell ?? UITableViewCell()

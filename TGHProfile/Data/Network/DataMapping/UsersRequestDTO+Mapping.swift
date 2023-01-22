@@ -9,5 +9,5 @@ import Foundation
 
 struct UsersRequestDTO: Encodable {
     let since: Int
-    let per_page: Int
+    let per_page: Int?
 }

@@ -9,8 +9,8 @@ import Foundation
 
 protocol UsersRepository {
     @discardableResult
-    func fetchAllUsersList(page: Int,
-                           cached: @escaping (UsersPage) -> Void,
+    func fetchAllUsersList(since: Int,
+                           per_page: Int?,                           cached: @escaping (UsersPage) -> Void,
                            completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable?
     @discardableResult
     func searchUsersList(query: String,

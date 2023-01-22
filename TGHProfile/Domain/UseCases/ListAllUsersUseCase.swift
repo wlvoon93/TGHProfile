@@ -26,7 +26,8 @@ final class DefaultListAllUsersUseCase: ListAllUsersUseCase {
                  cached: @escaping (UsersPage) -> Void,
                  completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
 
-        return usersRepository.fetchAllUsersList(page: requestValue.page,
+        return usersRepository.fetchAllUsersList(since: requestValue.since,
+                                                 per_page: requestValue.perPage,
                                                 cached: cached,
                                                 completion: { result in
             
@@ -36,5 +37,6 @@ final class DefaultListAllUsersUseCase: ListAllUsersUseCase {
 }
 
 struct ListAllUsersUseCaseRequestValue {
-    let page: Int
+    let since: Int
+    let perPage: Int?
 }

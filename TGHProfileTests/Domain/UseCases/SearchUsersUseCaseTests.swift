@@ -25,6 +25,7 @@ class SearchUsersUseCaseTests: XCTestCase {
     }
     
     struct UsersRepositoryMock: UsersRepository {
+        
         var searchUsersListResult: Result<UsersPage, Error>
         func searchUsersList(query: String, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
             completion(searchUsersListResult)
@@ -35,7 +36,7 @@ class SearchUsersUseCaseTests: XCTestCase {
             return nil
         }
         
-        func fetchAllUsersList(page: Int, cached: @escaping (UsersPage) -> Void, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
+        func fetchAllUsersList(since: Int, per_page: Int?, cached: @escaping (UsersPage) -> Void, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
             return nil
         }
     }

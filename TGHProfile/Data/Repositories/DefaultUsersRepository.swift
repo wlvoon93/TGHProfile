@@ -21,11 +21,12 @@ final class DefaultUsersRepository {
 
 extension DefaultUsersRepository: UsersRepository {
     
-    public func fetchAllUsersList(page: Int,
+    public func fetchAllUsersList(since: Int,
+                                  per_page: Int?, // get per page of since 0, if nil then determine but first page response
                                   cached: @escaping (UsersPage) -> Void,
                                   completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
 
-        let requestDTO = UsersRequestDTO(since: page*10, per_page: 10)
+        let requestDTO = UsersRequestDTO(since: since, per_page: per_page)
         let task = RepositoryTask()
 
         cache.getResponse(for: requestDTO) { result in
@@ -34,6 +35,8 @@ extension DefaultUsersRepository: UsersRepository {
                 cached(responseDTO.toDomain())
             }
             guard !task.isCancelled else { return }
+            
+            // if first page then
 
             let endpoint = APIEndpoints.getUsers(with: requestDTO)
             task.networkTask = self.dataTransferService.requestAll(with: endpoint, completion: { result in
@@ -42,8 +45,9 @@ extension DefaultUsersRepository: UsersRepository {
                     if let responseDTOsCasted = responseDTOs as? [UsersResponseDTO] {
                         let users = responseDTOsCasted.map {
                             UsersPageResponseDTO.UserDTO.init(login: $0.login, id: $0.id, avatar_url: $0.avatar_url, type: $0.type, note: nil, following: nil, followers: nil, company: nil, blog: nil) }
-                        let usersPageResponseDTO = UsersPageResponseDTO.init(since: requestDTO.since, per_page: requestDTO.per_page, users: users)
-                        self.cache.save(response: usersPageResponseDTO, for:requestDTO)
+                        let usersPageResponseDTO = UsersPageResponseDTO.init(since: requestDTO.since, per_page: users.count, users: users)
+                        let usersRequestDTO = UsersRequestDTO.init(since: since, per_page: users.count)
+                        self.cache.save(response: usersPageResponseDTO, for:usersRequestDTO)
                         completion(.success(usersPageResponseDTO.toDomain()))
                     }
                 case .failure(let error):

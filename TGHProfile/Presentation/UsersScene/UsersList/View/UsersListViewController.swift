@@ -18,6 +18,7 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     private var profileImagesRepository: ProfileImagesRepository?
 
     private var usersTableViewController: UsersListTableViewController?
+    private var searchUserTableViewController: SearchUserListTableViewController?
     private var searchController = UISearchController(searchResultsController: nil)
 
     // MARK: - Lifecycle
@@ -43,6 +44,7 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
         viewModel.loading.observe(on: self) { [weak self] in self?.updateLoading($0) }
         viewModel.query.observe(on: self) { [weak self] in self?.updateSearchQuery($0) }
         viewModel.error.observe(on: self) { [weak self] in self?.showError($0) }
+        viewModel.tableMode.observe(on: self) { [weak self] in self?.displayTable($0) }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -94,10 +96,19 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
             rootView.usersListContainerView.isHidden = viewModel.isEmpty
             rootView.emptyDataLabel.isHidden = !viewModel.isEmpty
         }
-        
-        let isTableHidden =
 
         usersTableViewController?.updateLoading(loading)
+    }
+    
+    private func displayTable(_ tableMode: TableMode) {
+        switch tableMode {
+        case .listAll:
+            rootView.usersListContainerView.isHidden = false
+            rootView.searchUserListContainerView.isHidden = true
+        case .search:
+            rootView.usersListContainerView.isHidden = true
+            rootView.searchUserListContainerView.isHidden = false
+        }
     }
 
     private func updateSearchQuery(_ query: String) {
@@ -120,11 +131,27 @@ extension UsersListViewController {
         usersTableViewController?.profileImagesRepository = profileImagesRepository
         
         guard let usersTableViewController = usersTableViewController else { return }
-        usersTableViewController.tableView.backgroundColor = .black
+        usersTableViewController.tableView.backgroundColor = .lightGray
         usersTableViewController.tableView.translatesAutoresizingMaskIntoConstraints = true
         usersTableViewController.tableView.frame = rootView.searchBarContainerView.bounds
         usersTableViewController.tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         rootView.usersListContainerView.addSubview(usersTableViewController.tableView)
+    }
+}
+
+// setup search table
+extension UsersListViewController {
+    private func setupSearchTableController() {
+        searchUserTableViewController = SearchUserListTableViewController()
+        searchUserTableViewController?.viewModel = viewModel
+        searchUserTableViewController?.profileImagesRepository = profileImagesRepository
+        
+        guard let searchUserTableViewController = searchUserTableViewController else { return }
+        searchUserTableViewController.tableView.backgroundColor = .black
+        searchUserTableViewController.tableView.translatesAutoresizingMaskIntoConstraints = true
+        searchUserTableViewController.tableView.frame = rootView.searchBarContainerView.bounds
+        searchUserTableViewController.tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        rootView.searchUserListContainerView.addSubview(searchUserTableViewController.tableView)
     }
 }
 
@@ -142,13 +169,15 @@ extension UsersListViewController {
         searchController.searchBar.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         rootView.searchBarContainerView.addSubview(searchController.searchBar)
         definesPresentationContext = true
-        if #available(iOS 13.0, *) {
-            searchController.searchBar.searchTextField.accessibilityIdentifier = AccessibilityIdentifier.searchField
-        }
+        searchController.searchBar.searchTextField.accessibilityIdentifier = AccessibilityIdentifier.searchField
     }
 }
 
 extension UsersListViewController: UISearchBarDelegate {
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        viewModel.tableMode.value = .search
+    }
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let searchText = searchBar.text, !searchText.isEmpty else { return }
         searchController.isActive = false
@@ -157,5 +186,6 @@ extension UsersListViewController: UISearchBarDelegate {
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         viewModel.didCancelSearch()
+        viewModel.tableMode.value = .listAll
     }
 }

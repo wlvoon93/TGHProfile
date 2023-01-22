@@ -31,6 +31,7 @@ class ListAllUsersUseCaseTests: XCTestCase {
     }
     
     struct UsersRepositoryMock: UsersRepository {
+        
         var page: UsersPage? = nil
         
         func searchUsersList(query: String, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
@@ -42,7 +43,7 @@ class ListAllUsersUseCaseTests: XCTestCase {
         }
         
         var fetchAllUsersListResult: Result<UsersPage, Error>
-        func fetchAllUsersList(page: Int, cached: @escaping (UsersPage) -> Void, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
+        func fetchAllUsersList(since: Int, per_page: Int?, cached: @escaping (UsersPage) -> Void, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
             
             completion(fetchAllUsersListResult)
             return nil
@@ -58,7 +59,7 @@ class ListAllUsersUseCaseTests: XCTestCase {
 
         // when
         var completedPage: UsersPage? = nil
-        let requestValue = ListAllUsersUseCaseRequestValue(page: 1)
+        let requestValue = ListAllUsersUseCaseRequestValue(since: 0, perPage: nil)
         _ = useCase.execute(requestValue: requestValue, cached: { _ in }, completion: { result in
             switch result {
             case .success(let page):
@@ -84,7 +85,7 @@ class ListAllUsersUseCaseTests: XCTestCase {
 
         // when
         var completedPage: UsersPage? = nil
-        let requestValue = ListAllUsersUseCaseRequestValue(page: 1)
+        let requestValue = ListAllUsersUseCaseRequestValue(since: 0, perPage: nil)
         _ = useCase.execute(requestValue: requestValue, cached: { _ in }, completion: { result in
             switch result {
             case .success(let page):

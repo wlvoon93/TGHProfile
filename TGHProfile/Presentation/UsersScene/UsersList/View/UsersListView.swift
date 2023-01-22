@@ -34,6 +34,13 @@ class UsersListView: UIView {
         return view
     }()
     
+    lazy var searchUserListContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        return view
+    }()
+    
     lazy var suggestionsListContainerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -58,6 +65,7 @@ class UsersListView: UIView {
         addSubview(contentView)
         addSubview(searchBarContainerView)
         addSubview(usersListContainerView)
+        addSubview(searchUserListContainerView)
         addSubview(emptyDataLabel)
         
         NSLayoutConstraint.activate([
@@ -75,6 +83,11 @@ class UsersListView: UIView {
             usersListContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             usersListContainerView.topAnchor.constraint(equalTo: searchBarContainerView.bottomAnchor),
             usersListContainerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
+            searchUserListContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            searchUserListContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            searchUserListContainerView.topAnchor.constraint(equalTo: searchBarContainerView.bottomAnchor),
+            searchUserListContainerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
             emptyDataLabel.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor , constant: 16),
             emptyDataLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor , constant: 16),

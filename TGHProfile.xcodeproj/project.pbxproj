@@ -87,6 +87,8 @@
 		AE68895A296F07D2007994FF /* Note+Stub.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE688959296F07D2007994FF /* Note+Stub.swift */; };
 		AE68895C297065FC007994FF /* LoadUserNoteUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68895B297065FC007994FF /* LoadUserNoteUseCaseTests.swift */; };
 		AE68895E297068C9007994FF /* LoadUsersNoteUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68895D297068C9007994FF /* LoadUsersNoteUseCaseTests.swift */; };
+		AE68896129715EC3007994FF /* SearchUserListTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68896029715EC3007994FF /* SearchUserListTableView.swift */; };
+		AE68896629726078007994FF /* UsersListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68896529726078007994FF /* UsersListViewModelTests.swift */; };
 		AE6B57AE2959A6360069DC43 /* UsersListDataTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57AD2959A6360069DC43 /* UsersListDataTransferService.swift */; };
 		AE6B57B02959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57AF2959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift */; };
 		AE6B57B2295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6B57B1295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift */; };
@@ -210,6 +212,8 @@
 		AE688959296F07D2007994FF /* Note+Stub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+Stub.swift"; sourceTree = "<group>"; };
 		AE68895B297065FC007994FF /* LoadUserNoteUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserNoteUseCaseTests.swift; sourceTree = "<group>"; };
 		AE68895D297068C9007994FF /* LoadUsersNoteUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUsersNoteUseCaseTests.swift; sourceTree = "<group>"; };
+		AE68896029715EC3007994FF /* SearchUserListTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUserListTableView.swift; sourceTree = "<group>"; };
+		AE68896529726078007994FF /* UsersListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListViewModelTests.swift; sourceTree = "<group>"; };
 		AE6B57AD2959A6360069DC43 /* UsersListDataTransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListDataTransferService.swift; sourceTree = "<group>"; };
 		AE6B57AF2959C4470069DC43 /* UsersPageResponseDTO+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersPageResponseDTO+Mapping.swift"; sourceTree = "<group>"; };
 		AE6B57B1295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListAvatarColourInvertedItemCell.swift; sourceTree = "<group>"; };
@@ -639,6 +643,7 @@
 				AE5F759F294AAD5D0098D4E9 /* UsersListViewController.swift */,
 				AE5F75A3294B549A0098D4E9 /* UsersListView.swift */,
 				AE5F75AB29503D6A0098D4E9 /* UsersListTableView */,
+				AE68895F29715E82007994FF /* SearchUserListTableView */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -693,6 +698,7 @@
 		AE688944296ED01B007994FF /* TGHProfileTests */ = {
 			isa = PBXGroup;
 			children = (
+				AE6889622972601C007994FF /* Presentation */,
 				AE68894C296ED02E007994FF /* Domain */,
 				AE688950296ED1E6007994FF /* Mocks */,
 				AE688945296ED01B007994FF /* TGHProfileTests.swift */,
@@ -726,6 +732,38 @@
 			children = (
 				AE688951296ED223007994FF /* User+Stub.swift */,
 				AE688959296F07D2007994FF /* Note+Stub.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		AE68895F29715E82007994FF /* SearchUserListTableView */ = {
+			isa = PBXGroup;
+			children = (
+				AE68896029715EC3007994FF /* SearchUserListTableView.swift */,
+			);
+			path = SearchUserListTableView;
+			sourceTree = "<group>";
+		};
+		AE6889622972601C007994FF /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				AE6889632972602C007994FF /* UsersScene */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		AE6889632972602C007994FF /* UsersScene */ = {
+			isa = PBXGroup;
+			children = (
+				AE68896529726078007994FF /* UsersListViewModelTests.swift */,
+				AE6889642972603E007994FF /* Mocks */,
+			);
+			path = UsersScene;
+			sourceTree = "<group>";
+		};
+		AE6889642972603E007994FF /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -940,6 +978,7 @@
 				1FFFC832221B0041007D99D2 /* UsersQueriesRepository.swift in Sources */,
 				AE9187BB296A7969004A102C /* SaveUserNoteResponseDTO+mapping.swift in Sources */,
 				AE17697D29573D8900A79A71 /* UsersSearchResponseDTO+Mapping.swift in Sources */,
+				AE68896129715EC3007994FF /* SearchUserListTableView.swift in Sources */,
 				1F9035272307528F00DEA4BD /* CoreDataUsersQueriesStorage.swift in Sources */,
 				1FB0903A2437651700DBE132 /* UIViewController+AddBehaviors.swift in Sources */,
 				AE6B57B2295AE3C20069DC43 /* UserListAvatarColourInvertedItemCell.swift in Sources */,
@@ -979,6 +1018,7 @@
 				AE688946296ED01B007994FF /* TGHProfileTests.swift in Sources */,
 				AE68895E297068C9007994FF /* LoadUsersNoteUseCaseTests.swift in Sources */,
 				AE688956296EFB7B007994FF /* LoadUserDetailsUseCaseTests.swift in Sources */,
+				AE68896629726078007994FF /* UsersListViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

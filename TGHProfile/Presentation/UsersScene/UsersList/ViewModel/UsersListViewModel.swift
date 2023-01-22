@@ -12,6 +12,11 @@ struct UsersListViewModelActions {
     let showUserDetails: (String, @escaping (_ didSelect: Note) -> Void) -> Void
 }
 
+enum TableMode {
+    case listAll
+    case search
+}
+
 enum UsersListViewModelLoading {
     case fullScreen
     case nextPage
@@ -27,6 +32,8 @@ protocol UsersListViewModelInput {
 
 protocol UsersListViewModelOutput {
     var items: Observable<[BaseItemViewModel]> { get } /// Also we can calculate view model items on demand:  https://github.com/kudoleh/iOS-Clean-Architecture-MVVM/pull/10/files
+    var searchItems: Observable<[BaseItemViewModel]> { get }
+    var tableMode: Observable<TableMode> { get }
     var loading: Observable<UsersListViewModelLoading?> { get }
     var query: Observable<String> { get }
     var error: Observable<String> { get }
@@ -48,12 +55,12 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     
     private let actions: UsersListViewModelActions?
 
-    var currentPage: Int = 0
+    var since: Int = 0 // page start with 0
+    var perPage: Int = 0
     var totalPageCount: Int = 1
-//    var hasMorePages: Bool { currentPage < totalPageCount }
-    var nextPage: Int { currentPage + 1 }
+    var nextSince: Int { since+perPage }
 
-    private var pages: [UsersPage] = []
+    private(set) var pages: [UsersPage] = []
     private var usersLoadTask: Cancellable? { willSet { usersLoadTask?.cancel() } }
     private var noteLoadTask: Cancellable? { willSet { usersLoadTask?.cancel() } }
     private var multipleNoteLoadTask: Cancellable? { willSet { multipleNoteLoadTask?.cancel() } }
@@ -61,12 +68,14 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     // MARK: - OUTPUT
 
     let items: Observable<[BaseItemViewModel]> = Observable([])
+    let searchItems: Observable<[BaseItemViewModel]> = Observable([])
+    let tableMode: Observable<TableMode> = Observable(.listAll)
     let loading: Observable<UsersListViewModelLoading?> = Observable(.none)
     let query: Observable<String> = Observable("")
     let error: Observable<String> = Observable("")
     var isEmpty: Bool { return items.value.isEmpty }
     let screenTitle = NSLocalizedString("Users", comment: "")
-    let emptyDataTitle = NSLocalizedString("Search results", comment: "")
+    let emptyDataTitle = NSLocalizedString("No Data", comment: "")
     let errorTitle = NSLocalizedString("Error", comment: "")
     let searchBarPlaceholder = NSLocalizedString("Search Users", comment: "")
 
@@ -87,7 +96,9 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     // MARK: - Private
 
     private func appendPage(_ usersPage: UsersPage) {
-        currentPage = Int(Double((usersPage.since/usersPage.per_page)).rounded(.down))
+        
+        perPage = usersPage.users.count
+        since = nextSince
         
         let userIDs = usersPage.users.compactMap { $0.id }
         multipleNoteLoadTask = loadUsersNoteUseCase.execute(requestValue: .init(userIds: userIDs)) { result in
@@ -137,25 +148,97 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                 }
             }
             self.handleAppendAsyncReturnResult(result: .success(userListItems))
+            let userIDsTest = userListItems.compactMap { $0.user.id }
+            let userIdSet: Set = Set(userIDsTest)
+            
+            var array: [Int] = []
+            for item in userListItems {
+                if let id = item.user.id{
+                    if array.contains(id) {
+                        print("\(id) is already exist")
+                    } else {
+                        array.append(id)
+                    }
+                }
+            }
+            if userListItems.count != userIdSet.count {
+    
+            }
+        }
+    }
+    
+    // for search user list page
+    private func setSearchUserPage(_ usersPage: UsersPage) {
+        
+        let userIDs = usersPage.users.compactMap { $0.id }
+        multipleNoteLoadTask = loadUsersNoteUseCase.execute(requestValue: .init(userIds: userIDs)) { result in
+            
+            var usersWithNote: [User] = []
+            
+            switch result {
+            case .success(let notes):
+                
+                for user in usersPage.users {
+                    let userNote = notes.filter {
+                        return $0.userId == user.id
+                    }
+                    
+                    var userWithNote: User? = nil
+                    if !userNote.isEmpty {
+                        userWithNote = User.init(login: user.login, id: user.id, avatar_url: user.avatar_url, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
+                    }
+                    usersWithNote.append(userWithNote ?? user)
+                }
+                
+            case .failure(let error):
+                self.handle(error: error)
+                return
+            }
+            
+            let usersPageWithNote = UsersPage.init(since: usersPage.since, per_page: usersPage.per_page, users: usersWithNote)
+
+            self.pages = self.pages
+                .filter { $0.since != usersPageWithNote.since }
+                + [usersPageWithNote]
+
+            var userListItems: [BaseItemViewModel] = []
+            for (_, page) in self.pages.enumerated() {
+                for (userIndex, user) in page.users.enumerated() {
+                    let isFourthItem = (userListItems.count) % 4 == 3 && userIndex != 0
+                    let hasNote = user.note != nil && user.note?.note != "" && user.note?.note != nil
+                    if isFourthItem && hasNote {
+                        userListItems.append(UserListAvatarColourInvertedAndNoteItemViewModel.init(user: user))
+                    } else if isFourthItem {
+                        userListItems.append(UserListAvatarColourInvertedItemViewModel.init(user: user))
+                    } else if hasNote {
+                        userListItems.append(UserListNoteItemViewModel.init(user: user))
+                    } else {
+                        userListItems.append(UsersListItemViewModel.init(user: user))
+                    }
+                }
+            }
+            
+            self.searchItems.value = userListItems
         }
     }
 
     private func resetPages() {
-        currentPage = 0
+        since = 0
         totalPageCount = 1
         pages.removeAll()
         items.value.removeAll()
     }
     
-    private func loadAllUsers(loading: UsersListViewModelLoading) {
+    private func loadAllUsers(pageQuery: ListAllUsersUseCaseRequestValue, loading: UsersListViewModelLoading) {
         self.loading.value = loading
 
         usersLoadTask = listAllUsersUseCase.execute(
-            requestValue: .init(page: nextPage),
+            requestValue: pageQuery,
             cached: appendPage,
             completion: { result in
                 switch result {
                 case .success(let page):
+                    self.perPage = page.users.count
                     self.appendPage(page)
                     self.loading.value = .none
                 case .failure(let error):
@@ -164,6 +247,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                 }
         })
     }
+    
     
     private func handleAppendAsyncReturnResult(result: Result<[BaseItemViewModel], Error>){
         switch result {
@@ -185,6 +269,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
             completion: { result in
                 switch result {
                 case .success(let page):
+                    self.resetPages()
                     self.appendPage(page)
                     return 
                 case .failure(let error):
@@ -200,9 +285,9 @@ final class DefaultUsersListViewModel: UsersListViewModel {
             NSLocalizedString("Failed loading users", comment: "")
     }
 
-    private func update(userQuery: UserQuery) {
+    private func loadFirstPage() {
         resetPages()
-        load(userQuery: userQuery, loading: .fullScreen)
+        loadAllUsers(pageQuery: ListAllUsersUseCaseRequestValue.init(since: 0, perPage: nil), loading: .nextPage)
     }
 }
 
@@ -211,17 +296,20 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 extension DefaultUsersListViewModel {
 
     func viewDidLoad() {
-        loadAllUsers(loading: .nextPage)
+        loadFirstPage()
     }
 
     func didLoadNextPage() {
         guard loading.value == .none else { return }
-        loadAllUsers(loading: .nextPage)
+        loadAllUsers(pageQuery: ListAllUsersUseCaseRequestValue.init(since: nextSince, perPage: perPage), loading: .nextPage)
     }
 
     func didSearch(query: String) {
         guard !query.isEmpty else { return }
-        update(userQuery: UserQuery(query: query))
+    }
+    
+    func didloadFirstPage() {
+        loadFirstPage()
     }
 
     func didCancelSearch() {
@@ -230,11 +318,6 @@ extension DefaultUsersListViewModel {
 
     func didSelectItem(at index: Int) {
         actions?.showUserDetails(pages.users[index].login ?? "") { note in
-            // update the note for that user and reload data
-            //self.pages.users[index].note = note
-            // determine page size - self.pages.first.count
-            // determine which page - index%page size
-            // replace page by reinit then
             if let pageSize = self.pages.first?.users.count {
                 let page = Int(Float(index / pageSize).rounded(.up))
                 self.pages[page] = UsersPage.init(since: self.pages[page].since, per_page: self.pages[page].per_page, users: self.pages[page].users.map {

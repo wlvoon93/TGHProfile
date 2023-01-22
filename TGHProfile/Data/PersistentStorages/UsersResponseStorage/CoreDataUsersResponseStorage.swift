@@ -20,9 +20,8 @@ final class CoreDataUsersResponseStorage {
 
     private func fetchRequest(for requestDto: UsersRequestDTO) -> NSFetchRequest<UsersRequestEntity> {
         let request: NSFetchRequest = UsersRequestEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "%K = %d AND %K = %d",
-                                        #keyPath(UsersRequestEntity.since), requestDto.since,
-                                        #keyPath(UsersRequestEntity.perPage), requestDto.per_page)
+        request.predicate = NSPredicate(format: "%K = %d",
+                                        #keyPath(UsersRequestEntity.since), requestDto.since)
         return request
     }
     
@@ -33,20 +32,16 @@ final class CoreDataUsersResponseStorage {
         return request
     }
     
-    // currently is search since:0 AND per_page:5 but need to modify into directly query users
-    // search result mode ( turn off scroll to load more ) until x is pressed.
     private func fetchSearchRequest(for requestDto: UsersSearchRequestDTO) -> NSFetchRequest<UserResponseEntity> {
         // search the users table and return all users
         let request: NSFetchRequest = UserResponseEntity.fetchRequest()
-//        request.predicate = NSPredicate(format: "%K = %@",
-//                                        #keyPath(UserResponseEntity.login), requestDto.query)
+        request.predicate = NSPredicate(format: "%K = %@",
+                                        #keyPath(UserResponseEntity.login), requestDto.query.lowercased())
         return request
     }
     
     private func fetchNotesRequest(for users: [UsersPageResponseDTO.UserDTO]) -> NSFetchRequest<UserNoteEntity> {
-        // search the users table and return all users
         let userIDs = Set(users.map { $0.id })
-//        let fetchRequest = NSFetchRequest<E>(entityName: E.entityName())
         let request: NSFetchRequest = UserNoteEntity.fetchRequest()
         request.predicate = NSPredicate(format: "userId IN %@", userIDs)
         

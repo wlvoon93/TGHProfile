@@ -25,7 +25,7 @@ struct UserDetailsView: View {
                   image: {
                     $0.resizable().aspectRatio(UIImage(named: "profile_picture")!.size, contentMode: .fill)
                   }
-                )
+                ).padding(.top, 10)
                 HStack(spacing: 30) {
                     Text("followers: \(viewModelWrapper.followers)")
                     Text("following: \(viewModelWrapper.following)")
@@ -52,6 +52,7 @@ struct UserDetailsView: View {
                         .foregroundColor(.secondary)
                         .padding(.horizontal)
                         .navigationTitle("About you")
+                        .frame(minHeight: 30, alignment: .leading)
                         .onChange(of: viewModelWrapper.noteString) { newValue in
                             noteString = newValue
                         }
@@ -64,7 +65,7 @@ struct UserDetailsView: View {
                             self.presentationMode.wrappedValue.dismiss()
                         }
                     })
-                }
+                }.padding(.bottom, 10)
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear {
                 self.viewModelWrapper.viewModel?.viewWillAppear()

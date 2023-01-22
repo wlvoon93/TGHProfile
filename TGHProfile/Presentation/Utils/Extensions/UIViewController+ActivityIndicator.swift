@@ -12,11 +12,7 @@ extension UITableViewController {
     func makeActivityIndicator(size: CGSize) -> UIActivityIndicatorView {
         let style: UIActivityIndicatorView.Style
         if #available(iOS 12.0, *) {
-            if self.traitCollection.userInterfaceStyle == .dark {
-                style = .white
-            } else {
-                style = .gray
-            }
+            style = UIActivityIndicatorView.Style.medium
         } else {
             style = .gray
         }

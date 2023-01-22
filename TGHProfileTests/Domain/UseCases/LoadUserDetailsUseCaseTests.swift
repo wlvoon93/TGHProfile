@@ -19,6 +19,7 @@ class LoadUserDetailsUseCaseTests: XCTestCase {
     }
     
     struct UsersRepositoryMock: UsersRepository {
+        
         func searchUsersList(query: String, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
             return nil
         }
@@ -29,7 +30,7 @@ class LoadUserDetailsUseCaseTests: XCTestCase {
             return nil
         }
         
-        func fetchAllUsersList(page: Int, cached: @escaping (UsersPage) -> Void, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
+        func fetchAllUsersList(since: Int, per_page: Int?, cached: @escaping (UsersPage) -> Void, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
             return nil
         }
     }

@@ -34,7 +34,7 @@ extension UsersRequestDTO {
     func toEntity(in context: NSManagedObjectContext) -> UsersRequestEntity {
         let entity: UsersRequestEntity = .init(context: context)
         entity.since = Int32(since)
-        entity.perPage = Int32(per_page)
+        entity.perPage = Int32(per_page ?? -1)
         return entity
     }
 }
