@@ -146,7 +146,7 @@ class UsersListViewModelTests: XCTestCase {
         viewModel.didloadFirstPage()
         
         // then
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         XCTAssertEqual(viewModel.pages.count, 1) // page start with 0
         XCTAssertEqual(viewModel.items.value.count, 3)
 //        XCTAssertTrue(viewModel.hasMorePages)
@@ -158,11 +158,9 @@ class UsersListViewModelTests: XCTestCase {
         listUsersUseCaseMock.expectation = self.expectation(description: "load first page users")
         listUsersUseCaseMock.page = UsersPage(since: 0, per_page: 3, users: usersPages[0].users)
         let searchUsersUseCaseMock = SearchUsersUseCaseMock()
-//        searchUsersUseCaseMock.expectation = self.expectation(description: "not searching user")
         searchUsersUseCaseMock.page = UsersPage(since: 0, per_page: 3, users: [
             User.stub(login: "Albert Liew", id: 0, avatar_url: "https://avatars.githubusercontent.com/u/25", type: "normal", note: Note(note: "left a note", userId: 0))])
         let loadUserNoteUseCaseMock = LoadUserNoteUseCaseMock()
-//        loadUserNoteUseCaseMock.expectation = self.expectation(description: "this is not executed")
         loadUserNoteUseCaseMock.note = Note.stub(note: "left a note", userId: 0)
         let loadUsersNoteUseCaseMock = LoadUsersNoteUseCaseMock()
         loadUsersNoteUseCaseMock.expectation = self.expectation(description: "load notes for 1 page users")
@@ -173,7 +171,6 @@ class UsersListViewModelTests: XCTestCase {
                                                   loadUsersNoteUseCase: loadUsersNoteUseCaseMock)
         
         // when
-        // the current did search might not be accurate
         viewModel.didloadFirstPage()
         waitForExpectations(timeout: 1, handler: nil)
         
@@ -188,42 +185,31 @@ class UsersListViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
         XCTAssertEqual(viewModel.pages.count, 2) // page start with 0
         XCTAssertEqual(viewModel.items.value.count, 6)
-        XCTAssertEqual(viewModel.items.value.count, 6)
-//        XCTAssertTrue(viewModel.hasMorePages)
     }
-//    
-//    func test_whenSearchMoviesUseCaseReturnsError_thenViewModelContainsError() {
-//        // given
-//        let searchMoviesUseCaseMock = SearchMoviesUseCaseMock()
-//        searchMoviesUseCaseMock.expectation = self.expectation(description: "contain errors")
-//        searchMoviesUseCaseMock.error = SearchMoviesUseCaseError.someError
-//        let viewModel = DefaultMoviesListViewModel(searchMoviesUseCase: searchMoviesUseCaseMock)
-//        // when
-//        viewModel.didSearch(query: "query")
-//        
-//        // then
-//        waitForExpectations(timeout: 5, handler: nil)
-//        XCTAssertNotNil(viewModel.error)
-//    }
-//    
-//    func test_whenLastPage_thenHasNoPageIsTrue() {
-//        // given
-//        let searchMoviesUseCaseMock = SearchMoviesUseCaseMock()
-//        searchMoviesUseCaseMock.expectation = self.expectation(description: "First page loaded")
-//        searchMoviesUseCaseMock.page = MoviesPage(page: 1, totalPages: 2, movies: moviesPages[0].movies)
-//        let viewModel = DefaultMoviesListViewModel(searchMoviesUseCase: searchMoviesUseCaseMock)
-//        // when
-//        viewModel.didSearch(query: "query")
-//        waitForExpectations(timeout: 5, handler: nil)
-//        
-//        searchMoviesUseCaseMock.expectation = self.expectation(description: "Second page loaded")
-//        searchMoviesUseCaseMock.page = MoviesPage(page: 2, totalPages: 2, movies: moviesPages[1].movies)
-//
-//        viewModel.didLoadNextPage()
-//        
-//        // then
-//        waitForExpectations(timeout: 5, handler: nil)
-//        XCTAssertEqual(viewModel.currentPage, 2)
-//        XCTAssertFalse(viewModel.hasMorePages)
-//    }
+   
+    func test_whenSearchUsersUseCaseRetrievesOnePage_thenViewModelContainsOnePages() {
+        // given
+        let listUsersUseCaseMock = ListAllUsersUseCaseMock()
+        listUsersUseCaseMock.page = UsersPage(since: 0, per_page: 3, users: usersPages[0].users)
+        let searchUsersUseCaseMock = SearchUsersUseCaseMock()
+        searchUsersUseCaseMock.expectation = self.expectation(description: "search users in one page")
+        searchUsersUseCaseMock.page = UsersPage(since: 0, per_page: 3, users: [
+            User.stub(login: "Albert Liew", id: 0, avatar_url: "https://avatars.githubusercontent.com/u/25", type: "normal", note: Note(note: "left a note", userId: 0))])
+        let loadUserNoteUseCaseMock = LoadUserNoteUseCaseMock()
+        loadUserNoteUseCaseMock.note = Note.stub(note: "left a note", userId: 0)
+        let loadUsersNoteUseCaseMock = LoadUsersNoteUseCaseMock()
+        loadUsersNoteUseCaseMock.notes = notes1
+        let viewModel = DefaultUsersListViewModel(searchUsersUseCase: searchUsersUseCaseMock,
+                                                  listAllUsersUseCase: listUsersUseCaseMock,
+                                                  loadUserNoteUseCase: loadUserNoteUseCaseMock,
+                                                  loadUsersNoteUseCase: loadUsersNoteUseCaseMock)
+        
+        // when
+        viewModel.didSearch(query: "Albert")
+        
+        // then
+        waitForExpectations(timeout: 1, handler: nil)
+        XCTAssertEqual(viewModel.searchPage.count, 1)
+        XCTAssertEqual(viewModel.searchItems.value.count, 1)
+    }
 }

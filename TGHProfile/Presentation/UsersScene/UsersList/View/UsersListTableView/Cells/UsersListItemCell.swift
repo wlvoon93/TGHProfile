@@ -64,7 +64,7 @@ final class UsersListItemCell: UITableViewCell, BaseItemCell {
 
         userNameLabel.text = viewModel.user.login
         userTypeLabel.text = viewModel.user.type
-        updateProfileImage(width: Int(profileImageView.imageSizeAfterAspectFit.scaledSize.width))
+        updateProfileImage()
     }
     
     // MARK: - Private API -
@@ -78,7 +78,7 @@ final class UsersListItemCell: UITableViewCell, BaseItemCell {
             profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             profileImageView.widthAnchor.constraint(equalToConstant: 80),
             profileImageView.heightAnchor.constraint(equalToConstant: 80),
-            profileImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            profileImageView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -8),
             
             userNameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 5),
             userNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
@@ -89,27 +89,30 @@ final class UsersListItemCell: UITableViewCell, BaseItemCell {
         ])
     }
 
-    private func updateProfileImage(width: Int) {
+    private func updateProfileImage() {
         guard let profileImagePath = viewModel?.user.profileImage?.imageUrl else { return }
         
-        if let profileImageData = viewModel?.user.profileImage?.image {
-            self.profileImageView.image = UIImage(data: profileImageData)
-        } else {
-            imageLoadTask = profileImagesRepository?.fetchImage(with: profileImagePath, width: width) { [weak self] result in
+        if let userId = self.viewModel?.user.userId {
+            imageLoadTask = profileImagesRepository?.fetchImage(for: userId,  imagePath: profileImagePath) { [weak self] profileImage in
+                guard let self = self else { return }
+                if let imageData = profileImage.image, let image = UIImage(data: imageData) {
+                    DispatchQueue.main.async {
+                        self.profileImageView.image = image
+                    }
+                }
+            } completion: { [weak self] result in
                 guard let self = self else { return }
                 if case let .success(data) = result {
                     if let profileImage = UIImage(data: data) {
                             
                         self.profileImageView.image = profileImage
                         
-                        if let userId = self.viewModel?.user.userId {
-                            _ = self.profileImagesRepository?.saveImage(userId: userId, imageData: data, completion: { _ in
-                                
-                            })
-                        }
+                        _ = self.profileImagesRepository?.saveImage(userId: userId, imageData: data, completion: { _ in
+                            
+                        })
                     }
+                    self.imageLoadTask = nil
                 }
-                self.imageLoadTask = nil
             }
         }
     }

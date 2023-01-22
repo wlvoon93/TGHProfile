@@ -25,6 +25,12 @@ final class CoreDataUsersResponseStorage {
         return request
     }
     
+    private func fetchUsersWithIdRequest(for requestDto: FetchUsersWithIdsRequestDTO) -> NSFetchRequest<UserResponseEntity> {
+        let request: NSFetchRequest = UserResponseEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "userId IN %@", requestDto.ids)
+        return request
+    }
+    
     private func fetchUserDetailsResponse(for requestDto: UserDetailsRequestDTO) -> NSFetchRequest<UserResponseEntity> {
         let request: NSFetchRequest = UserResponseEntity.fetchRequest()
         request.predicate = NSPredicate(format: "%K = %@",
@@ -32,11 +38,14 @@ final class CoreDataUsersResponseStorage {
         return request
     }
     
-    private func fetchSearchRequest(for requestDto: UsersSearchRequestDTO) -> NSFetchRequest<UserResponseEntity> {
+    private func fetchNotesWithUsernameAndNoteKeywordRequest(for requestDto: LoadUsersWithUsernameAndNoteKeywordRequestDTO) -> NSFetchRequest<UserNoteEntity> {
         // search the users table and return all users
-        let request: NSFetchRequest = UserResponseEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "%K = %@",
-                                        #keyPath(UserResponseEntity.login), requestDto.query.lowercased())
+        let request: NSFetchRequest = UserNoteEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "(%K CONTAINS[cd] %@) OR (%K CONTAINS[cd] %@)",
+                                        #keyPath(UserNoteEntity.username),
+                                        requestDto.query,
+                                        #keyPath(UserNoteEntity.note),
+                                        requestDto.query)
         return request
     }
     
@@ -49,14 +58,6 @@ final class CoreDataUsersResponseStorage {
     }
     
     private func fetchNoteRequest(for user: UsersPageResponseDTO.UserDTO) -> NSFetchRequest<UserNoteEntity> {
-        let request: NSFetchRequest = UserNoteEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "%K = %i",
-                                                #keyPath(UserNoteEntity.userId), user.id)
-    
-        return request
-    }
-    
-    private func saveNoteRequest(for user: UsersPageResponseDTO.UserDTO) -> NSFetchRequest<UserNoteEntity> {
         let request: NSFetchRequest = UserNoteEntity.fetchRequest()
         request.predicate = NSPredicate(format: "%K = %i",
                                                 #keyPath(UserNoteEntity.userId), user.id)
@@ -122,41 +123,39 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
         }
     }
     
-    func getSearchResponse(for requestDto: UsersSearchRequestDTO, completion: @escaping (Result<UsersPageResponseDTO?, CoreDataStorageError>) -> Void) {
+    // fetch related note and username here
+    func searchUsersWithUsernameAndNoteKeyword(for requestDto: LoadUsersWithUsernameAndNoteKeywordRequestDTO, completion: @escaping (Result<UsersPageResponseDTO?, CoreDataStorageError>) -> Void) {
         coreDataStorage.performBackgroundTask { context in
-            do {
-                let fetchRequest = self.fetchSearchRequest(for: requestDto)
-                let userResponseEntities = try context.fetch(fetchRequest)
-                let userWithoutNoteDTOs = userResponseEntities.map {
-                                            UsersPageResponseDTO.UserDTO.init(
-                                                login: $0.login,
-                                                id: Int($0.userId),
-                                                profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO(
-                                                    imageUrl: $0.profileImage?.imageUrl,
-                                                    image: $0.profileImage?.image,
-                                                    invertedImage: $0.profileImage?.invertedImage),
-                                                type: $0.type,
-                                                note: nil,
-                                                following: nil,
-                                                followers: nil,
-                                                company: nil,
-                                                blog: nil)
-                }
-                let fetchNotesRequest = self.fetchNotesRequest(for: userWithoutNoteDTOs)
-                let userNoteEntities = try context.fetch(fetchNotesRequest)
+            do { // result will be notes
+                let fetchRequest = self.fetchNotesWithUsernameAndNoteKeywordRequest(for: requestDto)
+                let noteEntities = try context.fetch(fetchRequest)
+                
+                // fetch users with notes id
+                // fit the notes into the users
+                let userIds = noteEntities.map { return Int($0.userId) }
+                let fetchUsersRequestDto = FetchUsersWithIdsRequestDTO.init(ids: userIds)
+                let fetchUsersRequest = self.fetchUsersWithIdRequest(for: fetchUsersRequestDto)
+                let userEntities = try context.fetch(fetchUsersRequest)
+                let userDTOs = userEntities.map { return $0.toDTO() }
+                
                 var userWithNoteDTOs:[UsersPageResponseDTO.UserDTO] = []
-                for user in userWithoutNoteDTOs {
-                    for note in userNoteEntities {
-                        if note.userId == user.id {
-                            
-                            let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login, id: user.id, profileImage: user.profileImage, type: user.type, note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)), following: nil, followers: nil, company: nil, blog: nil)
-                            userWithNoteDTOs.append(userDTO)
-                        }
-                    }
+                let sortedUsers = userDTOs.sorted()
+                for user in sortedUsers{
+                    let noteEntity = noteEntities.filter { return $0.userId == user.id }.first
+                    let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login,
+                                                                    id: user.id,
+                                                                    profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: user.profileImage?.imageUrl, image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
+                                                                    type: user.type,
+                                                                    note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: noteEntity?.note, userId: Int(user.id)),
+                                                                    following: nil,
+                                                                    followers: nil,
+                                                                    company: nil, blog: nil)
+                    userWithNoteDTOs.append(userDTO)
                 }
                 
-                let usersPageResponseDTO = UsersPageResponseDTO.init(since: 0, per_page: userResponseEntities.count, users: userWithNoteDTOs)
-                completion(.success(usersPageResponseDTO))
+                let userPageResponseDTOWithNote = UsersPageResponseDTO.init(since: 0, per_page: 99, users: userDTOs)
+
+                completion(.success(userPageResponseDTOWithNote))
             } catch {
                 completion(.failure(CoreDataStorageError.readError(error)))
             }
@@ -210,6 +209,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
                     let userNoteEntity = NSEntityDescription.entity(forEntityName: "UserNoteEntity", in : context)!
                     let userNoteRecord = NSManagedObject(entity: userNoteEntity, insertInto: context)
                     userNoteRecord.setValue(nil, forKey: "note")
+                    userNoteRecord.setValue(user.login, forKey: "username")
                     userNoteRecord.setValue(user.id, forKey: "userId")
                 }
                 

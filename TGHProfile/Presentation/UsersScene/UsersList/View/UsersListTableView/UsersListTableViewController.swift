@@ -67,7 +67,7 @@ extension UsersListTableViewController {
         cell.fill(with: viewModel.items.value[indexPath.row],
                   profileImagesRepository: profileImagesRepository)
 
-        if indexPath.row == viewModel.items.value.count - 1 {
+        if indexPath.row == viewModel.items.value.count - 1 && viewModel.tableMode.value == .listAll {
             viewModel.didLoadNextPage()
             // when load next page disable no internet error
         }

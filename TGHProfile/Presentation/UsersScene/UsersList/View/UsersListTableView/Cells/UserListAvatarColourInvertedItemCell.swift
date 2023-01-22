@@ -78,7 +78,7 @@ final class UserListAvatarColourInvertedItemCell: UITableViewCell, BaseItemCell 
             profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             profileImageView.widthAnchor.constraint(equalToConstant: 80),
             profileImageView.heightAnchor.constraint(equalToConstant: 80),
-            profileImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            profileImageView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -8),
             
             userNameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 5),
             userNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
@@ -93,10 +93,15 @@ final class UserListAvatarColourInvertedItemCell: UITableViewCell, BaseItemCell 
     private func updateProfileImage(width: Int) {
         guard let profileImagePath = viewModel?.user.profileImage?.imageUrl else { return }
         
-        if let profileImageData = viewModel?.user.profileImage?.invertedImage {
-            self.profileImageView.image = UIImage(data: profileImageData)
-        } else {
-            imageLoadTask = profileImagesRepository?.fetchImage(with: profileImagePath, width: width) { [weak self] result in
+        if let userId = self.viewModel?.user.userId {
+            imageLoadTask = profileImagesRepository?.fetchImage(for: userId,  imagePath: profileImagePath) { [weak self] profileImage in
+                guard let self = self else { return }
+                if let imageData = profileImage.invertedImage, let image = UIImage(data: imageData) {
+                    DispatchQueue.main.async {
+                        self.profileImageView.image = image
+                    }
+                }
+            } completion: { [weak self] result in
                 guard let self = self else { return }
                 if case let .success(data) = result {
                     if let filter = CIFilter(name: "CIColorInvert"),
@@ -105,22 +110,18 @@ final class UserListAvatarColourInvertedItemCell: UITableViewCell, BaseItemCell 
                         filter.setValue(beginImage, forKey: kCIInputImageKey)
                         if let outputCiimage = filter.outputImage,
                             let filteredImageData = UIImage(ciImage: outputCiimage).pngData() {
-                            
                             self.profileImageView.image = UIImage(data: filteredImageData)
-                            
-                            if let userId = self.viewModel?.user.userId {
-                                self.profileImageView.image = UIImage(data: filteredImageData)
-                                _ = self.profileImagesRepository?.saveImage(userId: userId, imageData: data, completion: { _ in
-                                    
-                                })
-                                _ = self.profileImagesRepository?.saveInvertedImage(userId: userId, imageData: filteredImageData, completion: { _ in
-                                    
-                                })
-                            }
+                            self.profileImageView.image = UIImage(data: filteredImageData)
+                            _ = self.profileImagesRepository?.saveImage(userId: userId, imageData: data, completion: { _ in
+                                
+                            })
+                            _ = self.profileImagesRepository?.saveInvertedImage(userId: userId, imageData: filteredImageData, completion: { _ in
+                                
+                            })
                         }
                     }
+                    self.imageLoadTask = nil
                 }
-                self.imageLoadTask = nil
             }
         }
     }

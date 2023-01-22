@@ -28,6 +28,8 @@ protocol UsersListViewModelInput {
     func didSearch(query: String)
     func didCancelSearch()
     func didSelectItem(at index: Int)
+    func didSelectSearchItem(at index: Int)
+    func resetSearchPages()
 }
 
 protocol UsersListViewModelOutput {
@@ -38,6 +40,7 @@ protocol UsersListViewModelOutput {
     var query: Observable<String> { get }
     var error: Observable<String> { get }
     var isEmpty: Bool { get }
+    var isSearchEmpty: Bool { get }
     var screenTitle: String { get }
     var emptyDataTitle: String { get }
     var errorTitle: String { get }
@@ -61,6 +64,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     var nextSince: Int { since+perPage }
 
     private(set) var pages: [UsersPage] = []
+    private(set) var searchPage: [UsersPage] = []
     private var usersLoadTask: Cancellable? { willSet { usersLoadTask?.cancel() } }
     private var noteLoadTask: Cancellable? { willSet { usersLoadTask?.cancel() } }
     private var multipleNoteLoadTask: Cancellable? { willSet { multipleNoteLoadTask?.cancel() } }
@@ -74,6 +78,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     let query: Observable<String> = Observable("")
     let error: Observable<String> = Observable("")
     var isEmpty: Bool { return items.value.isEmpty }
+    var isSearchEmpty: Bool { return searchItems.value.isEmpty }
     let screenTitle = NSLocalizedString("Users", comment: "")
     let emptyDataTitle = NSLocalizedString("No Data", comment: "")
     let errorTitle = NSLocalizedString("Error", comment: "")
@@ -197,12 +202,12 @@ final class DefaultUsersListViewModel: UsersListViewModel {
             
             let usersPageWithNote = UsersPage.init(since: usersPage.since, per_page: usersPage.per_page, users: usersWithNote)
 
-            self.pages = self.pages
+            self.searchPage = self.searchPage
                 .filter { $0.since != usersPageWithNote.since }
                 + [usersPageWithNote]
 
             var userListItems: [BaseItemViewModel] = []
-            for (_, page) in self.pages.enumerated() {
+            for (_, page) in self.searchPage.enumerated() {
                 for (userIndex, user) in page.users.enumerated() {
                     let isFourthItem = (userListItems.count) % 4 == 3 && userIndex != 0
                     let hasNote = user.note != nil && user.note?.note != "" && user.note?.note != nil
@@ -227,6 +232,11 @@ final class DefaultUsersListViewModel: UsersListViewModel {
         totalPageCount = 1
         pages.removeAll()
         items.value.removeAll()
+    }
+    
+    internal func resetSearchPages() {
+        searchPage.removeAll()
+        searchItems.value.removeAll()
     }
     
     private func loadAllUsers(pageQuery: ListAllUsersUseCaseRequestValue, loading: UsersListViewModelLoading) {
@@ -259,8 +269,9 @@ final class DefaultUsersListViewModel: UsersListViewModel {
         }
         self.loading.value = .none
     }
-
-    private func load(userQuery: UserQuery, loading: UsersListViewModelLoading) {
+    // username and note (see Profile section) fields should be used when
+    // searching; precise match as well as contains should be used.
+    private func searchUser(userQuery: UserQuery, loading: UsersListViewModelLoading) {
         self.loading.value = loading
         query.value = userQuery.query
 
@@ -269,9 +280,8 @@ final class DefaultUsersListViewModel: UsersListViewModel {
             completion: { result in
                 switch result {
                 case .success(let page):
-                    self.resetPages()
-                    self.appendPage(page)
-                    return 
+                    self.resetSearchPages()
+                    self.setSearchUserPage(page)
                 case .failure(let error):
                     self.handle(error: error)
                 }
@@ -306,6 +316,7 @@ extension DefaultUsersListViewModel {
 
     func didSearch(query: String) {
         guard !query.isEmpty else { return }
+        searchUser(userQuery: .init(query: query), loading: .fullScreen)
     }
     
     func didloadFirstPage() {
@@ -320,11 +331,58 @@ extension DefaultUsersListViewModel {
         actions?.showUserDetails(self.items.value[index].user.login ?? "", self.items.value[index].user.note?.note ?? "") { note in
             let isFourthItem = (self.items.value.count) % 4 == 3 && index != 0
             if let noteString = note.note, noteString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-                self.items.value[index].user.note = note
-                self.items.value[index] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.items.value[index].user) : UserListNoteItemViewModel.init(user: self.items.value[index].user)
+                // search and update using note user id
+                if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
+                    self.searchItems.value[searchItemIndex].user.note = note
+                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.items.value[searchItemIndex].user) : UserListNoteItemViewModel.init(user: self.items.value[searchItemIndex].user)
+                }
+                
+                if let itemIndex = self.items.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
+                    self.searchItems.value[itemIndex].user.note = note
+                    self.searchItems.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.items.value[itemIndex].user) : UserListNoteItemViewModel.init(user: self.items.value[itemIndex].user)
+                }
+                
             } else {
-                self.items.value[index].user.note = note
-                self.items.value[index] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.items.value[index].user) : UsersListItemViewModel.init(user: self.items.value[index].user)
+                
+                if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
+                    self.searchItems.value[searchItemIndex].user.note = note
+                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.items.value[searchItemIndex].user) : UsersListItemViewModel.init(user: self.items.value[searchItemIndex].user)
+                }
+                
+                if let itemIndex = self.items.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
+                    self.searchItems.value[itemIndex].user.note = note
+                    self.searchItems.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.searchItems.value[itemIndex].user) : UsersListItemViewModel.init(user: self.searchItems.value[itemIndex].user)
+                }
+            }
+        }
+    }
+    
+    func didSelectSearchItem(at index: Int) {
+        actions?.showUserDetails(self.searchItems.value[index].user.login ?? "", self.searchItems.value[index].user.note?.note ?? "") { note in
+            let isFourthItem = (self.searchItems.value.count) % 4 == 3 && index != 0
+            if let noteString = note.note, noteString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+                // search and update using note user id
+                if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
+                    self.searchItems.value[searchItemIndex].user.note = note
+                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user) : UserListNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user)
+                }
+                
+                if let itemIndex = self.items.value.indices.filter({ return self.items.value[$0].user.userId == note.userId }).first {
+                    self.items.value[itemIndex].user.note = note
+                    self.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.items.value[itemIndex].user) : UserListNoteItemViewModel.init(user: self.items.value[itemIndex].user)
+                }
+                
+            } else {
+                
+                if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
+                    self.searchItems.value[searchItemIndex].user.note = note
+                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.searchItems.value[searchItemIndex].user) : UsersListItemViewModel.init(user: self.searchItems.value[searchItemIndex].user)
+                }
+                
+                if let itemIndex = self.items.value.indices.filter({ return self.items.value[$0].user.userId == note.userId }).first {
+                    self.items.value[itemIndex].user.note = note
+                    self.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.items.value[itemIndex].user) : UsersListItemViewModel.init(user: self.items.value[itemIndex].user)
+                }
             }
         }
     }

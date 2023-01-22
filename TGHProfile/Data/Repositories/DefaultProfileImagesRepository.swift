@@ -20,14 +20,26 @@ final class DefaultProfileImagesRepository {
 
 extension DefaultProfileImagesRepository: ProfileImagesRepository {
     
-    func fetchImage(with imagePath: String, width: Int, completion: @escaping (Result<Data, Error>) -> Void) -> Cancellable? {
+    func fetchImage(for userId: Int, imagePath: String, cached: @escaping (ProfileImage) -> Void, completion: @escaping (Result<Data, Error>) -> Void) -> Cancellable? {
         
-        let endpoint = APIEndpoints.getUserProfile(path: imagePath)
         let task = RepositoryTask()
-        task.networkTask = dataTransferService.request(with: endpoint) { (result: Result<Data, DataTransferError>) in
+        
+        cache.loadImage(for: userId) { cache in
+            guard !task.isCancelled else { return }
+            
+            if case let .success(imageDto?) = cache {
+                cached(imageDto.toDomain())
+            }
+            
+            guard !task.isCancelled else { return }
+            
+            let endpoint = APIEndpoints.getUserProfile(path: imagePath)
+            let task = RepositoryTask()
+            task.networkTask = self.dataTransferService.request(with: endpoint) { (result: Result<Data, DataTransferError>) in
 
-            let result = result.mapError { $0 as Error }
-            DispatchQueue.main.async { completion(result) }
+                let result = result.mapError { $0 as Error }
+                DispatchQueue.main.async { completion(result) }
+            }
         }
         return task
     }

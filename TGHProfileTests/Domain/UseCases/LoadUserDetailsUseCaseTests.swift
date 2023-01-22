@@ -19,13 +19,13 @@ class LoadUserDetailsUseCaseTests: XCTestCase {
     }
     
     struct UsersRepositoryMock: UsersRepository {
-        
         func searchUsersList(query: String, completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
             return nil
         }
         
         var fetchUserDetailsResult: Result<User, Error>
-        func fetchUserDetails(query: UserDetailsQuery, completion: @escaping (Result<User, Error>) -> Void) -> Cancellable? {
+        func fetchUserDetails(query: UserDetailsQuery, cached: @escaping (User) -> Void, completion: @escaping (Result<User, Error>) -> Void) -> Cancellable? {
+            cached(user)
             completion(fetchUserDetailsResult)
             return nil
         }
@@ -38,13 +38,15 @@ class LoadUserDetailsUseCaseTests: XCTestCase {
     func testSearchUsersUseCase_whenSuccessfullyFetchUserDetails() {
         // given
         let expectation = self.expectation(description: "Loaded single user details")
-        expectation.expectedFulfillmentCount = 1
+        expectation.expectedFulfillmentCount = 2
         let useCase = DefaultLoadUserDetailsUseCase(usersRepository: UsersRepositoryMock(fetchUserDetailsResult: .success(LoadUserDetailsUseCaseTests.user)))
 
         // when
         var completedUser: User? = nil
         let requestValue = LoadUserDetailsUseCaseRequestValue(username: "Jimmy")
-        _ = useCase.execute(requestValue: requestValue, completion: { result in
+        _ = useCase.execute(requestValue: requestValue, cached: { cache in
+            expectation.fulfill()
+        }, completion: { result in
             switch result {
             case .success(let user):
                 completedUser = user
@@ -55,20 +57,22 @@ class LoadUserDetailsUseCaseTests: XCTestCase {
         })
         
         // then
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         XCTAssertTrue(completedUser?.login == "Jimmy")
     }
     
     func testSearchUsersUseCase_whenFailedFetchUserDetails() {
         // given
         let expectation = self.expectation(description: "Loaded single user details")
-        expectation.expectedFulfillmentCount = 1
+        expectation.expectedFulfillmentCount = 2
         let useCase = DefaultLoadUserDetailsUseCase(usersRepository: UsersRepositoryMock(fetchUserDetailsResult: .failure(UsersRepositorySuccessTestError.failedFetching)))
 
         // when
         var completedUser: User? = nil
         let requestValue = LoadUserDetailsUseCaseRequestValue(username: "Jimmy")
-        _ = useCase.execute(requestValue: requestValue, completion: { result in
+        _ = useCase.execute(requestValue: requestValue, cached: { cache in
+            expectation.fulfill()
+        }, completion: { result in
             switch result {
             case .success(let user):
                 completedUser = user
@@ -78,7 +82,7 @@ class LoadUserDetailsUseCaseTests: XCTestCase {
         })
         
         // then
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         XCTAssertTrue(completedUser == nil)
     }
     

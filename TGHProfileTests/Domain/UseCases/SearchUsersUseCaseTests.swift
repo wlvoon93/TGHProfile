@@ -32,7 +32,7 @@ class SearchUsersUseCaseTests: XCTestCase {
             return nil
         }
         
-        func fetchUserDetails(query: UserDetailsQuery, completion: @escaping (Result<User, Error>) -> Void) -> Cancellable? {
+        func fetchUserDetails(query: UserDetailsQuery, cached: @escaping (User) -> Void, completion: @escaping (Result<User, Error>) -> Void) -> Cancellable? {
             return nil
         }
         
@@ -61,7 +61,7 @@ class SearchUsersUseCaseTests: XCTestCase {
         })
         
         // then
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         guard let unwrappedLogin = try? XCTUnwrap(completedPage?.users.first?.login) else {
             XCTFail("Unwrapping of unwrappedLogin failed")
             return
@@ -89,7 +89,7 @@ class SearchUsersUseCaseTests: XCTestCase {
         })
         
         // then
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         XCTAssertTrue(completedPage == nil)
     }
     

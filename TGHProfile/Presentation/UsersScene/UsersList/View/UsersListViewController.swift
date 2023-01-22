@@ -41,10 +41,14 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
 
     private func bind(to viewModel: UsersListViewModel) {
         viewModel.items.observe(on: self) { [weak self] _ in self?.updateItems() }
+        viewModel.searchItems.observe(on: self) { [weak self] _ in self?.updateSearchItems() }
         viewModel.loading.observe(on: self) { [weak self] in self?.updateLoading($0) }
         viewModel.query.observe(on: self) { [weak self] in self?.updateSearchQuery($0) }
         viewModel.error.observe(on: self) { [weak self] in self?.showError($0) }
-        viewModel.tableMode.observe(on: self) { [weak self] in self?.displayTable($0) }
+        viewModel.tableMode.observe(on: self) { [weak self] in
+            self?.displayTable($0)
+            self?.title = ($0 == TableMode.listAll) ? "Users" : "Search User"
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -72,6 +76,7 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
         rootView.emptyDataLabel.text = viewModel.emptyDataTitle
         setupSearchController()
         setupTableController()
+        setupSearchTableController()
     }
 
     private func setupBehaviours() {
@@ -81,6 +86,10 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
 
     private func updateItems() {
         usersTableViewController?.reload()
+    }
+    
+    private func updateSearchItems() {
+        searchUserTableViewController?.reload()
     }
 
     private func updateLoading(_ loading: UsersListViewModelLoading?) {
@@ -93,8 +102,8 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
         case .fullScreen: LoadingView.show()
         case .nextPage: rootView.usersListContainerView.isHidden = false
         case .none:
-            rootView.usersListContainerView.isHidden = viewModel.isEmpty
-            rootView.emptyDataLabel.isHidden = !viewModel.isEmpty
+            rootView.usersListContainerView.isHidden = (viewModel.isEmpty && viewModel.tableMode.value == .listAll) || (viewModel.isSearchEmpty && viewModel.tableMode.value == .search)
+            rootView.emptyDataLabel.isHidden = !(viewModel.isEmpty && viewModel.tableMode.value == .listAll) || !(viewModel.isSearchEmpty && viewModel.tableMode.value == .search)
         }
 
         usersTableViewController?.updateLoading(loading)
@@ -187,5 +196,6 @@ extension UsersListViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         viewModel.didCancelSearch()
         viewModel.tableMode.value = .listAll
+        viewModel.resetSearchPages()
     }
 }

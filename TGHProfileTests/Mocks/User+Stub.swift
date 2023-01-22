@@ -11,12 +11,13 @@ import Foundation
 extension User {
     static func stub(login: String = "",
                         id: Int = 10 ,
+                        profileImage: ProfileImage = ProfileImage.init(imageUrl: nil, image: nil, invertedImage: nil),
                         avatar_url: String,
                         type: String = "",
                         note: Note = Note(note: "inval note", userId: -1)) -> Self {
         User(login: login,
-             id: id,
-             avatar_url: avatar_url,
+             userId: id,
+             profileImage: profileImage,
              type: type,
              note: note,
              following: nil,

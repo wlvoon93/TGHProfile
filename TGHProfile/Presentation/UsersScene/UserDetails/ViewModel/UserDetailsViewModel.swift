@@ -45,7 +45,7 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
     
     private let loadUserDetailsUseCase: LoadUserDetailsUseCase
     private let saveUserNoteUseCase: SaveUserNoteUseCase
-    private var profileImagesRepository: ProfileImagesRepository?
+    private let loadProfileImageUseCase: LoadProfileImageUseCase
     
     private let didSaveNote: UserDetailsViewModelDidSaveNoteAction?
     
@@ -61,12 +61,12 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
          note: String,
          loadUserDetailsUseCase: LoadUserDetailsUseCase,
          saveUserNoteUseCase: SaveUserNoteUseCase,
-         profileImagesRepository: ProfileImagesRepository,
+         loadProfileImageUseCase: LoadProfileImageUseCase,
          didSaveNote: UserDetailsViewModelDidSaveNoteAction? = nil) {
         self.username.value = username
         self.loadUserDetailsUseCase = loadUserDetailsUseCase
         self.saveUserNoteUseCase = saveUserNoteUseCase
-        self.profileImagesRepository = profileImagesRepository
+        self.loadProfileImageUseCase = loadProfileImageUseCase
         self.didSaveNote = didSaveNote
         self.note.value = note
     }
@@ -81,7 +81,7 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
         self.profileImageData.value = user.profileImage?.image
         self.profileImageUrl.value = user.profileImage?.imageUrl
         
-        self.updateProfileImage(width: 10)
+        self.updateProfileImage()
     }
     
     private func loadUserDetails() {
@@ -131,19 +131,26 @@ extension DefaultUserDetailsViewModel {
         loadUserDetails()
     }
     
+    func load() {
+        loadUserDetails()
+    }
+    
     func didTapSave(noteString: String, completion: @escaping () -> Void) {
         updateUserNote(noteString: noteString, completion: completion)
     }
     
-    func updateProfileImage(width: Int) {
+    func updateProfileImage() {
         guard let profileImagePath = self.profileImageUrl.value else { return }
         
-        _ = profileImagesRepository?.fetchImage(with: profileImagePath, width: width) { [weak self] result in
-            guard let self = self else { return }
-            if case let .success(data) = result {
-                self.profileImageData.value = data
-            }
+        if let userId = self.userId.value {
+            _ = loadProfileImageUseCase.execute(requestValue: .init(userId: userId, imageUrl: profileImagePath), cached: {_ in
+                
+            }, completion: {[weak self] result in
+                guard let self = self else { return }
+                if case let .success(data) = result {
+                    self.profileImageData.value = data
+                }
+            })
         }
-        
     }
 }

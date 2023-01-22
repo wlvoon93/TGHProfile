@@ -8,6 +8,7 @@
 import Foundation
 
 protocol UserProfileImageStorage {
+    func loadImage(for userId: Int, completion: @escaping (Result<UsersPageResponseDTO.UserDTO.ProfileImageDTO?, Error>) -> Void)
     func saveImage(for userId: Int, image: Data, completion: @escaping (VoidResult) -> Void)
     func saveInvertedImage(for userId: Int, invertedImage: Data, completion: @escaping (VoidResult) -> Void)
 }

@@ -52,6 +52,10 @@ final class UsersSceneDIContainer {
         return DefaultLoadUsersNoteUseCase(userNoteRepository: makeUserNoteRepository())
     }
     
+    func makeLoadProfileImageUseCase() -> LoadProfileImageUseCase {
+        return DefaultLoadProfileImageUseCase(profileImagesRepository: makeProfileImagesRepository())
+    }
+    
     // MARK: - Repositories
     func makeUsersRepository() -> UsersRepository {
         return DefaultUsersRepository(dataTransferService: dependencies.apiDataTransferService, cache: usersResponseCache)
@@ -67,6 +71,7 @@ final class UsersSceneDIContainer {
     func makeProfileImagesRepository() -> ProfileImagesRepository {
         return DefaultProfileImagesRepository(dataTransferService: dependencies.imageDataTransferService, cache: userProfileImageCache)
     }
+    
     func makeUserNoteRepository() -> UserNoteRepository {
         return DefaultUserNoteRepository(cache: userNoteResponseCache)
     }
@@ -96,7 +101,7 @@ final class UsersSceneDIContainer {
                                            note: note,
                                            loadUserDetailsUseCase: makeLoadUserDetailsUseCase(),
                                            saveUserNoteUseCase: makeSaveUserNoteUseCase(),
-                                           profileImagesRepository: makeProfileImagesRepository(),
+                                           loadProfileImageUseCase: makeLoadProfileImageUseCase(),
                                            didSaveNote: didSaveNote)
     }
     

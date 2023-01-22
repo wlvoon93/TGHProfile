@@ -69,21 +69,19 @@ extension DefaultUsersRepository: UsersRepository {
     public func searchUsersList(query: String,
                                 completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
 
-        let requestDTO = UsersSearchRequestDTO(query: query)
+        let requestDTO = LoadUsersWithUsernameAndNoteKeywordRequestDTO(query: query)
         let task = RepositoryTask()
 
-        cache.getSearchResponse(for: requestDTO) { result in
+        cache.searchUsersWithUsernameAndNoteKeyword(for: requestDTO) { result in
 
             if case let .success(responseDTO?) = result {
                 completion(.success(responseDTO.toDomain()))
             }
             
             switch result {
-            case .success(let responseDTOs):
-                if let responseDTOsCasted = responseDTOs as? [UsersResponseDTO] {
-                    let users = responseDTOsCasted.map { UsersPageResponseDTO.UserDTO.init(login: $0.login, id: $0.id, profileImage: .init(imageUrl: $0.avatar_url, image: nil, invertedImage: nil), type: $0.type, note: nil, following: nil, followers: nil, company: nil, blog: nil) }
-                    let usersPageResponseDTO = UsersPageResponseDTO.init(since: 0, per_page: users.count, users: users)
-                    completion(.success(usersPageResponseDTO.toDomain()))
+            case .success(let usersPageResponseDTO):
+                if let dto = usersPageResponseDTO {
+                    completion(.success(dto.toDomain()))
                 }
             case .failure(let error):
                 completion(.failure(error))

@@ -8,6 +8,6 @@
 import Foundation
 
 struct LoadUserNoteResponseDTO: Encodable {
-    let userId: Int
-    let note: String
+    let usernameKeyword: String
+    let noteKeyword: String
 }

@@ -8,14 +8,6 @@
 import Foundation
 import UIKit
 
-//class BaseItemViewModel{
-//    var cellType: CellTypes
-//
-//    init(cellType: CellTypes) {
-//        self.cellType = cellType
-//    }
-//}
-
 enum CellTypes: String{
     case normal = "normalCell"
     case fourthItem = "fourthItemCell"

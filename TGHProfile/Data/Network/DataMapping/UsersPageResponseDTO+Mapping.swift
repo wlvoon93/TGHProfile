@@ -74,3 +74,11 @@ extension UsersPageResponseDTO.UserDTO {
                      blog: nil)
     }
 }
+
+extension UsersPageResponseDTO.UserDTO.ProfileImageDTO {
+    func toDomain() -> ProfileImage {
+        return .init(imageUrl: imageUrl,
+                     image: image,
+                     invertedImage: invertedImage)
+    }
+}
