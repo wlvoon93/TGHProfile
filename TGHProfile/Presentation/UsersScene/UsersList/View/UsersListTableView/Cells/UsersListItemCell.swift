@@ -104,7 +104,7 @@ final class UsersListItemCell: UITableViewCell {
             guard let self = self else { return }
             guard self.viewModel.posterImagePath == posterImagePath else { return }
             if case let .success(data) = result {
-                self.posterImageView.image = UIImage(data: data)
+//                self.posterImageView.image = UIImage(data: data)
             }
             self.imageLoadTask = nil
         }

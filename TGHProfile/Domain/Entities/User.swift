@@ -8,21 +8,19 @@
 import Foundation
 
 struct User: Equatable, Identifiable {
-    typealias Identifier = String
-    enum Genre {
-        case adventure
-        case scienceFiction
-    }
-    let id: Identifier
-    let title: String?
-    let genre: Genre?
-    let posterPath: String?
-    let overview: String?
-    let releaseDate: Date?
+//    typealias Identifier = String
+//    enum Genre {
+//        case adventure
+//        case scienceFiction
+//    }
+    // user list and user has different details
+    let login: String?
+    let id: Int?
+    let avatar_url: String?
 }
 
 struct UsersPage: Equatable {
-    let page: Int
-    let totalPages: Int
+    let since: Int
+    let per_page: Int
     let users: [User]
 }

@@ -14,8 +14,7 @@ final class AppDIContainer {
     // MARK: - Network
     lazy var apiDataTransferService: DataTransferService = {
         let config = ApiDataNetworkConfig(baseURL: URL(string: appConfiguration.apiBaseURL)!,
-                                          queryParameters: ["api_key": appConfiguration.apiKey,
-                                                            "language": NSLocale.preferredLanguages.first ?? "en"])
+                                          queryParameters: [:])
         
         let apiDataNetwork = DefaultNetworkService(config: config)
         return DefaultDataTransferService(with: apiDataNetwork)

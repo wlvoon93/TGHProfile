@@ -1,29 +1,28 @@
 //
-//  UsersResponseDTO+Mapping.swift
-//  Data
+//  UsersSearchResponseDTO+Mapping.swift
+//  TGHProfile
 //
-//  Created by Oleh Kudinov on 12.08.19.
-//  Copyright © 2019 Oleh Kudinov. All rights reserved.
+//  Created by T0366-ADE-MB-1 on 24/12/2022.
 //
 
 import Foundation
 
 // MARK: - Data Transfer Object
 
-struct UsersResponseDTO: Decodable {
+struct UsersSearchResponseDTO: Decodable {
     let login: String?
-    let id: Int
+    let id: Int?
     let avatar_url: String?
 }
 
-
 // MARK: - Mappings to Domain
 
-extension UsersResponseDTO {
+extension UsersSearchResponseDTO {
     func toDomain() -> User {
         return .init(login: login, id: id, avatar_url: avatar_url)
     }
 }
+
 
 // MARK: - Private
 

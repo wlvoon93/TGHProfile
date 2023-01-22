@@ -17,14 +17,10 @@ struct UsersListItemViewModel: Equatable {
 extension UsersListItemViewModel {
 
     init(user: User) {
-        self.title = user.title ?? ""
-        self.posterImagePath = user.posterPath
-        self.overview = user.overview ?? ""
-        if let releaseDate = user.releaseDate {
-            self.releaseDate = "\(NSLocalizedString("Release Date", comment: "")): \(dateFormatter.string(from: releaseDate))"
-        } else {
-            self.releaseDate = NSLocalizedString("To be announced", comment: "")
-        }
+        self.title = user.login ?? ""
+        self.posterImagePath = user.login
+        self.overview = user.login ?? ""
+        self.releaseDate = title
     }
 }
 

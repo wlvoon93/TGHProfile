@@ -20,9 +20,9 @@ final class CoreDataUsersResponseStorage {
 
     private func fetchRequest(for requestDto: UsersRequestDTO) -> NSFetchRequest<UsersRequestEntity> {
         let request: NSFetchRequest = UsersRequestEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "%K = %@ AND %K = %d",
-                                        #keyPath(UsersRequestEntity.query), requestDto.query,
-                                        #keyPath(UsersRequestEntity.page), requestDto.page)
+        request.predicate = NSPredicate(format: "%K = %d AND %K = %d",
+                                        #keyPath(UsersRequestEntity.since), requestDto.since,
+                                        #keyPath(UsersRequestEntity.per_page), requestDto.per_page)
         return request
     }
 
@@ -41,7 +41,7 @@ final class CoreDataUsersResponseStorage {
 
 extension CoreDataUsersResponseStorage: UsersResponseStorage {
 
-    func getResponse(for requestDto: UsersRequestDTO, completion: @escaping (Result<UsersResponseDTO?, CoreDataStorageError>) -> Void) {
+    func getResponse(for requestDto: UsersRequestDTO, completion: @escaping (Result<UsersPageResponseDTO?, CoreDataStorageError>) -> Void) {
         coreDataStorage.performBackgroundTask { context in
             do {
                 let fetchRequest = self.fetchRequest(for: requestDto)
@@ -54,7 +54,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
         }
     }
 
-    func save(response responseDto: UsersResponseDTO, for requestDto: UsersRequestDTO) {
+    func save(response responseDto: UsersPageResponseDTO, for requestDto: UsersRequestDTO) {
         coreDataStorage.performBackgroundTask { context in
             do {
                 self.deleteResponse(for: requestDto, in: context)

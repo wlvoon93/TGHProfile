@@ -8,6 +8,6 @@
 import Foundation
 
 struct UsersRequestDTO: Encodable {
-    let query: String
-    let page: Int
+    let since: Int
+    let per_page: Int
 }

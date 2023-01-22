@@ -34,10 +34,10 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
     
     init(user: User,
          posterImagesRepository: PosterImagesRepository) {
-        self.title = user.title ?? ""
-        self.overview = user.overview ?? ""
-        self.posterImagePath = user.posterPath
-        self.isPosterImageHidden = user.posterPath == nil
+        self.title = user.avatar_url ?? ""
+        self.overview = user.avatar_url ?? ""
+        self.posterImagePath = user.avatar_url
+        self.isPosterImageHidden = user.id == nil
         self.posterImagesRepository = posterImagesRepository
     }
 }
@@ -52,7 +52,8 @@ extension DefaultUserDetailsViewModel {
             guard self.posterImagePath == posterImagePath else { return }
             switch result {
             case .success(let data):
-                self.posterImage.value = data
+//                self.posterImage.value = data
+                break
             case .failure: break
             }
             self.imageLoadTask = nil

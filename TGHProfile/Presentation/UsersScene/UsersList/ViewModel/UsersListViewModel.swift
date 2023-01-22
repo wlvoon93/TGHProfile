@@ -42,6 +42,7 @@ protocol UsersListViewModel: UsersListViewModelInput, UsersListViewModelOutput {
 
 final class DefaultUsersListViewModel: UsersListViewModel {
 
+    private let listAllUsersUseCase: ListAllUsersUseCase
     private let searchUsersUseCase: SearchUsersUseCase
     private let actions: UsersListViewModelActions?
 
@@ -68,20 +69,23 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     // MARK: - Init
 
     init(searchUsersUseCase: SearchUsersUseCase,
+         listAllUsersUseCase: ListAllUsersUseCase,
          actions: UsersListViewModelActions? = nil) {
         self.searchUsersUseCase = searchUsersUseCase
+        self.listAllUsersUseCase = listAllUsersUseCase
         self.actions = actions
     }
 
     // MARK: - Private
 
     private func appendPage(_ usersPage: UsersPage) {
-        currentPage = usersPage.page
-        totalPageCount = usersPage.totalPages
+        currentPage = 1
+//        totalPageCount = usersPage.totalPages
 
         pages = pages
-            .filter { $0.page != usersPage.page }
+            .filter { $0.since != usersPage.since }
             + [usersPage]
+//        pages = usersPage
 
         items.value = pages.users.map(UsersListItemViewModel.init)
     }
@@ -91,6 +95,23 @@ final class DefaultUsersListViewModel: UsersListViewModel {
         totalPageCount = 1
         pages.removeAll()
         items.value.removeAll()
+    }
+    
+    private func loadAllUsers(loading: UsersListViewModelLoading) {
+        self.loading.value = loading
+
+        usersLoadTask = listAllUsersUseCase.execute(
+            requestValue: .init(page: nextPage),
+            cached: appendPage,
+            completion: { result in
+                switch result {
+                case .success(let page):
+                    self.appendPage(page)
+                case .failure(let error):
+                    self.handle(error: error)
+                }
+                self.loading.value = .none
+        })
     }
 
     private func load(userQuery: UserQuery, loading: UsersListViewModelLoading) {
@@ -127,7 +148,9 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
 extension DefaultUsersListViewModel {
 
-    func viewDidLoad() { }
+    func viewDidLoad() {
+        loadAllUsers(loading: .nextPage)
+    }
 
     func didLoadNextPage() {
         guard hasMorePages, loading.value == .none else { return }

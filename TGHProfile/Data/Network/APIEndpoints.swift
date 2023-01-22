@@ -9,11 +9,11 @@ import Foundation
 
 struct APIEndpoints {
     
-    static func getUsers(with moviesRequestDTO: UsersRequestDTO) -> Endpoint<UsersResponseDTO> {
+    static func getUsers(with usersRequestDTO: UsersRequestDTO) -> Endpoint<UsersResponseDTO> {
 
-        return Endpoint(path: "3/search/movie/",
+        return Endpoint(path: "users",
                         method: .get,
-                        queryParametersEncodable: moviesRequestDTO)
+                        queryParametersEncodable: usersRequestDTO)
     }
 
     static func getUserPoster(path: String, width: Int) -> Endpoint<Data> {

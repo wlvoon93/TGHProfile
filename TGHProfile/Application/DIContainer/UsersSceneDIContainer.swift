@@ -31,6 +31,11 @@ final class UsersSceneDIContainer {
                                           usersQueriesRepository: makeUsersQueriesRepository())
     }
     
+    func makeListAllUsersUseCase() -> ListAllUsersUseCase {
+        return DefaultListAllUsersUseCase(usersRepository: makeUsersRepository(),
+                                          usersQueriesRepository: makeUsersQueriesRepository())
+    }
+    
     func makeFetchRecentUserQueriesUseCase(requestValue: FetchRecentUserQueriesUseCase.RequestValue,
                                             completion: @escaping (FetchRecentUserQueriesUseCase.ResultValue) -> Void) -> UseCase {
         return FetchRecentUserQueriesUseCase(requestValue: requestValue,
@@ -58,8 +63,7 @@ final class UsersSceneDIContainer {
     }
     
     func makeUsersListViewModel(actions: UsersListViewModelActions) -> UsersListViewModel {
-        return DefaultUsersListViewModel(searchUsersUseCase: makeSearchUsersUseCase(),
-                                          actions: actions)
+        return DefaultUsersListViewModel(searchUsersUseCase: makeSearchUsersUseCase(), listAllUsersUseCase: makeListAllUsersUseCase(), actions: actions)
     }
     
     // MARK: - User Details
