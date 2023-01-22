@@ -86,7 +86,9 @@ final class DefaultUsersListViewModel: UsersListViewModel {
         pages = pages
             .filter { $0.since != usersPage.since }
             + [usersPage]
-//        pages = usersPage
+        // when append page, update the note
+        // but the note will not be updated when bacK?
+        // best way is there is a callback that notifies when save is successful, update the note for that user id
 
         items.value = pages.users.map(UsersListItemViewModel.init)
     }

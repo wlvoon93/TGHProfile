@@ -11,6 +11,7 @@ typealias UserDetailsViewModelDidSelectAction = (User) -> Void
 
 protocol UserDetailsViewModelInput {
     func viewWillAppear()
+    func didTapSave(noteString: String, completion: @escaping (() -> Void))
 }
 
 protocol UserDetailsViewModelOutput {
@@ -31,6 +32,7 @@ protocol UserDetailsViewModel: UserDetailsViewModelInput, UserDetailsViewModelOu
 
 final class DefaultUserDetailsViewModel: UserDetailsViewModel {
     
+    let userId: Observable<Int?> = Observable(nil)
     let username: Observable<String> = Observable("")
     let avatarUrl: Observable<String> = Observable("")
     let followers: Observable<Int> = Observable(0)
@@ -44,8 +46,10 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
 //    private let profileImagesRepository: ProfileImagesRepository
 //    private var imageLoadTask: Cancellable? { willSet { imageLoadTask?.cancel() } }
     private let loadUserDetailsUseCase: LoadUserDetailsUseCase
+    private let saveUserNoteUseCase: SaveUserNoteUseCase
     
     private var userDetailsLoadTask: Cancellable? { willSet { userDetailsLoadTask?.cancel() } }
+    private var userNoteSaveTask: Cancellable? { willSet { userNoteSaveTask?.cancel() } }
     let error: Observable<String> = Observable("")
 
     // MARK: - OUTPUT
@@ -56,7 +60,8 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
     
     // MARK: - Init
     init(username: String,
-         loadUserDetailsUseCase: LoadUserDetailsUseCase) {
+         loadUserDetailsUseCase: LoadUserDetailsUseCase,
+         saveUserNoteUseCase: SaveUserNoteUseCase) {
 //        self.title = user.avatar_url ?? ""
 //        self.overview = user.avatar_url ?? ""
 //        self.profileImagePath = user.avatar_url
@@ -65,6 +70,7 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
 //        self.didSelect = didSelect
         self.username.value = username
         self.loadUserDetailsUseCase = loadUserDetailsUseCase
+        self.saveUserNoteUseCase = saveUserNoteUseCase
     }
     
     // MARK: - Private
@@ -74,6 +80,7 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
         self.company.value = user.company ?? ""
         self.following.value = user.following ?? 0
         self.followers.value = user.followers ?? 0
+        self.userId.value = user.id
     }
     
     private func loadUserDetails() {
@@ -90,6 +97,19 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
         })
     }
     
+    private func updateUserNote(noteString: String, completion: @escaping (() -> Void)) {
+        if let userId = self.userId.value {
+            userNoteSaveTask = saveUserNoteUseCase.execute(requestValue: .init(userId: userId, note: noteString), completion: { result in
+                switch result {
+                    case .success:
+                        completion()
+                    case .failure(let error):
+                        self.handle(error: error)
+                }
+            })
+        }
+    }
+    
     private func handle(error: Error) {
         self.error.value = error.isInternetConnectionError ?
             NSLocalizedString("No internet connection", comment: "") :
@@ -102,6 +122,10 @@ extension DefaultUserDetailsViewModel {
     func viewWillAppear() {
 //        updateMoviesQueries()
         loadUserDetails()
+    }
+    
+    func didTapSave(noteString: String, completion: @escaping () -> Void) {
+        updateUserNote(noteString: noteString, completion: completion)
     }
     
 //    func viewDidLoad() {

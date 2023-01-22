@@ -11,6 +11,9 @@ import SwiftUI
 @available(iOS 13.0, *)
 struct UserDetailsView: View {
     @ObservedObject var viewModelWrapper: UserDetailsViewModelWrapper
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @State var noteString: String = "Contrary to popular belief, Lorem ipsum is the best placeholder text eva"
+
     var body: some View {
         List {
             VStack(spacing: 8) {
@@ -45,19 +48,22 @@ struct UserDetailsView: View {
                     .padding(.leading)
                 
                 HStack() {
-                    VStack(alignment: .leading) {
-                        Text("name: John")
-                        Text("company: Apple")
-                        Text("blog: www.apple.com")
-                        Spacer().frame(height: 20)
-                    }.frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .border(.black, width: 2)
+                    TextEditor(text: $noteString)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal)
+                        .navigationTitle("About you")
+                        .onChange(of: viewModelWrapper.noteString) { newValue in
+                            noteString = newValue
+                        }
                 }.padding(.horizontal)
                 
                 Spacer().frame(height: 20)
                 Button("Save") {
-                    
+                    self.viewModelWrapper.viewModel?.didTapSave(noteString: noteString, completion: {
+                        DispatchQueue.main.async {
+                            self.presentationMode.wrappedValue.dismiss()
+                        }
+                    })
                 }
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear {
@@ -76,6 +82,7 @@ final class UserDetailsViewModelWrapper: ObservableObject {
     @Published var following: Int = 0
     @Published var followers: Int = 0
     @Published var avatarUrl: String = ""
+    @Published var noteString: String = ""
     
     init(viewModel: UserDetailsViewModel?) {
         self.viewModel = viewModel
@@ -85,6 +92,7 @@ final class UserDetailsViewModelWrapper: ObservableObject {
         viewModel?.following.observe(on: self) { [weak self] value in self?.following = value }
         viewModel?.followers.observe(on: self) { [weak self] value in self?.followers = value }
         viewModel?.avatarUrl.observe(on: self) { [weak self] value in self?.avatarUrl = value }
+        viewModel?.avatarUrl.observe(on: self) { [weak self] value in self?.noteString = value }
     }
 }
 

@@ -30,12 +30,6 @@ extension UserResponseEntity {
     }
 }
 
-extension UserNoteEntity {
-    func toDomain() -> Note {
-        return .init(note: note, userId: Int(userId))
-    }
-}
-
 extension UsersRequestDTO {
     func toEntity(in context: NSManagedObjectContext) -> UsersRequestEntity {
         let entity: UsersRequestEntity = .init(context: context)

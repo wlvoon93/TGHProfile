@@ -60,6 +60,14 @@ final class CoreDataUsersResponseStorage {
     
         return request
     }
+    
+    private func saveNoteRequest(for user: UsersPageResponseDTO.UserDTO) -> NSFetchRequest<UserNoteEntity> {
+        let request: NSFetchRequest = UserNoteEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "%K = %i",
+                                                #keyPath(UserNoteEntity.userId), user.id)
+    
+        return request
+    }
 
     private func deleteResponse(for requestDto: UsersRequestDTO, in context: NSManagedObjectContext) {
         let request = fetchRequest(for: requestDto)

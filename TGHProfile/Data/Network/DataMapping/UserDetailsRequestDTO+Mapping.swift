@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 struct UserDetailsRequestDTO: Encodable {
     let username: String
 }

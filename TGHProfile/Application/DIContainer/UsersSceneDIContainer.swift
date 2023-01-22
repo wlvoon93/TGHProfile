@@ -20,6 +20,7 @@ final class UsersSceneDIContainer {
     // MARK: - Persistent Storage
     lazy var usersQueriesStorage: UsersQueriesStorage = CoreDataUsersQueriesStorage(maxStorageLimit: 10)
     lazy var usersResponseCache: UsersResponseStorage = CoreDataUsersResponseStorage()
+    lazy var userNoteResponseCache: UserNoteResponseStorage = CoreDataUserNoteResponseStorage()
 
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -38,6 +39,10 @@ final class UsersSceneDIContainer {
     
     func makeLoadUserDetailsUseCase() -> LoadUserDetailsUseCase {
         return DefaultLoadUserDetailsUseCase(usersRepository: makeUsersRepository(), usersQueriesRepository: makeUserDetailsQueriesRepository())
+    }
+    
+    func makeSaveUserNoteUseCase() -> SaveUserNoteUseCase {
+        return DefaultSaveUserNoteUseCase(userNoteRepository: makeUserNoteRepository())
     }
     
     func makeFetchRecentUserQueriesUseCase(requestValue: FetchRecentUserQueriesUseCase.RequestValue,
@@ -63,6 +68,9 @@ final class UsersSceneDIContainer {
     func makeProfileImagesRepository() -> ProfileImagesRepository {
         return DefaultProfileImagesRepository(dataTransferService: dependencies.imageDataTransferService)
     }
+    func makeUserNoteRepository() -> UserNoteRepository {
+        return DefaultUserNoteRepository(cache: userNoteResponseCache)
+    }
     
     // MARK: - Users List
     func makeUsersListViewController(actions: UsersListViewModelActions) -> UsersListViewController {
@@ -81,7 +89,7 @@ final class UsersSceneDIContainer {
     }
     
     func makeUserDetailsViewModel(username: String) -> UserDetailsViewModel {
-        return DefaultUserDetailsViewModel(username: username, loadUserDetailsUseCase: makeLoadUserDetailsUseCase())
+        return DefaultUserDetailsViewModel(username: username, loadUserDetailsUseCase: makeLoadUserDetailsUseCase(), saveUserNoteUseCase: makeSaveUserNoteUseCase())
     }
     
     func makeUserDetailsViewModelWrapper(username: String) -> UserDetailsViewModelWrapper {
