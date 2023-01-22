@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 protocol SaveUserNoteUseCase {
     func execute(requestValue: SaveUserNoteUseCaseRequestValue,
                  completion: @escaping (VoidResult) -> Void) -> Cancellable?

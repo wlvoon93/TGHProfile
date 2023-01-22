@@ -45,6 +45,14 @@ final class UsersSceneDIContainer {
         return DefaultSaveUserNoteUseCase(userNoteRepository: makeUserNoteRepository())
     }
     
+    func makeLoadUserNoteUseCase() -> LoadUserNoteUseCase {
+        return DefaultLoadUserNoteUseCase(userNoteRepository: makeUserNoteRepository())
+    }
+    
+    func makeLoadUsersNoteUseCase() -> LoadUsersNoteUseCase {
+        return DefaultLoadUsersNoteUseCase(userNoteRepository: makeUserNoteRepository())
+    }
+    
     func makeFetchRecentUserQueriesUseCase(requestValue: FetchRecentUserQueriesUseCase.RequestValue,
                                             completion: @escaping (FetchRecentUserQueriesUseCase.ResultValue) -> Void) -> UseCase {
         return FetchRecentUserQueriesUseCase(requestValue: requestValue,
@@ -79,21 +87,28 @@ final class UsersSceneDIContainer {
     }
     
     func makeUsersListViewModel(actions: UsersListViewModelActions) -> UsersListViewModel {
-        return DefaultUsersListViewModel(searchUsersUseCase: makeSearchUsersUseCase(), listAllUsersUseCase: makeListAllUsersUseCase(), actions: actions)
+        return DefaultUsersListViewModel(searchUsersUseCase: makeSearchUsersUseCase(),
+                                         listAllUsersUseCase: makeListAllUsersUseCase(),
+                                         loadUserNoteUseCase: makeLoadUserNoteUseCase(),
+                                         loadUsersNoteUseCase: makeLoadUsersNoteUseCase(),
+                                         actions: actions)
     }
     
     // MARK: - User Details
-    func makeUsersDetailsViewController(username: String) -> UIViewController {
-        let view = UserDetailsView(viewModelWrapper: makeUserDetailsViewModelWrapper(username: username))
+    func makeUsersDetailsViewController(username: String, didSaveNote: @escaping (Note) -> Void) -> UIViewController {
+        let view = UserDetailsView(viewModelWrapper: makeUserDetailsViewModelWrapper(username: username, didSaveNote: didSaveNote))
         return UIHostingController(rootView: view)
     }
     
-    func makeUserDetailsViewModel(username: String) -> UserDetailsViewModel {
-        return DefaultUserDetailsViewModel(username: username, loadUserDetailsUseCase: makeLoadUserDetailsUseCase(), saveUserNoteUseCase: makeSaveUserNoteUseCase())
+    func makeUserDetailsViewModel(username: String, didSaveNote: @escaping (Note) -> Void) -> UserDetailsViewModel {
+        return DefaultUserDetailsViewModel(username: username,
+                                           loadUserDetailsUseCase: makeLoadUserDetailsUseCase(),
+                                           saveUserNoteUseCase: makeSaveUserNoteUseCase(),
+                                           didSaveNote: didSaveNote)
     }
     
-    func makeUserDetailsViewModelWrapper(username: String) -> UserDetailsViewModelWrapper {
-        return UserDetailsViewModelWrapper(viewModel: makeUserDetailsViewModel(username: username))
+    func makeUserDetailsViewModelWrapper(username: String, didSaveNote: @escaping (Note) -> Void) -> UserDetailsViewModelWrapper {
+        return UserDetailsViewModelWrapper(viewModel: makeUserDetailsViewModel(username: username, didSaveNote: didSaveNote))
     }
 
     // MARK: - Flow Coordinators

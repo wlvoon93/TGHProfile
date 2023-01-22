@@ -11,7 +11,7 @@ struct UsersListViewModelActions {
     /// Note: if you would need to edit user inside Details screen and update this Users List screen with updated user then you would need this closure:
     /// showUserDetails: (User, @escaping (_ updated: User) -> Void) -> Void
 //    let showUserDetails: (User) -> Void
-    let showUserDetails: (String) -> Void
+    let showUserDetails: (String, @escaping (_ didSelect: Note) -> Void) -> Void
 }
 
 enum UsersListViewModelLoading {
@@ -45,6 +45,9 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
     private let listAllUsersUseCase: ListAllUsersUseCase
     private let searchUsersUseCase: SearchUsersUseCase
+    private let loadUserNoteUseCase: LoadUserNoteUseCase
+    private let loadUsersNoteUseCase: LoadUsersNoteUseCase
+    
     private let actions: UsersListViewModelActions?
 
     var currentPage: Int = 0
@@ -54,6 +57,8 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
     private var pages: [UsersPage] = []
     private var usersLoadTask: Cancellable? { willSet { usersLoadTask?.cancel() } }
+    private var noteLoadTask: Cancellable? { willSet { usersLoadTask?.cancel() } }
+    private var multipleNoteLoadTask: Cancellable? { willSet { multipleNoteLoadTask?.cancel() } }
 
     // MARK: - OUTPUT
 
@@ -71,9 +76,13 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
     init(searchUsersUseCase: SearchUsersUseCase,
          listAllUsersUseCase: ListAllUsersUseCase,
+         loadUserNoteUseCase: LoadUserNoteUseCase,
+         loadUsersNoteUseCase: LoadUsersNoteUseCase,
          actions: UsersListViewModelActions? = nil) {
         self.searchUsersUseCase = searchUsersUseCase
         self.listAllUsersUseCase = listAllUsersUseCase
+        self.loadUserNoteUseCase = loadUserNoteUseCase
+        self.loadUsersNoteUseCase = loadUsersNoteUseCase
         self.actions = actions
     }
 
@@ -82,15 +91,40 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     private func appendPage(_ usersPage: UsersPage) {
         currentPage = Int(Double((usersPage.since/usersPage.per_page)).rounded(.down))
 //        totalPageCount = usersPage.totalPages
+        
+        let userIDs = usersPage.users.compactMap { $0.id }
+        multipleNoteLoadTask = loadUsersNoteUseCase.execute(requestValue: .init(userIds: userIDs)) { result in
+            
+            var usersWithNote: [User] = []
+            
+            switch result {
+            case .success(let notes):
+                
+                for user in usersPage.users {
+                    let userNote = notes.filter {
+                        return $0.userId == user.id
+                    }
+                    
+                    var userWithNote: User? = nil
+                    if !userNote.isEmpty {
+                        userWithNote = User.init(login: user.login, id: user.id, avatar_url: user.avatar_url, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
+                    }
+                    usersWithNote.append(userWithNote ?? user)
+                }
+                
+                
+            case .failure(let error):
+                self.handle(error: error)
+            }
+            
+            let usersPageWithNote = UsersPage.init(since: usersPage.since, per_page: usersPage.per_page, users: usersWithNote)
 
-        pages = pages
-            .filter { $0.since != usersPage.since }
-            + [usersPage]
-        // when append page, update the note
-        // but the note will not be updated when bacK?
-        // best way is there is a callback that notifies when save is successful, update the note for that user id
+            self.pages = self.pages
+                .filter { $0.since != usersPageWithNote.since }
+                + [usersPageWithNote]
 
-        items.value = pages.users.map(UsersListItemViewModel.init)
+            self.items.value = self.pages.users.map(UsersListItemViewModel.init)
+        }
     }
 
     private func resetPages() {
@@ -170,7 +204,23 @@ extension DefaultUsersListViewModel {
     }
 
     func didSelectItem(at index: Int) {
-        actions?.showUserDetails(pages.users[index].login ?? "")
+        actions?.showUserDetails(pages.users[index].login ?? "") { note in
+            // update the note for that user and reload data
+            //self.pages.users[index].note = note
+            // determine page size - self.pages.first.count
+            // determine which page - index%page size
+            // replace page by reinit then
+            if let pageSize = self.pages.first?.users.count {
+                let page = Int(Float(index / pageSize).rounded(.up))
+                self.pages[page] = UsersPage.init(since: self.pages[page].since, per_page: self.pages[page].per_page, users: self.pages[page].users.map {
+                    if $0.id == note.userId {
+                        return User.init(login: $0.login, id: $0.id, avatar_url: $0.avatar_url, type: $0.type, note: note, following: $0.following, followers: $0.followers, company: $0.company, blog: $0.blog)
+                    }
+                    return $0
+                })
+            }
+        }
+                                 
     }
 }
 

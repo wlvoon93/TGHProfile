@@ -17,18 +17,44 @@ final class DefaultUserNoteRepository {
 }
 
 extension DefaultUserNoteRepository: UserNoteRepository {
+    func loadUsersNoteResponse(userIds: [Int], completion: @escaping (Result<[Note], Error>) -> Void) -> Cancellable? {
+        let task = RepositoryTask()
+        cache.loadUsersNoteResponse(for: userIds) { result in
+            guard !task.isCancelled else { return }
+            
+            switch result {
+            case .success(let note):
+                completion(.success(note))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+
+        return task
+    }
     
-    func getUserNoteResponse(userId: Int, completion: @escaping (Result<Note, Error>) -> Void) -> Cancellable? {
+    
+    func loadUserNoteResponse(userId: Int, completion: @escaping (Result<Note?, Error>) -> Void) -> Cancellable? {
         
         let task = RepositoryTask()
-        
+        cache.loadUserNoteResponse(for: LoadUserNoteRequestDTO.init(userId: userId)) { result in
+            guard !task.isCancelled else { return }
+            
+            switch result {
+            case .success(let note):
+                completion(.success(note))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+
         return task
     }
     
     func saveUserNoteResponse(userId: Int, note: String, completion: @escaping (VoidResult) -> Void) -> Cancellable? {
         
         let task = RepositoryTask()
-        cache.saveUserNoteResponse(for: UserNoteRequestDTO.init(userId: userId, note: note)) { result in
+        cache.saveUserNoteResponse(for: SaveUserNoteRequestDTO.init(userId: userId, note: note)) { result in
             guard !task.isCancelled else { return }
             
             switch result {

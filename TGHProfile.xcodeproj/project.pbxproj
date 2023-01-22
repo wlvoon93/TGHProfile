@@ -87,11 +87,15 @@
 		AE9187B2296A77CA004A102C /* UserNoteResponseStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187B1296A77CA004A102C /* UserNoteResponseStorage.swift */; };
 		AE9187B4296A77DF004A102C /* CoreDataUserNoteResponseStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187B3296A77DF004A102C /* CoreDataUserNoteResponseStorage.swift */; };
 		AE9187B7296A7815004A102C /* UserNoteResponseStorageEntity+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187B6296A7815004A102C /* UserNoteResponseStorageEntity+Mapping.swift */; };
-		AE9187B9296A7959004A102C /* UserNoteRequestDTO+mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187B8296A7959004A102C /* UserNoteRequestDTO+mapping.swift */; };
-		AE9187BB296A7969004A102C /* UserNoteResponseDTO+mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187BA296A7969004A102C /* UserNoteResponseDTO+mapping.swift */; };
+		AE9187B9296A7959004A102C /* SaveUserNoteRequestDTO+mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187B8296A7959004A102C /* SaveUserNoteRequestDTO+mapping.swift */; };
+		AE9187BB296A7969004A102C /* SaveUserNoteResponseDTO+mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187BA296A7969004A102C /* SaveUserNoteResponseDTO+mapping.swift */; };
 		AE9187BD296A9970004A102C /* DefaultUserNoteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187BC296A9970004A102C /* DefaultUserNoteRepository.swift */; };
 		AE9187BF296A9A58004A102C /* UserNoteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187BE296A9A58004A102C /* UserNoteRepository.swift */; };
 		AE9187C1296AAA9A004A102C /* VoidResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187C0296AAA9A004A102C /* VoidResult.swift */; };
+		AE9187C3296AFCD1004A102C /* LoadUserNoteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187C2296AFCD1004A102C /* LoadUserNoteUseCase.swift */; };
+		AE9187C5296B0291004A102C /* LoadUserNoteRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187C4296B0291004A102C /* LoadUserNoteRequestDTO.swift */; };
+		AE9187C7296B02C8004A102C /* LoadUserNoteResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187C6296B02C8004A102C /* LoadUserNoteResponseDTO.swift */; };
+		AE9187C9296B0F90004A102C /* LoadUsersNoteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187C8296B0F90004A102C /* LoadUsersNoteUseCase.swift */; };
 		FC2B715C2156FF93002BD59E /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2B715B2156FF93002BD59E /* AppAppearance.swift */; };
 		FC740818216555C500FE52A5 /* UserDefaultsUsersQueriesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC740817216555C500FE52A5 /* UserDefaultsUsersQueriesStorage.swift */; };
 /* End PBXBuildFile section */
@@ -182,11 +186,15 @@
 		AE9187B1296A77CA004A102C /* UserNoteResponseStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNoteResponseStorage.swift; sourceTree = "<group>"; };
 		AE9187B3296A77DF004A102C /* CoreDataUserNoteResponseStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataUserNoteResponseStorage.swift; sourceTree = "<group>"; };
 		AE9187B6296A7815004A102C /* UserNoteResponseStorageEntity+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserNoteResponseStorageEntity+Mapping.swift"; sourceTree = "<group>"; };
-		AE9187B8296A7959004A102C /* UserNoteRequestDTO+mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserNoteRequestDTO+mapping.swift"; sourceTree = "<group>"; };
-		AE9187BA296A7969004A102C /* UserNoteResponseDTO+mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserNoteResponseDTO+mapping.swift"; sourceTree = "<group>"; };
+		AE9187B8296A7959004A102C /* SaveUserNoteRequestDTO+mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SaveUserNoteRequestDTO+mapping.swift"; sourceTree = "<group>"; };
+		AE9187BA296A7969004A102C /* SaveUserNoteResponseDTO+mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SaveUserNoteResponseDTO+mapping.swift"; sourceTree = "<group>"; };
 		AE9187BC296A9970004A102C /* DefaultUserNoteRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserNoteRepository.swift; sourceTree = "<group>"; };
 		AE9187BE296A9A58004A102C /* UserNoteRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNoteRepository.swift; sourceTree = "<group>"; };
 		AE9187C0296AAA9A004A102C /* VoidResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoidResult.swift; sourceTree = "<group>"; };
+		AE9187C2296AFCD1004A102C /* LoadUserNoteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserNoteUseCase.swift; sourceTree = "<group>"; };
+		AE9187C4296B0291004A102C /* LoadUserNoteRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserNoteRequestDTO.swift; sourceTree = "<group>"; };
+		AE9187C6296B02C8004A102C /* LoadUserNoteResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserNoteResponseDTO.swift; sourceTree = "<group>"; };
+		AE9187C8296B0F90004A102C /* LoadUsersNoteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUsersNoteUseCase.swift; sourceTree = "<group>"; };
 		FC2B715B2156FF93002BD59E /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
 		FC740817216555C500FE52A5 /* UserDefaultsUsersQueriesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsUsersQueriesStorage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -270,8 +278,10 @@
 				AE17697C29573D8900A79A71 /* UsersSearchResponseDTO+Mapping.swift */,
 				AE6419F3295DDF4400093266 /* UserDetailsRequestDTO+Mapping.swift */,
 				AE6419FB2965BBA400093266 /* UserDetailsResponseDTO+mapping.swift */,
-				AE9187B8296A7959004A102C /* UserNoteRequestDTO+mapping.swift */,
-				AE9187BA296A7969004A102C /* UserNoteResponseDTO+mapping.swift */,
+				AE9187B8296A7959004A102C /* SaveUserNoteRequestDTO+mapping.swift */,
+				AE9187BA296A7969004A102C /* SaveUserNoteResponseDTO+mapping.swift */,
+				AE9187C4296B0291004A102C /* LoadUserNoteRequestDTO.swift */,
+				AE9187C6296B02C8004A102C /* LoadUserNoteResponseDTO.swift */,
 			);
 			path = DataMapping;
 			sourceTree = "<group>";
@@ -392,6 +402,8 @@
 				1F84DECF23006BDA00139F73 /* FetchRecentMovieQueriesUseCase.swift */,
 				AE6B57BD295DD71A0069DC43 /* LoadUserDetailsUseCase.swift */,
 				AE9187AB296954A9004A102C /* SaveUserNoteUseCase.swift */,
+				AE9187C2296AFCD1004A102C /* LoadUserNoteUseCase.swift */,
+				AE9187C8296B0F90004A102C /* LoadUsersNoteUseCase.swift */,
 				1F4102F2240BEE5800EC014A /* Protocol */,
 			);
 			path = UseCases;
@@ -742,11 +754,12 @@
 				AE5F75B329503ED20098D4E9 /* UserDetailsViewModel.swift in Sources */,
 				AE5F759E294AA8D30098D4E9 /* UsersListItemViewModel.swift in Sources */,
 				AE6B57BA295C0CE00069DC43 /* Note.swift in Sources */,
+				AE9187C7296B02C8004A102C /* LoadUserNoteResponseDTO.swift in Sources */,
 				1FEED0F02023576A000F4EAA /* Alertable.swift in Sources */,
 				1F16031D2426919300C173C6 /* AppFlowCoordinator.swift in Sources */,
 				AE9187B2296A77CA004A102C /* UserNoteResponseStorage.swift in Sources */,
 				1FCBB8CE25237D4C007F23DC /* UIViewController+ActivityIndicator.swift in Sources */,
-				AE9187B9296A7959004A102C /* UserNoteRequestDTO+mapping.swift in Sources */,
+				AE9187B9296A7959004A102C /* SaveUserNoteRequestDTO+mapping.swift in Sources */,
 				AE6419F4295DDF4400093266 /* UserDetailsRequestDTO+Mapping.swift in Sources */,
 				FC2B715C2156FF93002BD59E /* AppAppearance.swift in Sources */,
 				AE17697F2958315E00A79A71 /* ListAllUsersUseCase.swift in Sources */,
@@ -757,6 +770,7 @@
 				AE641A012967197700093266 /* RemoteImageView.swift in Sources */,
 				1F4102F4240BEE6A00EC014A /* UseCase.swift in Sources */,
 				1FFF12A72439FA9E00937EE4 /* CoreDataUsersResponseStorage.swift in Sources */,
+				AE9187C3296AFCD1004A102C /* LoadUserNoteUseCase.swift in Sources */,
 				1FFFC835221B0041007D99D2 /* DefaultUsersRepository.swift in Sources */,
 				1FA533E2201EF5F700747E55 /* APIEndpoints.swift in Sources */,
 				AE17697B29573CEB00A79A71 /* UsersSearchRequestDTO+Mapping.swift in Sources */,
@@ -777,6 +791,7 @@
 				AE6B57B6295AE4150069DC43 /* UserListAvatarColourInvertedAndNoteItemCell.swift in Sources */,
 				1F57F8D223C656F600981E09 /* AccessibilityIdentifier.swift in Sources */,
 				1F0CEFCF23436B67004141FA /* ConnectionError.swift in Sources */,
+				AE9187C5296B0291004A102C /* LoadUserNoteRequestDTO.swift in Sources */,
 				1F05A6CC2220A2CB001E2801 /* SearchUsersUseCase.swift in Sources */,
 				AE6B57BE295DD71A0069DC43 /* LoadUserDetailsUseCase.swift in Sources */,
 				AE9187BD296A9970004A102C /* DefaultUserNoteRepository.swift in Sources */,
@@ -797,8 +812,9 @@
 				1FC5B7D0242634EB0086FA8C /* UIImageView+ImageSizeAfterAspectFit.swift in Sources */,
 				AE5F75AD29503D970098D4E9 /* UsersListTableViewController.swift in Sources */,
 				1FC5B7D2242635CC0086FA8C /* CGSize+ScaledSize.swift in Sources */,
+				AE9187C9296B0F90004A102C /* LoadUsersNoteUseCase.swift in Sources */,
 				1FFFC832221B0041007D99D2 /* UsersQueriesRepository.swift in Sources */,
-				AE9187BB296A7969004A102C /* UserNoteResponseDTO+mapping.swift in Sources */,
+				AE9187BB296A7969004A102C /* SaveUserNoteResponseDTO+mapping.swift in Sources */,
 				AE17697D29573D8900A79A71 /* UsersSearchResponseDTO+Mapping.swift in Sources */,
 				1F9035272307528F00DEA4BD /* CoreDataUsersQueriesStorage.swift in Sources */,
 				1FB0903A2437651700DBE132 /* UIViewController+AddBehaviors.swift in Sources */,

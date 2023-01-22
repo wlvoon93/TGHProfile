@@ -8,6 +8,7 @@
 import Foundation
 
 protocol UserNoteResponseStorage {
-    func getUserNoteResponse(for request: UserNoteRequestDTO, completion: @escaping (Result<Note?, CoreDataStorageError>) -> Void)
-    func saveUserNoteResponse(for request: UserNoteRequestDTO, completion: @escaping (VoidResult) -> Void)
+    func loadUserNoteResponse(for request: LoadUserNoteRequestDTO, completion: @escaping (Result<Note?, CoreDataStorageError>) -> Void)
+    func loadUsersNoteResponse(for users: [Int], completion: @escaping (Result<[Note], CoreDataStorageError>) -> Void)
+    func saveUserNoteResponse(for request: SaveUserNoteRequestDTO, completion: @escaping (VoidResult) -> Void)
 }

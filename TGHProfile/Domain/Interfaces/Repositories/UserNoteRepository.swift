@@ -9,8 +9,11 @@ import Foundation
 
 protocol UserNoteRepository {
     @discardableResult
-    func getUserNoteResponse(userId: Int,
-                         completion: @escaping (Result<Note, Error>) -> Void) -> Cancellable?
+    func loadUserNoteResponse(userId: Int,
+                         completion: @escaping (Result<Note?, Error>) -> Void) -> Cancellable?
+    @discardableResult
+    func loadUsersNoteResponse(userIds: [Int],
+                         completion: @escaping (Result<[Note], Error>) -> Void) -> Cancellable?
     @discardableResult
     func saveUserNoteResponse(userId: Int, note: String, completion: @escaping (VoidResult) -> Void) -> Cancellable?
 }

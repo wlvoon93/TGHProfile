@@ -8,6 +8,7 @@
 import Foundation
 
 typealias UserDetailsViewModelDidSelectAction = (User) -> Void
+typealias UserDetailsViewModelDidSaveNoteAction = (Note) -> Void
 
 protocol UserDetailsViewModelInput {
     func viewWillAppear()
@@ -48,6 +49,8 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
     private let loadUserDetailsUseCase: LoadUserDetailsUseCase
     private let saveUserNoteUseCase: SaveUserNoteUseCase
     
+    private let didSaveNote: UserDetailsViewModelDidSaveNoteAction?
+    
     private var userDetailsLoadTask: Cancellable? { willSet { userDetailsLoadTask?.cancel() } }
     private var userNoteSaveTask: Cancellable? { willSet { userNoteSaveTask?.cancel() } }
     let error: Observable<String> = Observable("")
@@ -61,7 +64,8 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
     // MARK: - Init
     init(username: String,
          loadUserDetailsUseCase: LoadUserDetailsUseCase,
-         saveUserNoteUseCase: SaveUserNoteUseCase) {
+         saveUserNoteUseCase: SaveUserNoteUseCase,
+         didSaveNote: UserDetailsViewModelDidSaveNoteAction? = nil) {
 //        self.title = user.avatar_url ?? ""
 //        self.overview = user.avatar_url ?? ""
 //        self.profileImagePath = user.avatar_url
@@ -71,6 +75,7 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
         self.username.value = username
         self.loadUserDetailsUseCase = loadUserDetailsUseCase
         self.saveUserNoteUseCase = saveUserNoteUseCase
+        self.didSaveNote = didSaveNote
     }
     
     // MARK: - Private
@@ -102,6 +107,9 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
             userNoteSaveTask = saveUserNoteUseCase.execute(requestValue: .init(userId: userId, note: noteString), completion: { result in
                 switch result {
                     case .success:
+                        if let didSaveNote = self.didSaveNote {
+                            didSaveNote(.init(note: noteString, userId: userId))
+                        }
                         completion()
                     case .failure(let error):
                         self.handle(error: error)
