@@ -37,32 +37,31 @@ final class CoreDataUserNoteResponseStorage {
 
 extension CoreDataUserNoteResponseStorage: UserNoteResponseStorage {
     func loadUsersNoteResponse(for userIds: [Int], completion: @escaping (Result<[Note], CoreDataStorageError>) -> Void) {
-        coreDataStorage.performBackgroundTask { context in
-            do {
-                let fetchRequest = self.fetchNotesRequest(for: userIds)
-                let userNoteEntities = try context.fetch(fetchRequest)
-                let notes = userNoteEntities.map {
-                    Note.init(note: $0.note, userId: Int($0.userId))
-                }
-
-                completion(.success(notes))
-            } catch {
-                completion(.failure(CoreDataStorageError.readError(error)))
+        let context = coreDataStorage.persistentContainer.viewContext
+        do {
+            let fetchRequest = self.fetchNotesRequest(for: userIds)
+            let userNoteEntities = try context.fetch(fetchRequest)
+            let notes = userNoteEntities.map {
+                Note.init(note: $0.note, userId: Int($0.userId))
             }
+
+            completion(.success(notes))
+        } catch {
+            completion(.failure(CoreDataStorageError.readError(error)))
         }
     }
     
     func loadUserNoteResponse(for request: LoadUserNoteRequestDTO, completion: @escaping (Result<Note?, CoreDataStorageError>) -> Void) {
-        coreDataStorage.performBackgroundTask { context in
-            do {
-                let fetchRequest = self.fetchRequest(for: request)
-                let userNoteEntity = try context.fetch(fetchRequest).first
-                let userNoteDTO = userNoteEntity?.toDomain()
-                completion(.success(userNoteDTO))
-            } catch {
-                completion(.failure(CoreDataStorageError.readError(error)))
-            }
+        let context = coreDataStorage.persistentContainer.viewContext
+        do {
+            let fetchRequest = self.fetchRequest(for: request)
+            let userNoteEntity = try context.fetch(fetchRequest).first
+            let userNoteDTO = userNoteEntity?.toDomain()
+            completion(.success(userNoteDTO))
+        } catch {
+            completion(.failure(CoreDataStorageError.readError(error)))
         }
+        
     }
     
     func saveUserNoteResponse(for request: SaveUserNoteRequestDTO, completion: @escaping (VoidResult) -> Void) {

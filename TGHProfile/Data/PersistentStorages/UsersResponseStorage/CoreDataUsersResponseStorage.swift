@@ -81,114 +81,111 @@ final class CoreDataUsersResponseStorage {
 extension CoreDataUsersResponseStorage: UsersResponseStorage {
 
     func getResponse(for requestDto: UsersRequestDTO, completion: @escaping (Result<UsersPageResponseDTO?, CoreDataStorageError>) -> Void) {
-        coreDataStorage.performBackgroundTask { context in
-            do {
-                let fetchUsersPageRequest = self.fetchRequest(for: requestDto)
-                let requestUsersPageEntity = try context.fetch(fetchUsersPageRequest).first
-                let userPageResponseDTO = requestUsersPageEntity?.response?.toDTO()
-                
-                var userDTOs:[UsersPageResponseDTO.UserDTO] = []
-                if let userPageResponseDTO = userPageResponseDTO {
-                    // put note dto into response page dto
-                    let fetchNotesRequest = self.fetchNotesRequest(for: userPageResponseDTO.users)
-                    let userNoteEntities = try context.fetch(fetchNotesRequest)
-                    // sort the users
-                    let sortedUsers = userPageResponseDTO.users.sorted()
-                    for user in sortedUsers{
-                        for note in userNoteEntities {
-                            if note.userId == user.id {
-                                
-                                let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login,
-                                                                                id: user.id,
-                                                                                profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: user.profileImage?.imageUrl, image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
-                                                                                type: user.type,
-                                                                                note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)),
-                                                                                following: nil,
-                                                                                followers: nil,
-                                                                                company: nil, blog: nil)
-                                userDTOs.append(userDTO)
-                            }
+        let context = coreDataStorage.persistentContainer.viewContext
+        do {
+            let fetchUsersPageRequest = self.fetchRequest(for: requestDto)
+            let requestUsersPageEntity = try context.fetch(fetchUsersPageRequest).first
+            let userPageResponseDTO = requestUsersPageEntity?.response?.toDTO()
+            
+            var userDTOs:[UsersPageResponseDTO.UserDTO] = []
+            if let userPageResponseDTO = userPageResponseDTO {
+                // put note dto into response page dto
+                let fetchNotesRequest = self.fetchNotesRequest(for: userPageResponseDTO.users)
+                let userNoteEntities = try context.fetch(fetchNotesRequest)
+                // sort the users
+                let sortedUsers = userPageResponseDTO.users.sorted()
+                for user in sortedUsers{
+                    for note in userNoteEntities {
+                        if note.userId == user.id {
+                            
+                            let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login,
+                                                                            id: user.id,
+                                                                            profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: user.profileImage?.imageUrl, image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
+                                                                            type: user.type,
+                                                                            note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)),
+                                                                            following: nil,
+                                                                            followers: nil,
+                                                                            company: nil, blog: nil)
+                            userDTOs.append(userDTO)
                         }
                     }
-                    // check is note updated
-                    let userPageResponseDTOWithNote = UsersPageResponseDTO.init(since: userPageResponseDTO.since, per_page: userPageResponseDTO.per_page, users: userDTOs)
-                    
-                    completion(.success(userPageResponseDTOWithNote))
-                }else{
-                    completion(.success(userPageResponseDTO))
                 }
-            } catch {
-                completion(.failure(CoreDataStorageError.readError(error)))
+                // check is note updated
+                let userPageResponseDTOWithNote = UsersPageResponseDTO.init(since: userPageResponseDTO.since, per_page: userPageResponseDTO.per_page, users: userDTOs)
+                
+                completion(.success(userPageResponseDTOWithNote))
+            }else{
+                completion(.success(userPageResponseDTO))
             }
+        } catch {
+            completion(.failure(CoreDataStorageError.readError(error)))
         }
     }
     
     // fetch related note and username here
     func searchUsersWithUsernameAndNoteKeyword(for requestDto: LoadUsersWithUsernameAndNoteKeywordRequestDTO, completion: @escaping (Result<UsersPageResponseDTO?, CoreDataStorageError>) -> Void) {
-        coreDataStorage.performBackgroundTask { context in
-            do { // result will be notes
-                let fetchRequest = self.fetchNotesWithUsernameAndNoteKeywordRequest(for: requestDto)
-                let noteEntities = try context.fetch(fetchRequest)
-                
-                // fetch users with notes id
-                // fit the notes into the users
-                let userIds = noteEntities.map { return Int($0.userId) }
-                let fetchUsersRequestDto = FetchUsersWithIdsRequestDTO.init(ids: userIds)
-                let fetchUsersRequest = self.fetchUsersWithIdRequest(for: fetchUsersRequestDto)
-                let userEntities = try context.fetch(fetchUsersRequest)
-                let userDTOs = userEntities.map { return $0.toDTO() }
-                
-                var userWithNoteDTOs:[UsersPageResponseDTO.UserDTO] = []
-                let sortedUsers = userDTOs.sorted()
-                for user in sortedUsers{
-                    let noteEntity = noteEntities.filter { return $0.userId == user.id }.first
-                    let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login,
-                                                                    id: user.id,
-                                                                    profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: user.profileImage?.imageUrl, image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
-                                                                    type: user.type,
-                                                                    note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: noteEntity?.note, userId: Int(user.id)),
-                                                                    following: nil,
-                                                                    followers: nil,
-                                                                    company: nil, blog: nil)
-                    userWithNoteDTOs.append(userDTO)
-                }
-                
-                let userPageResponseDTOWithNote = UsersPageResponseDTO.init(since: 0, per_page: 99, users: userDTOs)
-
-                completion(.success(userPageResponseDTOWithNote))
-            } catch {
-                completion(.failure(CoreDataStorageError.readError(error)))
+        let context = coreDataStorage.persistentContainer.viewContext
+        do { // result will be notes
+            let fetchRequest = self.fetchNotesWithUsernameAndNoteKeywordRequest(for: requestDto)
+            let noteEntities = try context.fetch(fetchRequest)
+            
+            // fetch users with notes id
+            // fit the notes into the users
+            let userIds = noteEntities.map { return Int($0.userId) }
+            let fetchUsersRequestDto = FetchUsersWithIdsRequestDTO.init(ids: userIds)
+            let fetchUsersRequest = self.fetchUsersWithIdRequest(for: fetchUsersRequestDto)
+            let userEntities = try context.fetch(fetchUsersRequest)
+            let userDTOs = userEntities.map { return $0.toDTO() }
+            
+            var userWithNoteDTOs:[UsersPageResponseDTO.UserDTO] = []
+            let sortedUsers = userDTOs.sorted()
+            for user in sortedUsers{
+                let noteEntity = noteEntities.filter { return $0.userId == user.id }.first
+                let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login,
+                                                                id: user.id,
+                                                                profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: user.profileImage?.imageUrl, image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
+                                                                type: user.type,
+                                                                note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: noteEntity?.note, userId: Int(user.id)),
+                                                                following: nil,
+                                                                followers: nil,
+                                                                company: nil, blog: nil)
+                userWithNoteDTOs.append(userDTO)
             }
+            
+            let userPageResponseDTOWithNote = UsersPageResponseDTO.init(since: 0, per_page: 99, users: userDTOs)
+
+            completion(.success(userPageResponseDTOWithNote))
+        } catch {
+            completion(.failure(CoreDataStorageError.readError(error)))
         }
     }
     
     func getNotesResponse(for users: [UsersPageResponseDTO.UserDTO], completion: @escaping (Result<[Note], CoreDataStorageError>) -> Void) {
-        coreDataStorage.performBackgroundTask { context in
-            do {
-                let fetchRequest = self.fetchNotesRequest(for: users)
-                let userNoteEntities = try context.fetch(fetchRequest)
-                let notes = userNoteEntities.map {
-                    Note.init(note: $0.note, userId: Int($0.userId))
-                }
-
-                completion(.success(notes))
-            } catch {
-                completion(.failure(CoreDataStorageError.readError(error)))
+        let context = coreDataStorage.persistentContainer.viewContext
+        do {
+            let fetchRequest = self.fetchNotesRequest(for: users)
+            let userNoteEntities = try context.fetch(fetchRequest)
+            let notes = userNoteEntities.map {
+                Note.init(note: $0.note, userId: Int($0.userId))
             }
+
+            completion(.success(notes))
+        } catch {
+            completion(.failure(CoreDataStorageError.readError(error)))
         }
     }
     
-    func getUserDetailsResponse(for requestDto: UserDetailsRequestDTO, completion: @escaping (Result<UsersPageResponseDTO.UserDTO?, CoreDataStorageError>) -> Void) {        coreDataStorage.performBackgroundTask { context in
-            do {
-                let fetchUserDetailsRequest = self.fetchUserDetailsResponse(for: requestDto)
-                let requestUserDetailsEntity = try context.fetch(fetchUserDetailsRequest).first
-                let userDetailsDTO = requestUserDetailsEntity?.toDTO()
-                
-                completion(.success(userDetailsDTO))
-         
-            } catch {
-                completion(.failure(CoreDataStorageError.readError(error)))
-            }
+    func getUserDetailsResponse(for requestDto: UserDetailsRequestDTO, completion: @escaping (Result<UsersPageResponseDTO.UserDTO?, CoreDataStorageError>) -> Void) {
+        let context = coreDataStorage.persistentContainer.viewContext
+        do {
+            let fetchUserDetailsRequest = self.fetchUserDetailsResponse(for: requestDto)
+            let requestUserDetailsEntity = try context.fetch(fetchUserDetailsRequest).first
+            let userDetailsDTO = requestUserDetailsEntity?.toDTO()
+            
+            completion(.success(userDetailsDTO))
+     
+        } catch {
+            completion(.failure(CoreDataStorageError.readError(error)))
         }
     }
 
