@@ -65,7 +65,10 @@ extension UsersListTableViewController {
             assertionFailure("Cannot dequeue reusable cell \(UsersListItemCell.self) with reuseIdentifier: \(UsersListItemCell.reuseIdentifier)")
             return UITableViewCell()
         }
-
+        if let cellAsTableViewCell = cell as? UITableViewCell {
+            cellAsTableViewCell.selectionStyle = UITableViewCell.SelectionStyle.none
+        }
+        
         cell.fill(with: viewModel.items.value[indexPath.row],
                   profileImagesRepository: profileImagesRepository)
 

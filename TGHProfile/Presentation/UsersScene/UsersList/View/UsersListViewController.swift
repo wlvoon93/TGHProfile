@@ -204,7 +204,7 @@ extension UsersListViewController {
         searchController.searchBar.placeholder = viewModel.searchBarPlaceholder
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.translatesAutoresizingMaskIntoConstraints = true
-        searchController.searchBar.barStyle = .default
+        searchController.searchBar.barStyle = .black
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.frame = rootView.searchBarContainerView.bounds
         searchController.searchBar.autoresizingMask = [.flexibleWidth, .flexibleHeight]

@@ -37,6 +37,7 @@ final class UsersSearchFlowCoordinator {
 
     private func showUserDetails(username: String, note: String, didSaveNote: @escaping (Note) -> Void) {
         let vc = dependencies.makeUsersDetailsViewController(username: username, note: note, didSaveNote: didSaveNote)
+        vc.title = username
         navigationController?.pushViewController(vc, animated: true)
     }
 

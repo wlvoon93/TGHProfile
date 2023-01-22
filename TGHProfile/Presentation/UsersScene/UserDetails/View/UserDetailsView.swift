@@ -19,21 +19,33 @@ struct UserDetailsView: View {
     var body: some View {
         List {
             VStack(spacing: 8) {
+                Spacer().frame(height: 30)
                 Image(uiImage: viewModelWrapper.profileImageData != nil ? (UIImage(data: viewModelWrapper.profileImageData!) ?? UIImage(named: "placeholder"))! : UIImage(named: "placeholder")!)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200, height: 200)
                     .padding(.top, 10)
-                HStack(spacing: 30) {
-                    Text("followers: \(viewModelWrapper.followers)")
-                    Text("following: \(viewModelWrapper.following)")
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 30) {
+                        Text("Followers: ").font(Font.headline.weight(.bold))
+                        Text("\(viewModelWrapper.followers)")
+                    }
+                    HStack(spacing: 30) {
+                        Text("Following: ").font(Font.headline.weight(.bold))
+                        Text("\(viewModelWrapper.following)")
+                    }
                 }
-                Spacer().frame(height: 20)
+                Spacer().frame(height: 10)
                 HStack() {
                     VStack(alignment: .leading) {
-                        Text("name: \(viewModelWrapper.username)")
-                        Text("company: \(viewModelWrapper.company)")
-                        Text("blog: \(viewModelWrapper.blog)")
+                        Text("Name:").font(Font.headline.weight(.bold))
+                        Text(viewModelWrapper.username).fixedSize(horizontal: false, vertical: true)
+                        Spacer().frame(height: 10)
+                        Text("Company:").font(Font.headline.weight(.bold))
+                        Text(viewModelWrapper.company).fixedSize(horizontal: false, vertical: true)
+                        Spacer().frame(height: 10)
+                        Text("Blog:").font(Font.headline.weight(.bold))
+                        Text(viewModelWrapper.blog).fixedSize(horizontal: false, vertical: true)
                         Spacer().frame(height: 20)
                     }.frame(maxWidth: .infinity, alignment: .leading)
                         .padding()
@@ -41,7 +53,7 @@ struct UserDetailsView: View {
                 }.padding()
                 
                 VStack(alignment: .leading) {
-                    Text("Notes")
+                    Text("Notes").font(Font.headline.weight(.bold))
                 }.frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading)
                 
@@ -56,19 +68,19 @@ struct UserDetailsView: View {
                 HStack() {
                     Button("Save") {
                         self.viewModelWrapper.viewModel?.didTapSave(noteString: noteString.description, completion: {
-                            self.presentationMode.wrappedValue.dismiss()
+                            DispatchQueue.main.async {
+                                self.presentationMode.wrappedValue.dismiss()
+                            }
                         })
-                    }.padding(.bottom, 10)
-                    .frame(maxWidth: .infinity, alignment: .center)
+                    }
                     .buttonStyle(MyStyle())
                 }.padding(.horizontal)
+                Spacer().frame(height: 30)
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear {
                 self.viewModelWrapper.viewModel?.viewWillAppear()
                 noteString = viewModelWrapper.note
             }
-            
-
         }
     }
 }
@@ -76,8 +88,9 @@ struct UserDetailsView: View {
 struct MyStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(maxWidth: 100, maxHeight: 50)
             .contentShape(Rectangle())
+            .border(Color.gray, width: 5)
     }
 }
 

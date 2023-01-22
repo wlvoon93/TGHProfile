@@ -24,17 +24,18 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell, BaseIt
     }()
     
     private lazy var userNameLabel: UILabel = {
-        let view = UILabel()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.numberOfLines = 0
-        return view
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
+        label.font = UIFont.boldSystemFont(ofSize: 25.0)
+        return label
     }()
 
     private lazy var userTypeLabel: UILabel = {
-        let view = UILabel()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.numberOfLines = 0
-        return view
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
+        return label
     }()
     
     private lazy var noteImageView: UIImageView = {
@@ -54,7 +55,6 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell, BaseIt
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
             super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupSubviews()
-        contentView.backgroundColor = .white
     }
 
     required init?(coder aDecoder: NSCoder) {
