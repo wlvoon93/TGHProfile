@@ -15,10 +15,6 @@
         <attribute name="imageUrl" optional="YES" attributeType="String"/>
         <attribute name="invertedImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
     </entity>
-    <entity name="UserQueryEntity" representedClassName="UserQueryEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="query" optional="YES" attributeType="String"/>
-    </entity>
     <entity name="UserResponseEntity" representedClassName="UserResponseEntity" syncable="YES" codeGenerationType="class">
         <attribute name="blog" optional="YES" attributeType="String"/>
         <attribute name="company" optional="YES" attributeType="String"/>

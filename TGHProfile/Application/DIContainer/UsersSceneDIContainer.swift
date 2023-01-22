@@ -18,7 +18,6 @@ final class UsersSceneDIContainer {
     private let dependencies: Dependencies
 
     // MARK: - Persistent Storage
-    lazy var usersQueriesStorage: UsersQueriesStorage = CoreDataUsersQueriesStorage(maxStorageLimit: 10)
     lazy var usersResponseCache: UsersResponseStorage = CoreDataUsersResponseStorage()
     lazy var userNoteResponseCache: UserNoteResponseStorage = CoreDataUserNoteResponseStorage()
     lazy var userProfileImageCache: UserProfileImageStorage = CoreDataUserImageStorage()
@@ -59,14 +58,6 @@ final class UsersSceneDIContainer {
     // MARK: - Repositories
     func makeUsersRepository() -> UsersRepository {
         return DefaultUsersRepository(dataTransferService: dependencies.apiDataTransferService, cache: usersResponseCache)
-    }
-    func makeUsersQueriesRepository() -> UsersQueriesRepository {
-        return DefaultUsersQueriesRepository(dataTransferService: dependencies.apiDataTransferService,
-                                              usersQueriesPersistentStorage: usersQueriesStorage)
-    }
-    func makeUserDetailsQueriesRepository() -> UsersQueriesRepository {
-        return DefaultUsersQueriesRepository(dataTransferService: dependencies.apiDataTransferService,
-                                              usersQueriesPersistentStorage: usersQueriesStorage)
     }
     func makeProfileImagesRepository() -> ProfileImagesRepository {
         return DefaultProfileImagesRepository(dataTransferService: dependencies.imageDataTransferService, cache: userProfileImageCache)

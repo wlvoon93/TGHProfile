@@ -334,24 +334,24 @@ extension DefaultUsersListViewModel {
                 // search and update using note user id
                 if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
                     self.searchItems.value[searchItemIndex].user.note = note
-                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.items.value[searchItemIndex].user) : UserListNoteItemViewModel.init(user: self.items.value[searchItemIndex].user)
+                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user) : UserListNoteItemViewModel.init(user: self.searchItems.value[searchItemIndex].user)
                 }
                 
-                if let itemIndex = self.items.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
-                    self.searchItems.value[itemIndex].user.note = note
-                    self.searchItems.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.items.value[itemIndex].user) : UserListNoteItemViewModel.init(user: self.items.value[itemIndex].user)
+                if let itemIndex = self.items.value.indices.filter({ return self.items.value[$0].user.userId == note.userId }).first {
+                    self.items.value[itemIndex].user.note = note
+                    self.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedAndNoteItemViewModel.init(user: self.items.value[itemIndex].user) : UserListNoteItemViewModel.init(user: self.items.value[itemIndex].user)
                 }
                 
             } else {
                 
                 if let searchItemIndex = self.searchItems.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
                     self.searchItems.value[searchItemIndex].user.note = note
-                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.items.value[searchItemIndex].user) : UsersListItemViewModel.init(user: self.items.value[searchItemIndex].user)
+                    self.searchItems.value[searchItemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.searchItems.value[searchItemIndex].user) : UsersListItemViewModel.init(user: self.searchItems.value[searchItemIndex].user)
                 }
                 
-                if let itemIndex = self.items.value.indices.filter({ return self.searchItems.value[$0].user.userId == note.userId }).first {
-                    self.searchItems.value[itemIndex].user.note = note
-                    self.searchItems.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.searchItems.value[itemIndex].user) : UsersListItemViewModel.init(user: self.searchItems.value[itemIndex].user)
+                if let itemIndex = self.items.value.indices.filter({ return self.items.value[$0].user.userId == note.userId }).first {
+                    self.items.value[itemIndex].user.note = note
+                    self.items.value[itemIndex] = isFourthItem ? UserListAvatarColourInvertedItemViewModel.init(user: self.items.value[itemIndex].user) : UsersListItemViewModel.init(user: self.items.value[itemIndex].user)
                 }
             }
         }
