@@ -9,7 +9,7 @@ import Foundation
 
 protocol ListAllUsersUseCase {
     func execute(requestValue: ListAllUsersUseCaseRequestValue,
-                 cached: @escaping (UsersPage) -> Void,
+                 cached: @escaping (UsersPage, @escaping (Result<[BaseItemViewModel], Error>) -> Void) -> (),
                  completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable?
 }
 
@@ -23,7 +23,7 @@ final class DefaultListAllUsersUseCase: ListAllUsersUseCase {
     }
 
     func execute(requestValue: ListAllUsersUseCaseRequestValue,
-                 cached: @escaping (UsersPage) -> Void,
+                 cached: @escaping (UsersPage, @escaping (Result<[BaseItemViewModel], Error>) -> Void) -> (),
                  completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
 
         return usersRepository.fetchAllUsersList(page: requestValue.page,

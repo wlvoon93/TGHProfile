@@ -9,9 +9,6 @@ import Foundation
 import SwiftUI
 
 struct UsersListViewModelActions {
-    /// Note: if you would need to edit user inside Details screen and update this Users List screen with updated user then you would need this closure:
-    /// showUserDetails: (User, @escaping (_ updated: User) -> Void) -> Void
-//    let showUserDetails: (User) -> Void
     let showUserDetails: (String, @escaping (_ didSelect: Note) -> Void) -> Void
 }
 
@@ -89,7 +86,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
     // MARK: - Private
 
-    private func appendPage(_ usersPage: UsersPage) {
+    private func appendPage(_ usersPage: UsersPage, completion: @escaping (Result<[BaseItemViewModel], Error>) -> Void) {
         currentPage = Int(Double((usersPage.since/usersPage.per_page)).rounded(.down))
         
         let userIDs = usersPage.users.compactMap { $0.id }
@@ -112,9 +109,10 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                     usersWithNote.append(userWithNote ?? user)
                 }
                 
-                
             case .failure(let error):
                 self.handle(error: error)
+                completion(.failure(error))
+                return
             }
             
             let usersPageWithNote = UsersPage.init(since: usersPage.since, per_page: usersPage.per_page, users: usersWithNote)
@@ -139,7 +137,8 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                     }
                 }
             }
-            self.items.value = userListItems
+            
+            completion(.success(userListItems))
         }
     }
 
@@ -159,12 +158,25 @@ final class DefaultUsersListViewModel: UsersListViewModel {
             completion: { result in
                 switch result {
                 case .success(let page):
-                    self.appendPage(page)
+                    self.appendPage(page) { appendPageResult in
+                        self.handleAppendAsyncReturnResult(result: appendPageResult)
+                    }
                 case .failure(let error):
                     self.handle(error: error)
+                    self.loading.value = .none
                 }
-                self.loading.value = .none
         })
+    }
+    
+    private func handleAppendAsyncReturnResult(result: Result<[BaseItemViewModel], Error>){
+        switch result {
+        case .success(let vms):
+            self.items.value = vms
+            self.loading.value = .none
+        case .failure(let error):
+            self.handle(error: error)
+        }
+        self.loading.value = .none
     }
 
     private func load(userQuery: UserQuery, loading: UsersListViewModelLoading) {
@@ -176,7 +188,10 @@ final class DefaultUsersListViewModel: UsersListViewModel {
             completion: { result in
                 switch result {
                 case .success(let page):
-                    self.appendPage(page)
+                    self.appendPage(page) { appendPageResult in
+                        self.handleAppendAsyncReturnResult(result: appendPageResult)
+                    }
+                    return 
                 case .failure(let error):
                     self.handle(error: error)
                 }
