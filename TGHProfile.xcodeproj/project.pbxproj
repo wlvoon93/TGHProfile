@@ -114,6 +114,7 @@
 		AE9187C5296B0291004A102C /* LoadUserNoteRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187C4296B0291004A102C /* LoadUserNoteRequestDTO.swift */; };
 		AE9187C7296B02C8004A102C /* LoadUserNoteResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187C6296B02C8004A102C /* LoadUserNoteResponseDTO.swift */; };
 		AE9187C9296B0F90004A102C /* LoadUsersNoteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187C8296B0F90004A102C /* LoadUsersNoteUseCase.swift */; };
+		AEB19C8F2988154C00D6A473 /* UIApplication+TopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB19C8E2988154C00D6A473 /* UIApplication+TopViewController.swift */; };
 		FC2B715C2156FF93002BD59E /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2B715B2156FF93002BD59E /* AppAppearance.swift */; };
 /* End PBXBuildFile section */
 
@@ -240,6 +241,7 @@
 		AE9187C4296B0291004A102C /* LoadUserNoteRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserNoteRequestDTO.swift; sourceTree = "<group>"; };
 		AE9187C6296B02C8004A102C /* LoadUserNoteResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserNoteResponseDTO.swift; sourceTree = "<group>"; };
 		AE9187C8296B0F90004A102C /* LoadUsersNoteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUsersNoteUseCase.swift; sourceTree = "<group>"; };
+		AEB19C8E2988154C00D6A473 /* UIApplication+TopViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+TopViewController.swift"; sourceTree = "<group>"; };
 		FC2B715B2156FF93002BD59E /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -463,6 +465,7 @@
 				1FC5B7D1242635CB0086FA8C /* CGSize+ScaledSize.swift */,
 				1FF53EB323688893008D6CCC /* DataTransferError+ConnectionError.swift */,
 				AE6B57B7295AE4B30069DC43 /* UIImage+InvertedColor.swift */,
+				AEB19C8E2988154C00D6A473 /* UIApplication+TopViewController.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -931,6 +934,7 @@
 				AE688933296C4069007994FF /* UserListNoteItemViewModel.swift in Sources */,
 				AE6B57B6295AE4150069DC43 /* UserListAvatarColourInvertedAndNoteItemCell.swift in Sources */,
 				1F57F8D223C656F600981E09 /* AccessibilityIdentifier.swift in Sources */,
+				AEB19C8F2988154C00D6A473 /* UIApplication+TopViewController.swift in Sources */,
 				1F0CEFCF23436B67004141FA /* ConnectionError.swift in Sources */,
 				AE9187C5296B0291004A102C /* LoadUserNoteRequestDTO.swift in Sources */,
 				1F05A6CC2220A2CB001E2801 /* SearchUsersUseCase.swift in Sources */,

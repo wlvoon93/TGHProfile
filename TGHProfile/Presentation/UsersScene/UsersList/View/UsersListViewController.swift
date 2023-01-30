@@ -167,8 +167,9 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     }
 
     private func showError(_ error: String) {
-        guard !error.isEmpty else { return }
         DispatchQueue.main.async {
+            guard !error.isEmpty, let topViewController = UIApplication.getTopViewController(), !topViewController.isKind(of: UIAlertController.self) else { return }
+        
             self.showAlert(title: self.viewModel.errorTitle, message: error)
         }
     }

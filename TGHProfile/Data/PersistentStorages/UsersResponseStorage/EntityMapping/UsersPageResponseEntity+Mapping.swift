@@ -12,7 +12,9 @@ extension UsersPageResponseEntity {
     func toDTO() -> UsersPageResponseDTO {
         return .init(since: Int(since),
                      per_page: Int(perPage),
-                     users: users?.allObjects.map{ ($0 as! UserResponseEntity).toDTO() } ?? [])
+                     users: users?.allObjects.compactMap { userEntity in
+            return (userEntity as? UserResponseEntity)?.toDTO()
+        } ?? [])
     }
 }
 

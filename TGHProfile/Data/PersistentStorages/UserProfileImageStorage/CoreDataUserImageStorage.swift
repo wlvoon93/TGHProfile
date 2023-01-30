@@ -36,16 +36,16 @@ final class CoreDataUserImageStorage {
 
 extension CoreDataUserImageStorage: UserProfileImageStorage {
     func loadImage(for userId: Int, completion: @escaping (Result<UsersPageResponseDTO.UserDTO.ProfileImageDTO?, Error>) -> Void) {
-        let context = coreDataStorage.persistentContainer.viewContext
-
-        do {
-            let fetchRequest = self.fetchUserRequest(for: userId)
-            let userEntity = try context.fetch(fetchRequest).first
-            let profileImageDTO = userEntity?.profileImage?.toDTO()
-            
-            completion(.success(profileImageDTO))
-        } catch {
-            completion(.failure(CoreDataStorageError.readError(error)))
+        coreDataStorage.performBackgroundTask { context in
+            do {
+                let fetchRequest = self.fetchUserRequest(for: userId)
+                let userEntity = try context.fetch(fetchRequest).first
+                let profileImageDTO = userEntity?.profileImage?.toDTO()
+                
+                completion(.success(profileImageDTO))
+            } catch {
+                completion(.failure(CoreDataStorageError.readError(error)))
+            }
         }
     }
     
