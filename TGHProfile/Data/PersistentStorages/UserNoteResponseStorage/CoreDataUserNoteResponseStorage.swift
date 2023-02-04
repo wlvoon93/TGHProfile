@@ -38,16 +38,18 @@ final class CoreDataUserNoteResponseStorage {
 extension CoreDataUserNoteResponseStorage: UserNoteResponseStorage {
     func loadUsersNoteResponse(for userIds: [Int], completion: @escaping (Result<[Note], CoreDataStorageError>) -> Void) {
         let context = coreDataStorage.persistentContainer.viewContext
-        do {
-            let fetchRequest = self.fetchNotesRequest(for: userIds)
-            let userNoteEntities = try context.fetch(fetchRequest)
-            let notes = userNoteEntities.map {
-                Note.init(note: $0.note, userId: Int($0.userId))
+        DispatchQueue.main.async {
+            do {
+                let fetchRequest = self.fetchNotesRequest(for: userIds)
+                let userNoteEntities = try context.fetch(fetchRequest)
+                let notes = userNoteEntities.map {
+                    Note.init(note: $0.note, userId: Int($0.userId))
+                }
+                
+                completion(.success(notes))
+            } catch {
+                completion(.failure(CoreDataStorageError.readError(error)))
             }
-
-            completion(.success(notes))
-        } catch {
-            completion(.failure(CoreDataStorageError.readError(error)))
         }
     }
     

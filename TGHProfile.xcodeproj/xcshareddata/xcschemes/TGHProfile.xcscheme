@@ -41,7 +41,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1FA5339C201E1FDE00747E55"
+               BlueprintIdentifier = "AE688942296ED01B007994FF"
                BuildableName = "TGHProfileTests.xctest"
                BlueprintName = "TGHProfileTests"
                ReferencedContainer = "container:TGHProfile.xcodeproj">
@@ -79,6 +79,16 @@
             ReferencedContainer = "container:TGHProfile.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-com.apple.CoreData.SQLDebug 4"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-com.apple.CoreData.ConcurrencyDebug 1"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

@@ -82,43 +82,47 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
 
     func getResponse(for requestDto: UsersRequestDTO, completion: @escaping (Result<UsersPageResponseDTO?, CoreDataStorageError>) -> Void) {
         let context = coreDataStorage.persistentContainer.viewContext
-        do {
-            let fetchUsersPageRequest = self.fetchRequest(for: requestDto)
-            let requestUsersPageEntity = try context.fetch(fetchUsersPageRequest).first
-            let userPageResponseDTO = requestUsersPageEntity?.response?.toDTO()
+        
+        DispatchQueue.main.async {
             
-            var userDTOs:[UsersPageResponseDTO.UserDTO] = []
-            if let userPageResponseDTO = userPageResponseDTO {
-                // put note dto into response page dto
-                let fetchNotesRequest = self.fetchNotesRequest(for: userPageResponseDTO.users)
-                let userNoteEntities = try context.fetch(fetchNotesRequest)
-                // sort the users
-                let sortedUsers = userPageResponseDTO.users.sorted()
-                for user in sortedUsers{
-                    for note in userNoteEntities {
-                        if note.userId == user.id {
-                            
-                            let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login,
-                                                                            id: user.id,
-                                                                            profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: user.profileImage?.imageUrl, image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
-                                                                            type: user.type,
-                                                                            note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)),
-                                                                            following: nil,
-                                                                            followers: nil,
-                                                                            company: nil, blog: nil)
-                            userDTOs.append(userDTO)
+            do {
+                let fetchUsersPageRequest = self.fetchRequest(for: requestDto)
+                let requestUsersPageEntity = try context.fetch(fetchUsersPageRequest).first
+                let userPageResponseDTO = requestUsersPageEntity?.response?.toDTO()
+                
+                var userDTOs:[UsersPageResponseDTO.UserDTO] = []
+                if let userPageResponseDTO = userPageResponseDTO {
+                    // put note dto into response page dto
+                    let fetchNotesRequest = self.fetchNotesRequest(for: userPageResponseDTO.users)
+                    let userNoteEntities = try context.fetch(fetchNotesRequest)
+                    // sort the users
+                    let sortedUsers = userPageResponseDTO.users.sorted()
+                    for user in sortedUsers{
+                        for note in userNoteEntities {
+                            if note.userId == user.id {
+                                
+                                let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login,
+                                                                                id: user.id,
+                                                                                profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: user.profileImage?.imageUrl, image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
+                                                                                type: user.type,
+                                                                                note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)),
+                                                                                following: nil,
+                                                                                followers: nil,
+                                                                                company: nil, blog: nil)
+                                userDTOs.append(userDTO)
+                            }
                         }
                     }
+                    // check is note updated
+                    let userPageResponseDTOWithNote = UsersPageResponseDTO.init(since: userPageResponseDTO.since, per_page: userPageResponseDTO.per_page, users: userDTOs)
+                    
+                    completion(.success(userPageResponseDTOWithNote))
+                }else{
+                    completion(.success(userPageResponseDTO))
                 }
-                // check is note updated
-                let userPageResponseDTOWithNote = UsersPageResponseDTO.init(since: userPageResponseDTO.since, per_page: userPageResponseDTO.per_page, users: userDTOs)
-                
-                completion(.success(userPageResponseDTOWithNote))
-            }else{
-                completion(.success(userPageResponseDTO))
+            } catch {
+                completion(.failure(CoreDataStorageError.readError(error)))
             }
-        } catch {
-            completion(.failure(CoreDataStorageError.readError(error)))
         }
     }
     
