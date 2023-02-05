@@ -83,7 +83,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
     func getResponse(for requestDto: UsersRequestDTO, completion: @escaping (Result<UsersPageResponseDTO?, CoreDataStorageError>) -> Void) {
         let context = coreDataStorage.persistentContainer.viewContext
         
-        DispatchQueue.main.async {
+        context.perform {
             
             do {
                 let fetchUsersPageRequest = self.fetchRequest(for: requestDto)
@@ -166,29 +166,33 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
     
     func getNotesResponse(for users: [UsersPageResponseDTO.UserDTO], completion: @escaping (Result<[Note], CoreDataStorageError>) -> Void) {
         let context = coreDataStorage.persistentContainer.viewContext
-        do {
-            let fetchRequest = self.fetchNotesRequest(for: users)
-            let userNoteEntities = try context.fetch(fetchRequest)
-            let notes = userNoteEntities.map {
-                Note.init(note: $0.note, userId: Int($0.userId))
+        context.perform {
+            do {
+                let fetchRequest = self.fetchNotesRequest(for: users)
+                let userNoteEntities = try context.fetch(fetchRequest)
+                let notes = userNoteEntities.map {
+                    Note.init(note: $0.note, userId: Int($0.userId))
+                }
+                
+                completion(.success(notes))
+            } catch {
+                completion(.failure(CoreDataStorageError.readError(error)))
             }
-
-            completion(.success(notes))
-        } catch {
-            completion(.failure(CoreDataStorageError.readError(error)))
         }
     }
     
     func getUserDetailsResponse(for requestDto: UserDetailsRequestDTO, completion: @escaping (Result<UsersPageResponseDTO.UserDTO?, CoreDataStorageError>) -> Void) {
         let context = coreDataStorage.persistentContainer.viewContext
-        do {
-            let fetchUserDetailsRequest = self.fetchUserDetailsResponse(for: requestDto)
-            let requestUserDetailsEntity = try context.fetch(fetchUserDetailsRequest).first
-            let userDetailsDTO = requestUserDetailsEntity?.toDTO()
-            
-            completion(.success(userDetailsDTO))
-        } catch {
-            completion(.failure(CoreDataStorageError.readError(error)))
+        context.perform {
+            do {
+                let fetchUserDetailsRequest = self.fetchUserDetailsResponse(for: requestDto)
+                let requestUserDetailsEntity = try context.fetch(fetchUserDetailsRequest).first
+                let userDetailsDTO = requestUserDetailsEntity?.toDTO()
+                
+                completion(.success(userDetailsDTO))
+            } catch {
+                completion(.failure(CoreDataStorageError.readError(error)))
+            }
         }
     }
 
@@ -233,7 +237,6 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
                 requestUserDetailsEntity?.setValue(responseDto.following, forKey: "following")
                 requestUserDetailsEntity?.setValue(responseDto.company, forKey: "company")
                 requestUserDetailsEntity?.setValue(responseDto.blog, forKey: "blog")
-                
                 
                 try context.save()
             } catch {

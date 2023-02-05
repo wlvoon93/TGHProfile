@@ -65,6 +65,9 @@ extension SearchUserListTableViewController {
             assertionFailure("Cannot dequeue reusable cell \(UsersListItemCell.self) with reuseIdentifier: \(UsersListItemCell.reuseIdentifier)")
             return UITableViewCell()
         }
+        if let cellAsTableViewCell = cell as? UITableViewCell {
+            cellAsTableViewCell.selectionStyle = UITableViewCell.SelectionStyle.none
+        }
 
         cell.fill(with: viewModel.searchItems.value[indexPath.row],
                   profileImagesRepository: profileImagesRepository)

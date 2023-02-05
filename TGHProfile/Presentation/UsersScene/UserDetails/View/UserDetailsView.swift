@@ -17,7 +17,7 @@ struct UserDetailsView: View {
     @State var text: String = ""
 
     var body: some View {
-        List {
+        ScrollView {
             VStack(spacing: 8) {
                 Spacer().frame(height: 30)
                 Image(uiImage: viewModelWrapper.profileImageData != nil ? (UIImage(data: viewModelWrapper.profileImageData!) ?? UIImage(named: "placeholder"))! : UIImage(named: "placeholder")!)
@@ -49,7 +49,7 @@ struct UserDetailsView: View {
                         Spacer().frame(height: 20)
                     }.frame(maxWidth: .infinity, alignment: .leading)
                         .padding()
-                        .border(.black, width: 2)
+                        .border(.foreground, width: 2)
                 }.padding()
                 
                 VStack(alignment: .leading) {
@@ -60,7 +60,7 @@ struct UserDetailsView: View {
                 HStack() {
                     TextEditor(text: $noteString)
                         .frame(minHeight: 30, alignment: .leading)
-                        .border(Color.black, width: 2)
+                        .border(.foreground, width: 2)
                         .multilineTextAlignment(.leading)
                 }.padding(.horizontal)
                 
@@ -81,7 +81,7 @@ struct UserDetailsView: View {
                 self.viewModelWrapper.viewModel?.viewWillAppear()
                 noteString = viewModelWrapper.note
             }
-        }
+        }.modifier(AdaptsToSoftwareKeyboard())
     }
 }
 
@@ -90,7 +90,7 @@ struct MyStyle: ButtonStyle {
         configuration.label
             .frame(maxWidth: 100, maxHeight: 50)
             .contentShape(Rectangle())
-            .border(Color.gray, width: 5)
+            .border(.foreground, width: 5)
     }
 }
 
@@ -105,6 +105,7 @@ final class UserDetailsViewModelWrapper: ObservableObject {
     @Published var profileImageData: Data? = nil
     @Published var note: String = ""
     var subsciptions = Set<AnyCancellable>()
+    var isConnected = true
     
     init(viewModel: UserDetailsViewModel?) {
         self.viewModel = viewModel
@@ -159,10 +160,16 @@ final class UserDetailsViewModelWrapper: ObservableObject {
     @objc func showOfflineDeviceUI(notification: Notification) {
         if NetworkMonitor.shared.isConnected {
             print("Connected")
-            viewModel?.load()
+            if !isConnected {
+                isConnected = true
+                viewModel?.load()
+            }
         } else {
             print("Not connected")
-            viewModel?.handleReachabilityNoInternet()
+            if isConnected {
+                isConnected = false
+                viewModel?.handleReachabilityNoInternet()
+            }
         }
     }
 }

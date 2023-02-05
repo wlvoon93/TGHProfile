@@ -115,6 +115,7 @@
 		AE9187C7296B02C8004A102C /* LoadUserNoteResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187C6296B02C8004A102C /* LoadUserNoteResponseDTO.swift */; };
 		AE9187C9296B0F90004A102C /* LoadUsersNoteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187C8296B0F90004A102C /* LoadUsersNoteUseCase.swift */; };
 		AEB19C8F2988154C00D6A473 /* UIApplication+TopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB19C8E2988154C00D6A473 /* UIApplication+TopViewController.swift */; };
+		AEBD905E298FABAA00A07DEE /* AdaptsToSoftwareKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD905D298FABAA00A07DEE /* AdaptsToSoftwareKeyboard.swift */; };
 		FC2B715C2156FF93002BD59E /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2B715B2156FF93002BD59E /* AppAppearance.swift */; };
 /* End PBXBuildFile section */
 
@@ -242,6 +243,7 @@
 		AE9187C6296B02C8004A102C /* LoadUserNoteResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserNoteResponseDTO.swift; sourceTree = "<group>"; };
 		AE9187C8296B0F90004A102C /* LoadUsersNoteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUsersNoteUseCase.swift; sourceTree = "<group>"; };
 		AEB19C8E2988154C00D6A473 /* UIApplication+TopViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+TopViewController.swift"; sourceTree = "<group>"; };
+		AEBD905D298FABAA00A07DEE /* AdaptsToSoftwareKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptsToSoftwareKeyboard.swift; sourceTree = "<group>"; };
 		FC2B715B2156FF93002BD59E /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -451,6 +453,7 @@
 				1F57F8D123C656F600981E09 /* AccessibilityIdentifier.swift */,
 				1FA2048F242F528E000C4B56 /* LoadingView.swift */,
 				AE9187C0296AAA9A004A102C /* VoidResult.swift */,
+				AEBD905D298FABAA00A07DEE /* AdaptsToSoftwareKeyboard.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -923,6 +926,7 @@
 				AE8B69142978280400C49CD9 /* LoadProfileImageUseCase.swift in Sources */,
 				AE6419F2295DDE4800093266 /* UserDetailsQuery.swift in Sources */,
 				1F53E2B623125896008D6A05 /* UIViewController+AddChild.swift in Sources */,
+				AEBD905E298FABAA00A07DEE /* AdaptsToSoftwareKeyboard.swift in Sources */,
 				AE5F75A4294B549A0098D4E9 /* UsersListView.swift in Sources */,
 				AE688939296C42CF007994FF /* BaseItemCell.swift in Sources */,
 				1FFF12A42439F2E700937EE4 /* UsersResponseStorage.swift in Sources */,

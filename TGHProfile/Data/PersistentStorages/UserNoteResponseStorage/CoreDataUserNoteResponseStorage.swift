@@ -38,7 +38,7 @@ final class CoreDataUserNoteResponseStorage {
 extension CoreDataUserNoteResponseStorage: UserNoteResponseStorage {
     func loadUsersNoteResponse(for userIds: [Int], completion: @escaping (Result<[Note], CoreDataStorageError>) -> Void) {
         let context = coreDataStorage.persistentContainer.viewContext
-        DispatchQueue.main.async {
+        context.perform {
             do {
                 let fetchRequest = self.fetchNotesRequest(for: userIds)
                 let userNoteEntities = try context.fetch(fetchRequest)
@@ -55,15 +55,16 @@ extension CoreDataUserNoteResponseStorage: UserNoteResponseStorage {
     
     func loadUserNoteResponse(for request: LoadUserNoteRequestDTO, completion: @escaping (Result<Note?, CoreDataStorageError>) -> Void) {
         let context = coreDataStorage.persistentContainer.viewContext
-        do {
-            let fetchRequest = self.fetchRequest(for: request)
-            let userNoteEntity = try context.fetch(fetchRequest).first
-            let userNoteDTO = userNoteEntity?.toDomain()
-            completion(.success(userNoteDTO))
-        } catch {
-            completion(.failure(CoreDataStorageError.readError(error)))
+        context.perform {
+            do {
+                let fetchRequest = self.fetchRequest(for: request)
+                let userNoteEntity = try context.fetch(fetchRequest).first
+                let userNoteDTO = userNoteEntity?.toDomain()
+                completion(.success(userNoteDTO))
+            } catch {
+                completion(.failure(CoreDataStorageError.readError(error)))
+            }
         }
-        
     }
     
     func saveUserNoteResponse(for request: SaveUserNoteRequestDTO, completion: @escaping (VoidResult) -> Void) {

@@ -44,6 +44,7 @@ protocol UsersListViewModelOutput {
     var error: CurrentValueSubject<String, Never> { get }
     var isEmpty: Bool { get }
     var isSearchEmpty: Bool { get }
+    var isConnected: Bool { get set }
     var screenTitle: String { get }
     var emptyDataTitle: String { get }
     var errorTitle: String { get }
@@ -64,6 +65,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     var since: Int = 0 // page start with 0
     var perPage: Int = 0
     var totalPageCount: Int = 1
+    var isConnected = true
 
     private(set) var pages: [UsersPage] = []
     private(set) var searchPage: [UsersPage] = []
@@ -295,9 +297,11 @@ final class DefaultUsersListViewModel: UsersListViewModel {
 
     // MARK: - Private - General
     private func handle(error: Error) {
-        self.error.value = error.isInternetConnectionError ?
-            NSLocalizedString("No internet connection", comment: "") :
-            NSLocalizedString("Failed loading users", comment: "")
+        if !isConnected {
+            self.error.value = error.isInternetConnectionError ?
+                NSLocalizedString("No internet connection", comment: "") :
+                NSLocalizedString("Failed loading users", comment: "")
+        }
     }
 }
 
@@ -402,13 +406,4 @@ extension DefaultUsersListViewModel {
 
 private extension Array where Element == UsersPage {
     var users: [User] { flatMap { $0.users } }
-}
-
-extension Array where Element: Hashable {
-    func duplicates() -> Array {
-        let groups = Dictionary(grouping: self, by: {$0})
-        let duplicateGroups = groups.filter {$1.count > 1}
-        let duplicates = Array(duplicateGroups.keys)
-        return duplicates
-    }
 }
