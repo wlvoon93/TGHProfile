@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 struct UserListAvatarColourInvertedItemViewModel: Equatable, UserListTVCVMDisplayable {
+    var cacheImage: UIImage?
+    
     let cellType: CellTypes
     var user: User
 }

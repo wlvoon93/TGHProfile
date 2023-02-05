@@ -212,7 +212,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
                     userNoteRecord.setValue(user.login, forKey: "username")
                     userNoteRecord.setValue(user.id, forKey: "userId")
                 }
-                
+
                 try context.save()
             } catch {
                 // TODO: - Log to Crashlytics

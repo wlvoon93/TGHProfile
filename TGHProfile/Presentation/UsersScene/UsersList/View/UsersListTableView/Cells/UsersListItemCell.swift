@@ -56,6 +56,7 @@ final class UsersListItemCell: UITableViewCell, UserListTVCDisplayable {
         profileImageView.image = nil
         userNameLabel.text = nil
         userTypeLabel.text = nil
+        imageLoadTask?.cancel()
     }
 
     func fill(with viewModel: UserListTVCVMDisplayable, profileImagesRepository: ProfileImagesRepository?) {
@@ -104,8 +105,12 @@ final class UsersListItemCell: UITableViewCell, UserListTVCDisplayable {
                 guard let self = self else { return }
                 if case let .success(data) = result {
                     if let profileImage = UIImage(data: data) {
+                        if let cacheImage = self.viewModel?.cacheImage, profileImage.isEqualToImage(cacheImage) {
+                            return
+                        }
                         DispatchQueue.main.async {
                             self.profileImageView.image = profileImage
+                            self.viewModel?.cacheImage = profileImage
                         }
                         _ = self.profileImagesRepository?.saveImage(userId: userId, imageData: data, completion: { _ in
                         })
@@ -115,4 +120,14 @@ final class UsersListItemCell: UITableViewCell, UserListTVCDisplayable {
             }
         }
     }
+}
+
+extension UIImage {
+
+    func isEqualToImage(_ image: UIImage) -> Bool {
+        let data1 = self.pngData()
+        let data2 = image.pngData()
+        return data1 == data2
+    }
+
 }

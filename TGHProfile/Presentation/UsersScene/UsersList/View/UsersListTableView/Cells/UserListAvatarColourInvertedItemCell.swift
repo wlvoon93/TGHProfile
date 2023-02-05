@@ -56,6 +56,7 @@ final class UserListAvatarColourInvertedItemCell: UITableViewCell, UserListTVCDi
         profileImageView.image = nil
         userNameLabel.text = nil
         userTypeLabel.text = nil
+        imageLoadTask?.cancel()
     }
 
     func fill(with viewModel: UserListTVCVMDisplayable, profileImagesRepository: ProfileImagesRepository?) {
@@ -110,13 +111,14 @@ final class UserListAvatarColourInvertedItemCell: UITableViewCell, UserListTVCDi
                         filter.setValue(beginImage, forKey: kCIInputImageKey)
                         if let outputCiimage = filter.outputImage,
                             let filteredImageData = UIImage(ciImage: outputCiimage).pngData() {
+                            if let cacheImage = self.viewModel?.cacheImage, UIImage(ciImage: outputCiimage).isEqualToImage(cacheImage) {
+                                return
+                            }
                             DispatchQueue.main.async {
                                 self.profileImageView.image = UIImage(data: filteredImageData)
+                                self.viewModel?.cacheImage = UIImage(data: filteredImageData)
                             }
-                            _ = self.profileImagesRepository?.saveImage(userId: userId, imageData: data, completion: { _ in
-                                
-                            })
-                            _ = self.profileImagesRepository?.saveInvertedImage(userId: userId, imageData: filteredImageData, completion: { _ in
+                            _ = self.profileImagesRepository?.saveImages(userId: userId, imageData: data, invertedImageData: filteredImageData, completion: { _ in
                                 
                             })
                         }

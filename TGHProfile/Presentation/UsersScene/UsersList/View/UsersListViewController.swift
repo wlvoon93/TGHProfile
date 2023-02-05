@@ -21,6 +21,7 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     private var usersTableViewController: UsersListTableViewController?
     private var searchUserTableViewController: SearchUserListTableViewController?
     private var searchController = UISearchController(searchResultsController: nil)
+    private var isConnected = true
     
     var subsciptions = Set<AnyCancellable>()
 
@@ -116,10 +117,17 @@ final class UsersListViewController: UIViewController, StoryboardInstantiable, A
     @objc func showOfflineDeviceUI(notification: Notification) {
         if NetworkMonitor.shared.isConnected {
             print("Connected")
-            viewModel.didLoadFirstPage()
+            if !isConnected {
+                isConnected = true
+                viewModel.didLoadFirstPage()
+            }
+            
         } else {
             print("Not connected")
-            viewModel.handleReachabilityNoInternet()
+            if isConnected {
+                isConnected = false
+                viewModel.handleReachabilityNoInternet()
+            }
         }
     }
 

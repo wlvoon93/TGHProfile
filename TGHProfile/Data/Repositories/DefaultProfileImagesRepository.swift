@@ -34,6 +34,7 @@ extension DefaultProfileImagesRepository: ProfileImagesRepository {
             let endpoint = APIEndpoints.getUserProfile(path: imagePath)
             let task = RepositoryTask()
             task.networkTask = self.dataTransferService.request(with: endpoint) { (result: Result<Data, Error>) in
+                guard !task.isCancelled else { return }
 
                 let result = result.mapError { $0 as Error }
                 completion(result)
@@ -59,10 +60,10 @@ extension DefaultProfileImagesRepository: ProfileImagesRepository {
         return task
     }
     
-    func saveInvertedImage(userId: Int, imageData: Data, completion: @escaping (VoidResult) -> Void) -> Cancellable? {
+    func saveImages(userId: Int, imageData: Data, invertedImageData: Data, completion: @escaping (VoidResult) -> Void) -> Cancellable? {
         
         let task = RepositoryTask()
-        cache.saveInvertedImage(for: userId, invertedImage: imageData) { result in
+        cache.saveImages(for: userId, image: imageData,  invertedImage: invertedImageData) { result in
             guard !task.isCancelled else { return }
             
             switch result {

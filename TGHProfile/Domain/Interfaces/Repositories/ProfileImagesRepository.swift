@@ -10,5 +10,5 @@ import Foundation
 protocol ProfileImagesRepository {
     func fetchImage(for userId: Int, imagePath: String, cached: @escaping (ProfileImage) -> Void, completion: @escaping (Result<Data, Error>) -> Void) -> Cancellable?
     func saveImage(userId: Int, imageData: Data, completion: @escaping (VoidResult) -> Void) -> Cancellable?
-    func saveInvertedImage(userId: Int, imageData: Data, completion: @escaping (VoidResult) -> Void) -> Cancellable?
+    func saveImages(userId: Int, imageData: Data, invertedImageData: Data, completion: @escaping (VoidResult) -> Void) -> Cancellable?
 }

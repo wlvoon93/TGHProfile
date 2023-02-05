@@ -64,7 +64,6 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     var since: Int = 0 // page start with 0
     var perPage: Int = 0
     var totalPageCount: Int = 1
-    var nextSince: Int { since+perPage }
 
     private(set) var pages: [UsersPage] = []
     private(set) var searchPage: [UsersPage] = []
@@ -105,7 +104,6 @@ final class DefaultUsersListViewModel: UsersListViewModel {
     private func appendPage(_ usersPage: UsersPage) {
         
         perPage = usersPage.users.count
-        since = nextSince
         
         let userIDs = usersPage.users.compactMap { $0.userId }
         multipleNoteLoadTask = loadUsersNoteUseCase.execute(requestValue: .init(userIds: userIDs)) { [weak self] result in
@@ -142,6 +140,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                 + [usersPageWithNote]
 
             var userListItems: [UserListTVCVMDisplayable] = []
+            
             for (_, page) in strongSelf.pages.enumerated() {
                 for (userIndex, user) in page.users.enumerated() {
                     // append different kind of cell view models
@@ -158,6 +157,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                     }
                 }
             }
+            
             strongSelf.handleAppendAsyncReturnResult(result: .success(userListItems))
         }
     }
@@ -288,6 +288,10 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                 strongSelf.loading.value = .none
         })
     }
+    
+    private func getNextSince() -> Int {
+        return items.value.last?.user.userId ?? 0
+    }
 
     // MARK: - Private - General
     private func handle(error: Error) {
@@ -311,7 +315,7 @@ extension DefaultUsersListViewModel {
 
     func didLoadNextPage() {
         guard loading.value == .none else { return }
-        loadAllUsers(pageQuery: ListAllUsersUseCaseRequestValue.init(since: nextSince, perPage: perPage), loading: .nextPage)
+        loadAllUsers(pageQuery: ListAllUsersUseCaseRequestValue.init(since: getNextSince(), perPage: perPage), loading: .nextPage)
     }
 
     func didSearch(query: String) {
@@ -398,4 +402,13 @@ extension DefaultUsersListViewModel {
 
 private extension Array where Element == UsersPage {
     var users: [User] { flatMap { $0.users } }
+}
+
+extension Array where Element: Hashable {
+    func duplicates() -> Array {
+        let groups = Dictionary(grouping: self, by: {$0})
+        let duplicateGroups = groups.filter {$1.count > 1}
+        let duplicates = Array(duplicateGroups.keys)
+        return duplicates
+    }
 }

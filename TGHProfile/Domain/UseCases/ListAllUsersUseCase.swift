@@ -25,7 +25,7 @@ final class DefaultListAllUsersUseCase: ListAllUsersUseCase {
     func execute(requestValue: ListAllUsersUseCaseRequestValue,
                  cached: @escaping (UsersPage) -> Void,
                  completion: @escaping (Result<UsersPage, Error>) -> Void) -> Cancellable? {
-
+        
         return usersRepository.fetchAllUsersList(since: requestValue.since,
                                                  per_page: requestValue.perPage,
                                                 cached: cached,

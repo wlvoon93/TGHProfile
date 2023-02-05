@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import UIKit
 
 struct UsersListItemViewModel: Equatable, UserListTVCVMDisplayable {
+    var cacheImage: UIImage?
+    
     let cellType: CellTypes
     var user: User
 }

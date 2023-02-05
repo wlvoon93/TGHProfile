@@ -58,21 +58,7 @@ extension CoreDataUserImageStorage: UserProfileImageStorage {
                 let userEntity = try context.fetch(fetchRequest).first
                 userEntity?.profileImage?.setValue(image, forKey: "image")
                 
-                let block = {
-                    do {
-                        try context.save()
-                    
-                    } catch {
-                        completion(.failure(CoreDataStorageError.readError(error)))
-                    }
-                }
-                context.perform({
-                    guard context.hasChanges else { return }
-                    block();
-                    context.performAndWait(block)
-                    completion(.success)
-                })
-
+                try context.save()
                 
             } catch {
                 completion(.failure(CoreDataStorageError.readError(error)))
@@ -80,28 +66,15 @@ extension CoreDataUserImageStorage: UserProfileImageStorage {
         }
     }
     
-    func saveInvertedImage(for userId: Int, invertedImage: Data, completion: @escaping (VoidResult) -> Void) {
+    func saveImages(for userId: Int, image: Data, invertedImage: Data, completion: @escaping (VoidResult) -> Void) {
         coreDataStorage.performBackgroundTask { context in
             do {
                 let fetchRequest = self.fetchUserRequest(for: userId)
                 let userEntity = try context.fetch(fetchRequest).first
+                userEntity?.profileImage?.setValue(image, forKey: "image")
                 userEntity?.profileImage?.setValue(invertedImage, forKey: "invertedImage")
-                
-                let block = {
-                    do {
-                        try context.save()
-                    
-                    } catch {
-                        completion(.failure(CoreDataStorageError.readError(error)))
-                    }
-                }
-                context.perform({
-                    guard context.hasChanges else { return }
-                    block();
-                    context.performAndWait(block)
-                    completion(.success)
-                })
-//                try context.save()
+
+                try context.save()
 
                 completion(.success)
             } catch {

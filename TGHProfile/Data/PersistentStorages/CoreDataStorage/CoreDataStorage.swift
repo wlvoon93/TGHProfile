@@ -16,6 +16,7 @@ enum CoreDataStorageError: Error {
 final class CoreDataStorage {
 
     static let shared = CoreDataStorage()
+    let persistentContainerQueue = OperationQueue()
     
     private init() {}
 
@@ -46,6 +47,12 @@ final class CoreDataStorage {
     }
 
     func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Void) {
-        persistentContainer.performBackgroundTask(block)
+        persistentContainerQueue.maxConcurrentOperationCount = 1
+        persistentContainerQueue.addOperation(){
+            let context: NSManagedObjectContext = self.persistentContainer.newBackgroundContext()
+            context.performAndWait{
+                block(context)
+            }
+        }
     }
 }

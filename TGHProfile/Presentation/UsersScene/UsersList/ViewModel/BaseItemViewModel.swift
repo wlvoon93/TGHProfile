@@ -18,4 +18,5 @@ enum CellTypes: String{
 protocol UserListTVCVMDisplayable {
     var user: User { get set }
     var cellType: CellTypes { get }
+    var cacheImage: UIImage? { get set }
 }
