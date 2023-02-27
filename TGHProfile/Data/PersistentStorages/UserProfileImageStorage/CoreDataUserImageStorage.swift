@@ -51,7 +51,7 @@ extension CoreDataUserImageStorage: UserProfileImageStorage {
     
     func saveImage(for userId: Int, image: Data, completion: @escaping (VoidResult) -> Void) {
         
-        coreDataStorage.performBackgroundTask { context in
+        coreDataStorage.performBackgroundTaskQueued { context in
             do {
 
                 let fetchRequest = self.fetchUserRequest(for: userId)
@@ -67,7 +67,7 @@ extension CoreDataUserImageStorage: UserProfileImageStorage {
     }
     
     func saveImages(for userId: Int, image: Data, invertedImage: Data, completion: @escaping (VoidResult) -> Void) {
-        coreDataStorage.performBackgroundTask { context in
+        coreDataStorage.performBackgroundTaskQueued { context in
             do {
                 let fetchRequest = self.fetchUserRequest(for: userId)
                 let userEntity = try context.fetch(fetchRequest).first

@@ -197,7 +197,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
     }
 
     func save(response responseDto: UsersPageResponseDTO, for requestDto: UsersRequestDTO) {
-        coreDataStorage.performBackgroundTask { context in
+        coreDataStorage.performBackgroundTaskQueued { context in
             do {
                 self.deleteResponse(for: requestDto, in: context)
 
@@ -226,7 +226,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
     }
     
     func updateUser(response responseDto: UserDetailsResponseDTO, for requestDto: UserDetailsRequestDTO) {
-        coreDataStorage.performBackgroundTask { context in
+        coreDataStorage.performBackgroundTaskQueued { context in
             do {
                 let fetchUserDetailsRequest = self.fetchUserDetailsResponse(for: requestDto)
                 let requestUserDetailsEntity = try context.fetch(fetchUserDetailsRequest).first

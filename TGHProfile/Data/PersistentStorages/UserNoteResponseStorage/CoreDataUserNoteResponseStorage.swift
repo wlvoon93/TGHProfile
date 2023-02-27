@@ -68,7 +68,7 @@ extension CoreDataUserNoteResponseStorage: UserNoteResponseStorage {
     }
     
     func saveUserNoteResponse(for request: SaveUserNoteRequestDTO, completion: @escaping (VoidResult) -> Void) {
-        coreDataStorage.performBackgroundTask { context in
+        coreDataStorage.performBackgroundTaskQueued { context in
             do {
                 let fetchRequest = self.fetchRequest(for: LoadUserNoteRequestDTO.init(userId: request.userId))
                 let userNoteEntity = try context.fetch(fetchRequest).first

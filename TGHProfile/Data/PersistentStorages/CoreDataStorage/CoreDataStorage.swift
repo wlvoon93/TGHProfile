@@ -46,6 +46,16 @@ final class CoreDataStorage {
         }
     }
 
+    func performBackgroundTaskQueued(_ block: @escaping (NSManagedObjectContext) -> Void) {
+        persistentContainerQueue.maxConcurrentOperationCount = 1
+        persistentContainerQueue.addOperation(){
+            let context: NSManagedObjectContext = self.persistentContainer.newBackgroundContext()
+            context.performAndWait{
+                block(context)
+            }
+        }
+    }
+    
     func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Void) {
         persistentContainerQueue.maxConcurrentOperationCount = 1
         persistentContainerQueue.addOperation(){
