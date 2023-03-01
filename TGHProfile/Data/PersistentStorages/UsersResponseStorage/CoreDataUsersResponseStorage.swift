@@ -81,9 +81,7 @@ final class CoreDataUsersResponseStorage {
 extension CoreDataUsersResponseStorage: UsersResponseStorage {
 
     func getResponse(for requestDto: UsersRequestDTO, completion: @escaping (Result<UsersPageResponseDTO?, CoreDataStorageError>) -> Void) {
-        let context = coreDataStorage.persistentContainer.viewContext
-        
-        context.perform {
+        coreDataStorage.performBackgroundTask { context in
             
             do {
                 let fetchUsersPageRequest = self.fetchRequest(for: requestDto)
@@ -165,8 +163,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
     }
     
     func getNotesResponse(for users: [UsersPageResponseDTO.UserDTO], completion: @escaping (Result<[Note], CoreDataStorageError>) -> Void) {
-        let context = coreDataStorage.persistentContainer.viewContext
-        context.perform {
+        coreDataStorage.performBackgroundTask { context in
             do {
                 let fetchRequest = self.fetchNotesRequest(for: users)
                 let userNoteEntities = try context.fetch(fetchRequest)
@@ -226,7 +223,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
     }
     
     func updateUser(response responseDto: UserDetailsResponseDTO, for requestDto: UserDetailsRequestDTO) {
-        coreDataStorage.performBackgroundTaskQueued { context in
+        coreDataStorage.performBackgroundTask { context in
             do {
                 let fetchUserDetailsRequest = self.fetchUserDetailsResponse(for: requestDto)
                 let requestUserDetailsEntity = try context.fetch(fetchUserDetailsRequest).first
