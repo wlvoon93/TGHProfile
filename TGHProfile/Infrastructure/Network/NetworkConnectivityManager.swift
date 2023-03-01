@@ -38,9 +38,15 @@ final class NetworkMonitor {
 
     func startMonitoring() {
         monitor.pathUpdateHandler = { [weak self] path in
-            self?.isConnected = path.status != .unsatisfied
-            self?.isExpensive = path.isExpensive
-            self?.currentConnectionType = NWInterface.InterfaceType.allCases.filter { path.usesInterfaceType($0) }.first
+            guard let strongSelf = self else { return }
+            #if targetEnvironment(simulator)
+            strongSelf.isConnected = path.status == .unsatisfied
+            #else
+            strongSelf.isConnected = path.status != .unsatisfied
+            #endif
+            
+            strongSelf.isExpensive = path.isExpensive
+            strongSelf.currentConnectionType = NWInterface.InterfaceType.allCases.filter { path.usesInterfaceType($0) }.first
             
             NotificationCenter.default.post(name: .connectivityStatus, object: nil)
         }
