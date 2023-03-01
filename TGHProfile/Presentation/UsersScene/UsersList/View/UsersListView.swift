@@ -70,7 +70,7 @@ class UsersListView: UIView {
         
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
             
