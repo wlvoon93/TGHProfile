@@ -101,7 +101,8 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
                                 
                                 let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login,
                                                                                 id: user.id,
-                                                                                profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: user.profileImage?.imageUrl, image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
+                                                                                profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init( image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
+                                                                                imageUrl: user.imageUrl,
                                                                                 type: user.type,
                                                                                 note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: note.note, userId: Int(note.userId)),
                                                                                 following: nil,
@@ -145,7 +146,8 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
                 let noteEntity = noteEntities.filter { return $0.userId == user.id }.first
                 let userDTO = UsersPageResponseDTO.UserDTO.init(login: user.login,
                                                                 id: user.id,
-                                                                profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: user.profileImage?.imageUrl, image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
+                                                                profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(image: user.profileImage?.image, invertedImage: user.profileImage?.invertedImage),
+                                                                imageUrl: user.imageUrl,
                                                                 type: user.type,
                                                                 note: UsersPageResponseDTO.UserDTO.NoteDTO.init(note: noteEntity?.note, userId: Int(user.id)),
                                                                 following: nil,
@@ -227,7 +229,7 @@ extension CoreDataUsersResponseStorage: UsersResponseStorage {
             do {
                 let fetchUserDetailsRequest = self.fetchUserDetailsResponse(for: requestDto)
                 let requestUserDetailsEntity = try context.fetch(fetchUserDetailsRequest).first
-                requestUserDetailsEntity?.profileImage?.setValue(responseDto.avatar_url, forKey: "imageUrl")
+                requestUserDetailsEntity?.setValue(responseDto.avatar_url, forKey: "imageUrl")
                 requestUserDetailsEntity?.setValue(responseDto.id, forKey: "userId")
                 requestUserDetailsEntity?.setValue(responseDto.type, forKey: "type")
                 requestUserDetailsEntity?.setValue(responseDto.followers, forKey: "followers")

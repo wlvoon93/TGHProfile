@@ -12,6 +12,7 @@ struct User: Equatable {
     let login: String?
     let userId: Int?
     let profileImage: ProfileImage?
+    let imageUrl: String?
     let type: String?
     var note: Note?
     let following: Int?

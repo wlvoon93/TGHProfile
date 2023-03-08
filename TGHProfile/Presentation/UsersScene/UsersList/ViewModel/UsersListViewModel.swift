@@ -125,7 +125,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                     
                     var userWithNote: User? = nil
                     if !userNote.isEmpty {
-                        userWithNote = User.init(login: user.login, userId: user.userId, profileImage: user.profileImage, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
+                        userWithNote = User.init(login: user.login, userId: user.userId, profileImage: user.profileImage, imageUrl: user.imageUrl, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
                     }
                     usersWithNote.append(userWithNote ?? user)
                 }
@@ -228,7 +228,7 @@ final class DefaultUsersListViewModel: UsersListViewModel {
                     
                     var userWithNote: User? = nil
                     if !userNote.isEmpty {
-                        userWithNote = User.init(login: user.login, userId: user.userId, profileImage: user.profileImage, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
+                        userWithNote = User.init(login: user.login, userId: user.userId, profileImage: user.profileImage, imageUrl: user.imageUrl, type: user.type, note: userNote.first, following: user.following, followers: user.followers, company: user.company, blog: user.blog)
                     }
                     usersWithNote.append(userWithNote ?? user)
                 }

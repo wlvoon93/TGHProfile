@@ -82,7 +82,7 @@ final class DefaultUserDetailsViewModel: UserDetailsViewModel {
         self.followers.value = user.followers ?? 0
         self.userId.value = user.userId
         self.profileImageData.value = user.profileImage?.image
-        self.profileImageUrl.value = user.profileImage?.imageUrl
+        self.profileImageUrl.value = user.imageUrl
         
         self.updateProfileImage()
     }
@@ -151,8 +151,9 @@ extension DefaultUserDetailsViewModel {
         guard let profileImagePath = self.profileImageUrl.value else { return }
         
         if let userId = self.userId.value {
-            _ = loadProfileImageUseCase.execute(requestValue: .init(userId: userId, imageUrl: profileImagePath), cached: {_ in
-                
+            _ = loadProfileImageUseCase.execute(requestValue: .init(userId: userId, imageUrl: profileImagePath), cached: {   [weak self] imgObject in
+                guard let strongSelf = self else { return }
+                strongSelf.profileImageData.value = imgObject.image
             }, completion: {[weak self] result in
                 guard let strongSelf = self else { return }
                 if case let .success(data) = result {

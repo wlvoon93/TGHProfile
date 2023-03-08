@@ -22,7 +22,8 @@ extension UserResponseEntity {
     func toDTO() -> UsersPageResponseDTO.UserDTO {
         return .init(login: login,
                      id: Int(userId),
-                     profileImage: profileImage?.toDTO(),
+                     profileImage: nil,
+                     imageUrl: imageUrl,
                      type: type,
                      note: nil,
                      following: Int(following),
@@ -34,8 +35,7 @@ extension UserResponseEntity {
 
 extension UserProfileImageEntity {
     func toDTO() -> UsersPageResponseDTO.UserDTO.ProfileImageDTO {
-        return .init(imageUrl: imageUrl,
-                     image: image,
+        return .init(image: image,
                      invertedImage: invertedImage)
     }
 }
@@ -66,7 +66,6 @@ extension UsersPageResponseDTO.UserDTO {
         let entity: UserResponseEntity = .init(context: context)
         entity.userId = Int64(id)
         entity.login = login
-        entity.profileImage = profileImage?.toEntity(in: context)
         entity.type = type
         return entity
     }
@@ -75,7 +74,6 @@ extension UsersPageResponseDTO.UserDTO {
 extension UsersPageResponseDTO.UserDTO.ProfileImageDTO {
     func toEntity(in context: NSManagedObjectContext) -> UserProfileImageEntity {
         let entity: UserProfileImageEntity = .init(context: context)
-        entity.imageUrl = imageUrl
         entity.image = image
         entity.invertedImage = invertedImage
         return entity

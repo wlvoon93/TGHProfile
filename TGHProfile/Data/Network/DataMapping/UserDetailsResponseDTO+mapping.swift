@@ -27,7 +27,8 @@ extension UserDetailsResponseDTO {
     func toDomain() -> User {
         return .init(login: login,
                      userId: id,
-                     profileImage: .init(imageUrl: avatar_url, image: nil, invertedImage: nil),
+                     profileImage: .init(image: nil, invertedImage: nil),
+                     imageUrl: avatar_url,
                      type: type,
                      note: nil,
                      following: following,

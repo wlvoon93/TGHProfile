@@ -12,7 +12,6 @@
     </entity>
     <entity name="UserProfileImageEntity" representedClassName="UserProfileImageEntity" syncable="YES" codeGenerationType="class">
         <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
-        <attribute name="imageUrl" optional="YES" attributeType="String"/>
         <attribute name="invertedImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="userId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <uniquenessConstraints>
@@ -26,10 +25,10 @@
         <attribute name="company" optional="YES" attributeType="String"/>
         <attribute name="followers" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="following" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="imageUrl" optional="YES" attributeType="String"/>
         <attribute name="login" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
         <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="profileImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserProfileImageEntity"/>
         <relationship name="usersResponse" maxCount="1" deletionRule="Nullify" destinationEntity="UsersPageResponseEntity" inverseName="users" inverseEntity="UsersPageResponseEntity"/>
     </entity>
     <entity name="UsersPageResponseEntity" representedClassName="UsersPageResponseEntity" syncable="YES" codeGenerationType="class">

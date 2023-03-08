@@ -19,6 +19,7 @@ extension UsersPageResponseDTO {
         let login: String?
         let id: Int
         let profileImage: ProfileImageDTO?
+        let imageUrl: String?
         let type: String?
         let note: NoteDTO?
         let following: Int?
@@ -46,7 +47,6 @@ extension UsersPageResponseDTO.UserDTO {
 
 extension UsersPageResponseDTO.UserDTO {
     struct ProfileImageDTO: Decodable {
-        let imageUrl: String?
         let image: Data?
         let invertedImage: Data?
     }
@@ -65,7 +65,8 @@ extension UsersPageResponseDTO.UserDTO {
         
         return .init(login: login,
                      userId: id,
-                     profileImage: .init(imageUrl: profileImage?.imageUrl, image: profileImage?.image, invertedImage: profileImage?.invertedImage),
+                     profileImage: .init(image: profileImage?.image, invertedImage: profileImage?.invertedImage),
+                     imageUrl: imageUrl,
                      type: type,
                      note: nil,
                      following: nil,
@@ -77,8 +78,7 @@ extension UsersPageResponseDTO.UserDTO {
 
 extension UsersPageResponseDTO.UserDTO.ProfileImageDTO {
     func toDomain() -> ProfileImage {
-        return .init(imageUrl: imageUrl,
-                     image: image,
+        return .init(image: image,
                      invertedImage: invertedImage)
     }
 }

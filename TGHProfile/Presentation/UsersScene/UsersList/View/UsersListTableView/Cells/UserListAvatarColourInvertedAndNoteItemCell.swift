@@ -108,7 +108,7 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell, UserLi
     }
 
     private func updateProfileImage(width: Int) {
-        guard let profileImagePath = viewModel?.user.profileImage?.imageUrl else { return }
+        guard let profileImagePath = viewModel?.user.imageUrl else { return }
         if let cacheImage = self.viewModel?.cacheImage {
             self.profileImageView.image = cacheImage
             return

@@ -45,7 +45,8 @@ extension DefaultUsersRepository: UsersRepository {
                     let users = responseDTOs.map {
                         UsersPageResponseDTO.UserDTO.init(login: $0.login,
                                                           id: $0.id,
-                                                          profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(imageUrl: $0.avatar_url, image: nil, invertedImage: nil),
+                                                          profileImage: UsersPageResponseDTO.UserDTO.ProfileImageDTO.init(image: nil, invertedImage: nil),
+                                                          imageUrl: $0.avatar_url,
                                                           type: $0.type,
                                                           note: nil,
                                                           following: nil,

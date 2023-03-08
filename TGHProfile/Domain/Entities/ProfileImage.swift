@@ -8,7 +8,6 @@
 import Foundation
 
 struct ProfileImage: Equatable{
-    let imageUrl: String?
     let image: Data?
     let invertedImage: Data?
 }
