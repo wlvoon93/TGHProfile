@@ -46,6 +46,8 @@
 		1FFFC834221B0041007D99D2 /* ProfileImagesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFC82C221B0041007D99D2 /* ProfileImagesRepository.swift */; };
 		1FFFC835221B0041007D99D2 /* DefaultUsersRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFC82F221B0041007D99D2 /* DefaultUsersRepository.swift */; };
 		1FFFC836221B0041007D99D2 /* UsersRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFC830221B0041007D99D2 /* UsersRepository.swift */; };
+		AE08465129B8C3B800137779 /* LoadUserImageRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE08465029B8C3B800137779 /* LoadUserImageRequestDTO.swift */; };
+		AE08465329B8C3CE00137779 /* LoadUserImageResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE08465229B8C3CE00137779 /* LoadUserImageResponseDTO.swift */; };
 		AE17697B29573CEB00A79A71 /* UsersSearchRequestDTO+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17697A29573CEB00A79A71 /* UsersSearchRequestDTO+Mapping.swift */; };
 		AE17697D29573D8900A79A71 /* UsersSearchResponseDTO+Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17697C29573D8900A79A71 /* UsersSearchResponseDTO+Mapping.swift */; };
 		AE17697F2958315E00A79A71 /* ListAllUsersUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17697E2958315E00A79A71 /* ListAllUsersUseCase.swift */; };
@@ -173,6 +175,8 @@
 		1FFFC82C221B0041007D99D2 /* ProfileImagesRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImagesRepository.swift; sourceTree = "<group>"; };
 		1FFFC82F221B0041007D99D2 /* DefaultUsersRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultUsersRepository.swift; sourceTree = "<group>"; };
 		1FFFC830221B0041007D99D2 /* UsersRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersRepository.swift; sourceTree = "<group>"; };
+		AE08465029B8C3B800137779 /* LoadUserImageRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserImageRequestDTO.swift; sourceTree = "<group>"; };
+		AE08465229B8C3CE00137779 /* LoadUserImageResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserImageResponseDTO.swift; sourceTree = "<group>"; };
 		AE17697A29573CEB00A79A71 /* UsersSearchRequestDTO+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersSearchRequestDTO+Mapping.swift"; sourceTree = "<group>"; };
 		AE17697C29573D8900A79A71 /* UsersSearchResponseDTO+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersSearchResponseDTO+Mapping.swift"; sourceTree = "<group>"; };
 		AE17697E2958315E00A79A71 /* ListAllUsersUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListAllUsersUseCase.swift; sourceTree = "<group>"; };
@@ -338,6 +342,8 @@
 				AE9187BA296A7969004A102C /* SaveUserNoteResponseDTO+mapping.swift */,
 				AE9187C4296B0291004A102C /* LoadUserNoteRequestDTO.swift */,
 				AE9187C6296B02C8004A102C /* LoadUserNoteResponseDTO.swift */,
+				AE08465029B8C3B800137779 /* LoadUserImageRequestDTO.swift */,
+				AE08465229B8C3CE00137779 /* LoadUserImageResponseDTO.swift */,
 				AE28A29E2976DF5D005944F6 /* LoadUsersWithUsernameAndNoteKeywordRequestDTO.swift */,
 				AE28A2A02976E35B005944F6 /* FetchUsersWithIdsRequestDTO.swift */,
 			);
@@ -940,6 +946,7 @@
 				1F57F8D223C656F600981E09 /* AccessibilityIdentifier.swift in Sources */,
 				AEB19C8F2988154C00D6A473 /* UIApplication+TopViewController.swift in Sources */,
 				1F0CEFCF23436B67004141FA /* ConnectionError.swift in Sources */,
+				AE08465129B8C3B800137779 /* LoadUserImageRequestDTO.swift in Sources */,
 				AE9187C5296B0291004A102C /* LoadUserNoteRequestDTO.swift in Sources */,
 				1F05A6CC2220A2CB001E2801 /* SearchUsersUseCase.swift in Sources */,
 				AE6B57BE295DD71A0069DC43 /* LoadUserDetailsUseCase.swift in Sources */,
@@ -984,6 +991,7 @@
 				1FA5338D201E1FDE00747E55 /* AppDelegate.swift in Sources */,
 				AE5F7598294AA8340098D4E9 /* UsersSearchFlowCoordinator.swift in Sources */,
 				AE5F75A6294B7B850098D4E9 /* UsersSceneDIContainer.swift in Sources */,
+				AE08465329B8C3CE00137779 /* LoadUserImageResponseDTO.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

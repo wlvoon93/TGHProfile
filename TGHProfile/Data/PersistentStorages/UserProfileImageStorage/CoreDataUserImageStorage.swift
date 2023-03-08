@@ -18,18 +18,10 @@ final class CoreDataUserImageStorage {
 
     // MARK: - Private
 
-    private func fetchRequest(for requestDto: LoadUserNoteRequestDTO) -> NSFetchRequest<UserNoteEntity> {
-        let request: NSFetchRequest = UserNoteEntity.fetchRequest()
+    private func fetchRequest(for requestDto: LoadUserImageRequestDTO) -> NSFetchRequest<UserProfileImageEntity> {
+        let request: NSFetchRequest = UserProfileImageEntity.fetchRequest()
         request.predicate = NSPredicate(format: "%K = %d",
-                                        #keyPath(UserNoteEntity.userId), requestDto.userId)
-        return request
-    }
-    
-    private func fetchUserRequest(for userId: Int) -> NSFetchRequest<UserResponseEntity> {
-        let request: NSFetchRequest = UserResponseEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "%K = %d",
-                                                #keyPath(UserResponseEntity.userId), userId)
-    
+                                        #keyPath(UserProfileImageEntity.userId), requestDto.userId)
         return request
     }
 }
@@ -38,9 +30,9 @@ extension CoreDataUserImageStorage: UserProfileImageStorage {
     func loadImage(for userId: Int, completion: @escaping (Result<UsersPageResponseDTO.UserDTO.ProfileImageDTO?, Error>) -> Void) {
         coreDataStorage.performBackgroundTask { context in
             do {
-                let fetchRequest = self.fetchUserRequest(for: userId)
-                let userEntity = try context.fetch(fetchRequest).first
-                let profileImageDTO = userEntity?.profileImage?.toDTO()
+                let fetchRequest = self.fetchRequest(for: .init(userId: userId))
+                let imageEntity = try context.fetch(fetchRequest).first
+                let profileImageDTO = imageEntity?.toDTO()
                 
                 completion(.success(profileImageDTO))
             } catch {
@@ -54,9 +46,18 @@ extension CoreDataUserImageStorage: UserProfileImageStorage {
         coreDataStorage.performBackgroundTaskQueued { context in
             do {
 
-                let fetchRequest = self.fetchUserRequest(for: userId)
-                let userEntity = try context.fetch(fetchRequest).first
-                userEntity?.profileImage?.setValue(image, forKey: "image")
+                let fetchRequest = self.fetchRequest(for: .init(userId: userId))
+                let imageEntity = try context.fetch(fetchRequest).first
+                
+                if imageEntity == nil {
+                    let imageEntity = NSEntityDescription.entity(forEntityName: "UserProfileImageEntity", in : context)!
+                    let userImageRecord = NSManagedObject(entity: imageEntity, insertInto: context)
+                    
+                    userImageRecord.setValue(image, forKey: "image")
+                    userImageRecord.setValue(userId, forKey: "userId")
+                } else {
+                    imageEntity?.setValue(image, forKey: "image")
+                }
                 
                 try context.save()
                 
@@ -69,10 +70,20 @@ extension CoreDataUserImageStorage: UserProfileImageStorage {
     func saveImages(for userId: Int, image: Data, invertedImage: Data, completion: @escaping (VoidResult) -> Void) {
         coreDataStorage.performBackgroundTaskQueued { context in
             do {
-                let fetchRequest = self.fetchUserRequest(for: userId)
-                let userEntity = try context.fetch(fetchRequest).first
-                userEntity?.profileImage?.setValue(image, forKey: "image")
-                userEntity?.profileImage?.setValue(invertedImage, forKey: "invertedImage")
+                let fetchRequest = self.fetchRequest(for: .init(userId: userId))
+                let imageEntity = try context.fetch(fetchRequest).first
+                
+                if imageEntity == nil {
+                    let imageEntity = NSEntityDescription.entity(forEntityName: "UserProfileImageEntity", in : context)!
+                    let userImageRecord = NSManagedObject(entity: imageEntity, insertInto: context)
+                    
+                    userImageRecord.setValue(image, forKey: "image")
+                    userImageRecord.setValue(invertedImage, forKey: "invertedImage")
+                    userImageRecord.setValue(userId, forKey: "userId")
+                } else {
+                    imageEntity?.setValue(image, forKey: "image")
+                    imageEntity?.setValue(invertedImage, forKey: "invertedImage")
+                }
 
                 try context.save()
 
