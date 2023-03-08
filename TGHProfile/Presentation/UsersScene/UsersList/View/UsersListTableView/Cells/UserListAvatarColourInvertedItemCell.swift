@@ -93,6 +93,10 @@ final class UserListAvatarColourInvertedItemCell: UITableViewCell, UserListTVCDi
 
     private func updateProfileImage(width: Int) {
         guard let profileImagePath = viewModel?.user.profileImage?.imageUrl else { return }
+        if let cacheImage = self.viewModel?.cacheImage {
+            self.profileImageView.image = cacheImage
+            return
+        }
         
         if let userId = self.viewModel?.user.userId {
             imageLoadTask = profileImagesRepository?.fetchImage(for: userId,  imagePath: profileImagePath) { [weak self] profileImage in

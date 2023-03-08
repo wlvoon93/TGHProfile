@@ -93,6 +93,11 @@ final class UsersListItemCell: UITableViewCell, UserListTVCDisplayable {
     private func updateProfileImage() {
         // when have cache just set image done
         guard let profileImagePath = viewModel?.user.profileImage?.imageUrl else { return }
+        if let cacheImage = self.viewModel?.cacheImage {
+            self.profileImageView.image = cacheImage
+            
+            return
+        }
         
         if let userId = self.viewModel?.user.userId {
             imageLoadTask = profileImagesRepository?.fetchImage(for: userId,  imagePath: profileImagePath) { [weak self] profileImage in

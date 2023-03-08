@@ -8,17 +8,14 @@
 import Foundation
 import UIKit
 
-struct UsersListItemViewModel: Equatable, UserListTVCVMDisplayable {
+class UsersListItemViewModel: UserListTVCVMDisplayable {
+    
     var cacheImage: UIImage?
     
-    let cellType: CellTypes
+    let cellType: CellTypes = .normal
     var user: User
-}
-
-extension UsersListItemViewModel {
-
+    
     init(user: User) {
         self.user = user
-        self.cellType = .normal
     }
 }

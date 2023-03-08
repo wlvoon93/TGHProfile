@@ -8,15 +8,12 @@
 import Foundation
 import UIKit
 
-struct UserListNoteItemViewModel: Equatable, UserListTVCVMDisplayable {
+class UserListNoteItemViewModel: UserListTVCVMDisplayable {
     var cacheImage: UIImage?
     
     let cellType: CellTypes
     var user: User
-}
-
-extension UserListNoteItemViewModel {
-
+    
     init(user: User) {
         self.user = user
         self.cellType = .note
