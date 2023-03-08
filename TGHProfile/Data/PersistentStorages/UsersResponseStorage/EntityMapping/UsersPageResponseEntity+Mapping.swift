@@ -67,6 +67,7 @@ extension UsersPageResponseDTO.UserDTO {
         entity.userId = Int64(id)
         entity.login = login
         entity.type = type
+        entity.imageUrl = imageUrl
         return entity
     }
 }

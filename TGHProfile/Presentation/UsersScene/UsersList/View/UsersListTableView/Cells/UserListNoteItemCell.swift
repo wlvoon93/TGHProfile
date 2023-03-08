@@ -127,9 +127,6 @@ final class UserListNoteItemCell: UITableViewCell, UserListTVCDisplayable {
                 guard let self = self else { return }
                 if case let .success(data) = result {
                     if let profileImage = UIImage(data: data) {
-                        if let cacheImage = self.viewModel?.cacheImage, profileImage.isEqualToImage(cacheImage) {
-                            return
-                        }
                         DispatchQueue.main.async {
                             self.profileImageView.image = profileImage
                             self.viewModel?.cacheImage = profileImage

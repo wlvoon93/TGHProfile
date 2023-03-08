@@ -131,9 +131,6 @@ final class UserListAvatarColourInvertedAndNoteItemCell: UITableViewCell, UserLi
                         filter.setValue(beginImage, forKey: kCIInputImageKey)
                         if let outputCiimage = filter.outputImage,
                             let filteredImageData = UIImage(ciImage: outputCiimage).pngData() {
-                            if let cacheImage = self.viewModel?.cacheImage, UIImage(ciImage: outputCiimage).isEqualToImage(cacheImage) {
-                                return
-                            }
                             DispatchQueue.main.async {
                                 self.profileImageView.image = UIImage(data: filteredImageData)
                                 self.viewModel?.cacheImage = self.profileImage

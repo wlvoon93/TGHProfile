@@ -71,7 +71,7 @@ extension SearchUserListTableViewController {
 
         cell.fill(with: viewModel.searchItems.value[indexPath.row],
                   profileImagesRepository: profileImagesRepository)
-
+        
         if indexPath.row == viewModel.searchItems.value.count - 1 {
             viewModel.didLoadNextPage()
         }

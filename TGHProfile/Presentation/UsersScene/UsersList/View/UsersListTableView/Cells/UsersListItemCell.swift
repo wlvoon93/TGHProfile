@@ -91,7 +91,6 @@ final class UsersListItemCell: UITableViewCell, UserListTVCDisplayable {
     }
 
     private func updateProfileImage() {
-        // when have cache just set image done
         guard let profileImagePath = viewModel?.user.imageUrl else { return }
         if let cacheImage = self.viewModel?.cacheImage {
             self.profileImageView.image = cacheImage
@@ -110,9 +109,6 @@ final class UsersListItemCell: UITableViewCell, UserListTVCDisplayable {
                 guard let self = self else { return }
                 if case let .success(data) = result {
                     if let profileImage = UIImage(data: data) {
-                        if let cacheImage = self.viewModel?.cacheImage, profileImage.isEqualToImage(cacheImage) {
-                            return
-                        }
                         DispatchQueue.main.async {
                             self.profileImageView.image = profileImage
                             self.viewModel?.cacheImage = profileImage
