@@ -22,7 +22,7 @@ class UsersDetailsViewModelTests: XCTestCase {
         
         var expectation: XCTestExpectation?
         var error: Error?
-        var user = User.init(login: nil, userId: nil, profileImage: nil, type: nil, following: nil, followers: nil, company: nil, blog: nil)
+        var user = User.init(login: nil, userId: nil, profileImage: nil, imageUrl: nil, type: nil, following: nil, followers: nil, company: nil, blog: nil)
         
         func execute(requestValue: LoadUserDetailsUseCaseRequestValue, cached: @escaping (User) -> Void, completion: @escaping (Result<User, Error>) -> Void) -> Cancellable? {
             if let error = error {
@@ -38,7 +38,7 @@ class UsersDetailsViewModelTests: XCTestCase {
     class SaveUserNoteUseCaseMock: SaveUserNoteUseCase {
         var expectation: XCTestExpectation?
         var error: Error?
-        var user = User.init(login: nil, userId: nil, profileImage: nil, type: nil, following: nil, followers: nil, company: nil, blog: nil)
+        var user = User.init(login: nil, userId: nil, profileImage: nil, imageUrl: nil, type: nil, following: nil, followers: nil, company: nil, blog: nil)
         
         func execute(requestValue: SaveUserNoteUseCaseRequestValue, completion: @escaping (VoidResult) -> Void) -> Cancellable? {
             if let error = error {

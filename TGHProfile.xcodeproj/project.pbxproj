@@ -53,6 +53,9 @@
 		AE17697F2958315E00A79A71 /* ListAllUsersUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17697E2958315E00A79A71 /* ListAllUsersUseCase.swift */; };
 		AE28A29F2976DF5D005944F6 /* LoadUsersWithUsernameAndNoteKeywordRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE28A29E2976DF5D005944F6 /* LoadUsersWithUsernameAndNoteKeywordRequestDTO.swift */; };
 		AE28A2A12976E35B005944F6 /* FetchUsersWithIdsRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE28A2A02976E35B005944F6 /* FetchUsersWithIdsRequestDTO.swift */; };
+		AE2D84DD29C22B080025E340 /* UsersPageMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2D84DC29C22B080025E340 /* UsersPageMapperTests.swift */; };
+		AE2D84E129C22BA00025E340 /* SharedTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2D84E029C22BA00025E340 /* SharedTestHelpers.swift */; };
+		AE2D84E329C22D610025E340 /* HTTPURLResponse+StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2D84E229C22D610025E340 /* HTTPURLResponse+StatusCode.swift */; };
 		AE5F7598294AA8340098D4E9 /* UsersSearchFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F7597294AA8340098D4E9 /* UsersSearchFlowCoordinator.swift */; };
 		AE5F759C294AA8C30098D4E9 /* UsersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F759B294AA8C30098D4E9 /* UsersListViewModel.swift */; };
 		AE5F759E294AA8D30098D4E9 /* UsersListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F759D294AA8D30098D4E9 /* UsersListItemViewModel.swift */; };
@@ -182,6 +185,9 @@
 		AE17697E2958315E00A79A71 /* ListAllUsersUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListAllUsersUseCase.swift; sourceTree = "<group>"; };
 		AE28A29E2976DF5D005944F6 /* LoadUsersWithUsernameAndNoteKeywordRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUsersWithUsernameAndNoteKeywordRequestDTO.swift; sourceTree = "<group>"; };
 		AE28A2A02976E35B005944F6 /* FetchUsersWithIdsRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchUsersWithIdsRequestDTO.swift; sourceTree = "<group>"; };
+		AE2D84DC29C22B080025E340 /* UsersPageMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersPageMapperTests.swift; sourceTree = "<group>"; };
+		AE2D84E029C22BA00025E340 /* SharedTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTestHelpers.swift; sourceTree = "<group>"; };
+		AE2D84E229C22D610025E340 /* HTTPURLResponse+StatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HTTPURLResponse+StatusCode.swift"; sourceTree = "<group>"; };
 		AE5F7597294AA8340098D4E9 /* UsersSearchFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersSearchFlowCoordinator.swift; sourceTree = "<group>"; };
 		AE5F759B294AA8C30098D4E9 /* UsersListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListViewModel.swift; sourceTree = "<group>"; };
 		AE5F759D294AA8D30098D4E9 /* UsersListItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListItemViewModel.swift; sourceTree = "<group>"; };
@@ -560,6 +566,32 @@
 			path = Repositories;
 			sourceTree = "<group>";
 		};
+		AE2D84DB29C22AC10025E340 /* Users API */ = {
+			isa = PBXGroup;
+			children = (
+				AE2D84DC29C22B080025E340 /* UsersPageMapperTests.swift */,
+			);
+			path = "Users API";
+			sourceTree = "<group>";
+		};
+		AE2D84DE29C22B5B0025E340 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				AE2D84E029C22BA00025E340 /* SharedTestHelpers.swift */,
+				AE2D84E229C22D610025E340 /* HTTPURLResponse+StatusCode.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		AE2D84DF29C22B650025E340 /* DE Tests */ = {
+			isa = PBXGroup;
+			children = (
+				AE2D84DE29C22B5B0025E340 /* Helpers */,
+				AE2D84DB29C22AC10025E340 /* Users API */,
+			);
+			path = "DE Tests";
+			sourceTree = "<group>";
+		};
 		AE5F7593294AA7790098D4E9 /* UsersScene */ = {
 			isa = PBXGroup;
 			children = (
@@ -670,6 +702,7 @@
 		AE688944296ED01B007994FF /* TGHProfileTests */ = {
 			isa = PBXGroup;
 			children = (
+				AE2D84DF29C22B650025E340 /* DE Tests */,
 				AE6889622972601C007994FF /* Presentation */,
 				AE68894C296ED02E007994FF /* Domain */,
 				AE688950296ED1E6007994FF /* Mocks */,
@@ -1001,8 +1034,11 @@
 			files = (
 				AE688954296EF79E007994FF /* SearchUsersUseCaseTests.swift in Sources */,
 				AE688952296ED223007994FF /* User+Stub.swift in Sources */,
+				AE2D84E329C22D610025E340 /* HTTPURLResponse+StatusCode.swift in Sources */,
 				AE68895C297065FC007994FF /* LoadUserNoteUseCaseTests.swift in Sources */,
 				AE68894F296ED091007994FF /* ListAllUsersUseCaseTests.swift in Sources */,
+				AE2D84E129C22BA00025E340 /* SharedTestHelpers.swift in Sources */,
+				AE2D84DD29C22B080025E340 /* UsersPageMapperTests.swift in Sources */,
 				AE688958296EFFBF007994FF /* SaveUserNoteUseCaseTests.swift in Sources */,
 				AE68895A296F07D2007994FF /* Note+Stub.swift in Sources */,
 				AE688946296ED01B007994FF /* TGHProfileTests.swift in Sources */,
